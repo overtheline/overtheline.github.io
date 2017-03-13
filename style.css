@@ -1,4 +1,11 @@
 #main {
   padding: 20px;
-  font-family: helvetica
+  font-family: helvetica;
+  border: 5px solid #ccc;
 }
+
+/*.Select-menu-outer {
+  background-color: #faa;
+  position: absolute;
+  z-index: 60;
+}*/
