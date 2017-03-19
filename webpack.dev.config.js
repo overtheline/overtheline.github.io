@@ -23,7 +23,10 @@ module.exports = {
     ]
   },
   plugins: [
-    new WebpackNotifierPlugin({title: 'Here\'s some bullshit...'})
+    new WebpackNotifierPlugin({
+      title: 'Here\'s some bullshit...',
+      alwaysNotify: true,
+    })
   ],
   resolve: {
     extensions: ['.js', 'jsx', '.json'],
