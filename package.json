@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build:dev": "NODE_ENV='development' BABEL_ENV=build $(npm bin)/webpack --config webpack.dev.config.js",
+    "build:dev": "NODE_ENV='development' BABEL_ENV=build $(npm bin)/webpack --config webpack.dev.config.js --watch",
     "build:prod": "NODE_ENV='production' BABEL_ENV=build $(npm bin)/webpack --config webpack.prod.config.js",
     "lint": "$(npm bin)/eslint . --ext .js",
     "test": "echo \"Error: no test specified\" && exit 1"
