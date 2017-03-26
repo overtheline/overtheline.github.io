@@ -10,10 +10,15 @@ module.exports = {
         test: /\.js$/,
         exclude: /node_modules/,
         loader: "babel-loader"
+      },
+      {
+        test: /\.jsx$/,
+        exclude: /node-modules/,
+        loader: "babel-loader"
       }
     ]
   },
   resolve: {
-    extensions: ['.js', '.json'],
+    extensions: ['.js', 'jsx', '.json'],
   },
 };
