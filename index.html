@@ -3,21 +3,27 @@
 <head>
   <meta charset="utf-8" />
   <title>Public Site</title>
+  <link rel="stylesheet" href="node_modules/ihme-ui/dist/ihme-ui.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/react-virtualized@7.0.1/styles.css"/>
+  <link rel="stylesheet" href="node_modules/ihme-react-select/dist/ihme-react-select.min.css"/>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div id="main">
-    <p>
-      Aaron C Keel <br />
-      Seattle, WA
-    </p>
-    <p>
-      <a href="https://github.com/overtheline">GitHub</a>
-    </p>
-    <p>
-      <a href="https://linkedin.com/in/aaron-keel-100773122">LinkedIn</a>
-    </p>
+    <div class="content">
+      <p>
+        Aaron C Keel <br />
+        Seattle, WA
+      </p>
+      <p>
+        <a href="https://github.com/overtheline">GitHub</a>
+      </p>
+      <p>
+        <a href="https://linkedin.com/in/aaron-keel-100773122">LinkedIn</a>
+      </p>
+    </div>
+    <div id="scroll" class="content"></div>
   </div>
-  <script src="dist/bundle.js"></script>
+  <script src="bundle.js"></script>
 </body>
 </html>

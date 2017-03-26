@@ -6,7 +6,6 @@ module.exports = {
   entry: './src/index.js',
   output: {
     filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist')
   },
   module: {
     rules: [
@@ -14,13 +13,21 @@ module.exports = {
         test: /\.js$/,
         exclude: /node_modules/,
         loader: "babel-loader"
+      },
+      {
+        test: /\.jsx$/,
+        exclude: /node-modules/,
+        loader: "babel-loader"
       }
     ]
   },
   plugins: [
-    new WebpackNotifierPlugin({title: 'Here\'s some bullshit...'})
+    new WebpackNotifierPlugin({
+      title: 'Here\'s some bullshit...',
+      alwaysNotify: true,
+    })
   ],
   resolve: {
-    extensions: ['.js', '.json'],
+    extensions: ['.js', 'jsx', '.json'],
   },
 };
