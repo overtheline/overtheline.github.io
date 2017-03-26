@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build:dev": "NODE_ENV='development' BABEL_ENV=build $(npm bin)/webpack --config webpack.dev.config.js --watch",
+    "build:devW": "NODE_ENV='development' BABEL_ENV=build $(npm bin)/webpack --config webpack.dev.config.js --watch",
+    "build:dev": "NODE_ENV='development' BABEL_ENV=build $(npm bin)/webpack --config webpack.dev.config.js",
     "build:prod": "NODE_ENV='production' BABEL_ENV=build $(npm bin)/webpack --config webpack.prod.config.js",
     "lint": "$(npm bin)/eslint . --ext .js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -25,6 +26,7 @@
     "webpack-notifier": "^1.5.0"
   },
   "dependencies": {
+    "ihme-ui": "^0.21.0",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "react-virtualized": "^9.2.2"
