@@ -92,7 +92,9 @@ export default class Scroll extends React.Component {
 
       that.openedSelect = that.selectRefs[this.name];
 
-      const position = ReactDOM.findDOMNode(that.selectRefs[this.name]).getBoundingClientRect();
+      const position = ReactDOM
+        .findDOMNode(that.selectRefs[this.name])
+        .getBoundingClientRect();
       const windowHeight = window.innerHeight;
       const top = position.top + position.height + 248 > windowHeight
         ? position.top - 248
