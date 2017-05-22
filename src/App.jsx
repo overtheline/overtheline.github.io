@@ -7,6 +7,20 @@ const wrapperStyle = { display: 'flex', width: '100%' };
 const svgStyle = { border: '1px solid black' }
 const thingHolder = { flex: '1 1 auto' };
 
+function generateData(n) {
+  const data = [];
+
+
+  for (let i = 0; i < n; i++) {
+    const r = Math.floor(Math.random() * 3) + 2;
+    const cx = Math.floor(Math.random() * (300 - r - r)) + r;
+    const cy = Math.floor(Math.random() * (400 - r - r)) + r;
+    data.push({ r, cx, cy, className: `circle-${i}` });
+  }
+
+  return data;
+}
+
 export default class App extends React.Component {
   constructor(props) {
     super(props);
@@ -16,10 +30,20 @@ export default class App extends React.Component {
 
     this.state = {
       offsetTop: 100,
-      cx: 10,
-      cy: 10,
-      r: 10,
+      data: generateData(500),
     }
+  }
+
+  static createCircles(data) {
+    const children = [];
+
+    for (let i = 0; i < data.length; i++) {
+      children.push(
+        <Circle key={i} className='circle' {...data[i]} />
+      );
+    }
+
+    return children;
   }
 
   onMoveClick() {
@@ -27,19 +51,14 @@ export default class App extends React.Component {
   }
 
   onOtherClick() {
-    const nextR = Math.floor(Math.random() * 40) + 10;
-    const nextCX = Math.floor(Math.random() * (300 - nextR - nextR)) + nextR;
-    const nextCY = Math.floor(Math.random() * (400 - nextR - nextR)) + nextR;
-
     this.setState({
-      cx: nextCX,
-      cy: nextCY,
-      r: nextR,
+      data: generateData(500),
     });
   }
 
   render() {
-    const { offsetTop, cx, cy, r } = this.state;
+    console.count('App');
+    const { offsetTop, data } = this.state;
     return (
       <div>
         <div style={wrapperStyle}>
@@ -60,13 +79,8 @@ export default class App extends React.Component {
             <AD3 offsetTop={offsetTop} />
           </div>
           <div style={thingHolder}>
-            <div>{`cx: ${cx}, cy: ${cy}, r: ${r}`}</div>
             <svg width={'300px'} height={'400px'} style={svgStyle}>
-              <Circle
-                cx={cx}
-                cy={cy}
-                r={r}
-              />
+              {App.createCircles(data)}
             </svg>
           </div>
         </div>

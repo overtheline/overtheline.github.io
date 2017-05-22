@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 
 import { select } from 'd3';
 
+import circleUpdate from './circleUpdate';
+
 export default class Circle extends React.Component {
     constructor(props) {
       super(props);
@@ -18,15 +20,7 @@ export default class Circle extends React.Component {
     }
 
     componentWillUpdate(nextProps) {
-      const { cx, cy, r } = nextProps;
-
-      const parent = ReactDOM.findDOMNode(this);
-      const circle = select(parent);
-      circle.transition()
-        .duration(2000)
-        .attr('cx', cx)
-        .attr('cy', cy)
-        .attr('r', r);
+      circleUpdate(nextProps);
     }
 
     shouldComponentUpdate(nextProps) {
@@ -34,13 +28,18 @@ export default class Circle extends React.Component {
       const cy = nextProps.cy !== this.props.cy;
       const r = nextProps.r !== this.props.r;
 
-      return cx || cy || r;
+      if (cx || cy || r) {
+        this.props = { cx, cy, r };
+        circleUpdate(nextProps);
+      }
+
+      return false;
     }
 
     render() {
       console.count('render circle')
       return (
-        <circle></circle>
+        <circle className={this.props.className}></circle>
       );
     }
 }
