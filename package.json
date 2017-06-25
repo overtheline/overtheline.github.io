@@ -1,36 +1,22 @@
 {
-  "name": "portfolio",
+  "name": "overtheline.github.io",
   "version": "1.0.0",
-  "description": "",
+  "description": "personal homepage",
   "main": "index.js",
   "scripts": {
-    "build:devW": "NODE_ENV='development' BABEL_ENV=build $(npm bin)/webpack --config webpack.dev.config.js --watch",
-    "build:dev": "NODE_ENV='development' BABEL_ENV=build $(npm bin)/webpack --config webpack.dev.config.js",
-    "build:prod": "NODE_ENV='production' BABEL_ENV=build $(npm bin)/webpack --config webpack.prod.config.js",
-    "lint": "$(npm bin)/eslint . --ext .js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "babel-cli": "^6.23.0",
-    "babel-core": "^6.23.1",
-    "babel-loader": "^6.4.0",
-    "babel-plugin-transform-react-jsx": "^6.23.0",
-    "babel-preset-env": "^1.2.1",
-    "babel-preset-react": "^6.23.0",
-    "eslint": "^3.17.1",
-    "eslint-plugin-jsx-a11y": "^4.0.0",
-    "eslint-plugin-react": "^6.10.0",
-    "webpack": "^2.2.1",
-    "webpack-notifier": "^1.5.0"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/overtheline/overtheline.github.io.git"
   },
+  "author": "Aaron C Keel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/overtheline/overtheline.github.io/issues"
+  },
+  "homepage": "https://github.com/overtheline/overtheline.github.io#readme",
   "dependencies": {
-    "d3": "^4.9.1",
-    "ihme-ui": "^0.21.0",
-    "react": "^15.4.2",
-    "react-dom": "^15.4.2",
-    "react-virtualized": "^9.2.2",
-    "victory": "^0.18.3"
+    "d3": "^4.9.1"
   }
 }
