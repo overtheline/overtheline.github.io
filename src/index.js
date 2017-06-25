@@ -1,15 +1,31 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import * as d3 from 'd3';
 
-import Hello from './components/Hello.js';
+const mainDiv = d3.select('#main');
+const mainSelect = mainDiv.append('select');
 
-import App from './App.jsx';
+const options = [
+  {
+    value: 1,
+    text: 'one',
+  },
+  {
+    value: 2,
+    text: 'two',
+  },
+  {
+    value: 3,
+    text: 'three',
+  },
+];
 
-const greeter = new Hello();
+options.forEach((option) => {
+  mainSelect.append('option')
+    .attr('value', option.value)
+    .text(option.text);
 
-console.log(`index.js says ${greeter.greet()}`);
-
-ReactDOM.render(
-  <App/>,
-  document.getElementById('main')
-);
+    const mainOptions = d3.selectAll('option')
+      .on('change', () => {
+        console.log(this);
+        console.log(d3.event);
+      });
+});
