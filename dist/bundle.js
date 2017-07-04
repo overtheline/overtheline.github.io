@@ -107,17 +107,21 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
 var board_1 = __webpack_require__(6);
+var width = 800;
+var height = 400;
 var App = (function (_super) {
     __extends(App, _super);
     function App() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     App.prototype.componentDidMount = function () {
-        board_1.default();
+        board_1.drawTiles();
+        board_1.drawObstacles(10);
     };
     App.prototype.render = function () {
         return (React.createElement("div", { id: 'main' },
-            React.createElement("svg", { id: 'base-svg', className: 'board layer-0', width: 800, height: 400 })));
+            React.createElement("svg", { id: 'svg-layer-0', className: 'board layer-0', width: width, height: height }),
+            React.createElement("svg", { id: 'svg-layer-1', className: 'board layer-1', width: width, height: height })));
     };
     return App;
 }(React.Component));
@@ -17010,7 +17014,7 @@ var boardDimensions = {
     height: 20,
 };
 function drawTiles() {
-    var base = d3.select('#base-svg');
+    var base = d3.select('#svg-layer-0');
     var width = Number(base.attr('width'));
     var height = Number(base.attr('height'));
     var tileWidth = Math.floor(width / boardDimensions.width);
@@ -17033,7 +17037,29 @@ function drawTiles() {
         }
     }
 }
-exports.default = drawTiles;
+exports.drawTiles = drawTiles;
+function drawObstacles(n) {
+    var layer_1 = d3.select('#svg-layer-1');
+    var width = Number(layer_1.attr('width'));
+    var height = Number(layer_1.attr('height'));
+    var tileWidth = Math.floor(width / boardDimensions.width);
+    var tileHeight = Math.floor(height / boardDimensions.height);
+    function getRandomPosition() {
+        var x = Math.floor(Math.random() * boardDimensions.width) * tileWidth;
+        var y = Math.floor(Math.random() * boardDimensions.height) * tileHeight;
+        return { x: x, y: y };
+    }
+    for (var i = 0; i < n; i++) {
+        var pos = getRandomPosition();
+        layer_1.append('rect')
+            .attr('width', tileWidth - 1)
+            .attr('height', tileHeight - 1)
+            .attr('x', pos.x)
+            .attr('y', pos.y)
+            .attr('fill', 'rgba(200, 100, 0, 1)');
+    }
+}
+exports.drawObstacles = drawObstacles;
 
 
 /***/ })

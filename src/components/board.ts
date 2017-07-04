@@ -5,8 +5,8 @@ const boardDimensions = {
   height: 20,
 };
 
-export default function drawTiles() {
-  const base: d3.Selection<SVGElement, {}, HTMLElement, any> = d3.select('#base-svg');
+export function drawTiles(): void {
+  const base: d3.Selection<SVGElement, {}, HTMLElement, any> = d3.select('#svg-layer-0');
 
   const width: number = Number(base.attr('width'));
   const height: number = Number(base.attr('height'));
@@ -33,5 +33,32 @@ export default function drawTiles() {
           .attr('y', yPos)
           .attr('fill', getTileFill(i, j));
     }
+  }
+}
+
+export function drawObstacles(n: number): void {
+  const layer_1: d3.Selection<SVGElement, {}, HTMLElement, any> = d3.select('#svg-layer-1');
+
+  const width: number = Number(layer_1.attr('width'));
+  const height: number = Number(layer_1.attr('height'));
+
+  const tileWidth = Math.floor(width / boardDimensions.width);
+  const tileHeight = Math.floor(height / boardDimensions.height);
+
+  function getRandomPosition() {
+    const x = Math.floor(Math.random() * boardDimensions.width) * tileWidth;
+    const y = Math.floor(Math.random() * boardDimensions.height) * tileHeight;
+
+    return { x, y };
+  }
+
+  for (let i = 0; i < n; i++) {
+    const pos = getRandomPosition();
+    layer_1.append('rect')
+        .attr('width', tileWidth - 1)
+        .attr('height', tileHeight - 1)
+        .attr('x', pos.x)
+        .attr('y', pos.y)
+        .attr('fill', 'rgba(200, 100, 0, 1)');
   }
 }
