@@ -1,3 +1,5 @@
+var WebpackNotifierPlugin = require('webpack-notifier');
+
 module.exports = {
     entry: "./src/index.tsx",
     output: {
@@ -31,4 +33,8 @@ module.exports = {
         "react": "React",
         "react-dom": "ReactDOM"
     },
+    
+    plugins: [
+      new WebpackNotifierPlugin(),
+    ],
 };
