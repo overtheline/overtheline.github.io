@@ -106,17 +106,18 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-var svg_1 = __webpack_require__(4);
+var board_1 = __webpack_require__(6);
 var App = (function (_super) {
     __extends(App, _super);
     function App() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     App.prototype.componentDidMount = function () {
-        svg_1.default();
+        board_1.default();
     };
     App.prototype.render = function () {
-        return (React.createElement("div", { id: 'main' }, "Main"));
+        return (React.createElement("div", { id: 'main' },
+            React.createElement("svg", { id: 'base-svg', className: 'board layer-0', width: 800, height: 400 })));
     };
     return App;
 }(React.Component));
@@ -124,20 +125,7 @@ exports.default = App;
 
 
 /***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var d3 = __webpack_require__(5);
-function SVG() {
-    d3.select('#main').append('div').html('text');
-}
-exports.default = SVG;
-
-
-/***/ }),
+/* 4 */,
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17007,6 +16995,45 @@ exports.zoomIdentity = identity$8;
 Object.defineProperty(exports, '__esModule', { value: true });
 
 })));
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var d3 = __webpack_require__(5);
+var boardDimensions = {
+    width: 40,
+    height: 20,
+};
+function drawTiles() {
+    var base = d3.select('#base-svg');
+    var width = Number(base.attr('width'));
+    var height = Number(base.attr('height'));
+    var tileWidth = Math.floor(width / boardDimensions.width);
+    var tileHeight = Math.floor(height / boardDimensions.height);
+    function getTileFill(i, j) {
+        var red = 'rgba(255, 0, 0, 0.5)';
+        var black = 'rgba(0, 0, 0, 0.5)';
+        return (i + j) % 2 === 0 ? black : red;
+    }
+    for (var i = 0; i < boardDimensions.width; i++) {
+        for (var j = 0; j < boardDimensions.height; j++) {
+            var xPos = i * tileWidth;
+            var yPos = j * tileHeight;
+            base.append('rect')
+                .attr('width', tileWidth - 1)
+                .attr('height', tileHeight - 1)
+                .attr('x', xPos)
+                .attr('y', yPos)
+                .attr('fill', getTileFill(i, j));
+        }
+    }
+}
+exports.default = drawTiles;
 
 
 /***/ })

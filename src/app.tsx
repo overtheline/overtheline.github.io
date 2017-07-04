@@ -1,17 +1,22 @@
 import * as React from "react";
 
-import SVG from './components/svg';
+import drawTiles from './components/board';
 
 export default class App extends React.Component {
 
   componentDidMount() {
-    SVG();
+    drawTiles();
   }
 
   render() {
     return (
       <div id='main'>
-        Main
+        <svg
+          id='base-svg'
+          className='board layer-0'
+          width={800}
+          height={400}
+        />
       </div>
     );
   }
