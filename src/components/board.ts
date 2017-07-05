@@ -52,6 +52,15 @@ export function drawObstacles(n: number): void {
     return { x, y };
   }
 
+  function generateObstacles(n: number): { x: number, y: number }[] {
+    const obstacles = [];
+    for ( let i = 0; i < n; i++) {
+      obstacles.push(getRandomPosition());
+    }
+
+    return obstacles;
+  }
+
   for (let i = 0; i < n; i++) {
     const pos = getRandomPosition();
     layer_1.append('rect')

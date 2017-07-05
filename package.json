@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build:dev": "node ./node_modules/webpack/bin/webpack.js --watch",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha -r ts-node/register src/**/*.test.ts"
   },
   "repository": {
     "type": "git",
@@ -26,9 +26,16 @@
     "react-dom": "^15.6.1"
   },
   "devDependencies": {
+    "@types/chai": "^4.0.1",
+    "@types/mocha": "^2.2.41",
     "awesome-typescript-loader": "^3.2.1",
+    "chai": "^4.0.2",
+    "expect.js": "^0.3.1",
+    "mocha": "^3.4.2",
     "source-map-loader": "^0.2.1",
+    "ts-node": "^3.1.0",
     "typescript": "^2.4.1",
+    "typings": "^2.1.1",
     "webpack-notifier": "^1.5.0"
   }
 }

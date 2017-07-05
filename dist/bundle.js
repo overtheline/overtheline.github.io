@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -71,66 +71,6 @@ module.exports = React;
 
 /***/ }),
 /* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(0);
-var ReactDOM = __webpack_require__(2);
-var app_1 = __webpack_require__(3);
-ReactDOM.render(React.createElement(app_1.default, null), document.getElementById("example"));
-
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports) {
-
-module.exports = ReactDOM;
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(0);
-var board_1 = __webpack_require__(6);
-var width = 800;
-var height = 400;
-var App = (function (_super) {
-    __extends(App, _super);
-    function App() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    App.prototype.componentDidMount = function () {
-        board_1.drawTiles();
-        board_1.drawObstacles(10);
-    };
-    App.prototype.render = function () {
-        return (React.createElement("div", { id: 'main' },
-            React.createElement("svg", { id: 'svg-layer-0', className: 'board layer-0', width: width, height: height }),
-            React.createElement("svg", { id: 'svg-layer-1', className: 'board layer-1', width: width, height: height })));
-    };
-    return App;
-}(React.Component));
-exports.default = App;
-
-
-/***/ }),
-/* 4 */,
-/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://d3js.org Version 4.9.1. Copyright 2017 Mike Bostock.
@@ -17002,13 +16942,119 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 
 /***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(0);
+var ReactDOM = __webpack_require__(3);
+var app_1 = __webpack_require__(4);
+ReactDOM.render(React.createElement(app_1.default, null), document.getElementById("example"));
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports) {
+
+module.exports = ReactDOM;
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(0);
+var game_1 = __webpack_require__(5);
+var pxWidth = 800;
+var pxHeight = 400;
+var tileWidth = 40;
+var tileHeight = 20;
+var gameConfig = {
+    pxWidth: pxWidth, pxHeight: pxHeight, tileWidth: tileWidth, tileHeight: tileHeight,
+};
+var App = (function (_super) {
+    __extends(App, _super);
+    function App() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    App.prototype.componentDidMount = function () {
+        this.game = new game_1.default(gameConfig);
+        this.game.init();
+    };
+    App.prototype.render = function () {
+        return (React.createElement("div", { id: 'main' },
+            React.createElement("svg", { id: 'svg-layer-0', className: 'board layer-0', width: pxWidth, height: pxHeight }),
+            React.createElement("svg", { id: 'svg-layer-1', className: 'board layer-1', width: pxWidth, height: pxHeight })));
+    };
+    return App;
+}(React.Component));
+exports.default = App;
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var d3 = __webpack_require__(1);
+var board_1 = __webpack_require__(6);
+var user_1 = __webpack_require__(7);
+var Game = (function () {
+    function Game(config) {
+        this.boardSVG = d3.select('#svg-layer-0');
+        this.pxWidth = config.pxWidth;
+        this.pxHeight = config.pxHeight;
+        this.tileWidth = config.tileWidth;
+        this.tileHeight = config.tileHeight;
+        this.user = new user_1.default({ x: 5, y: 5, fill: 'rgba(0, 255, 0, 1)' });
+        this.xScale = d3.scaleLinear()
+            .domain([0, this.tileWidth]).range([0, this.pxWidth]);
+        this.yScale = d3.scaleLinear()
+            .domain([0, this.tileHeight]).range([0, this.pxHeight]);
+    }
+    Game.prototype.init = function () {
+        board_1.drawTiles();
+        board_1.drawObstacles(10);
+        this.drawUser();
+    };
+    Game.prototype.drawUser = function () {
+        var layer_1 = d3.select('#svg-layer-1');
+        layer_1.append('rect')
+            .attr('width', this.xScale(1) - 1)
+            .attr('height', this.yScale(1) - 1)
+            .attr('x', this.xScale(this.user.x))
+            .attr('y', this.yScale(this.user.y))
+            .attr('fill', this.user.fill);
+    };
+    return Game;
+}());
+exports.default = Game;
+
+
+/***/ }),
 /* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var d3 = __webpack_require__(5);
+var d3 = __webpack_require__(1);
 var boardDimensions = {
     width: 40,
     height: 20,
@@ -17049,6 +17095,13 @@ function drawObstacles(n) {
         var y = Math.floor(Math.random() * boardDimensions.height) * tileHeight;
         return { x: x, y: y };
     }
+    function generateObstacles(n) {
+        var obstacles = [];
+        for (var i = 0; i < n; i++) {
+            obstacles.push(getRandomPosition());
+        }
+        return obstacles;
+    }
     for (var i = 0; i < n; i++) {
         var pos = getRandomPosition();
         layer_1.append('rect')
@@ -17060,6 +17113,54 @@ function drawObstacles(n) {
     }
 }
 exports.drawObstacles = drawObstacles;
+
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var tile_1 = __webpack_require__(8);
+;
+var User = (function (_super) {
+    __extends(User, _super);
+    function User(config) {
+        return _super.call(this, { x: config.x, y: config.y, fill: config.fill }) || this;
+    }
+    return User;
+}(tile_1.default));
+exports.default = User;
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+;
+var Tile = (function () {
+    function Tile(config) {
+        this.x = config.x;
+        this.y = config.y;
+        this.fill = config.fill;
+    }
+    return Tile;
+}());
+exports.default = Tile;
 
 
 /***/ })

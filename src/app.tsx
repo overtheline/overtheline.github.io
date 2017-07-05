@@ -1,15 +1,22 @@
 import * as React from "react";
 
-import { drawTiles, drawObstacles } from './components/board';
+import Game, { IGameConfig } from './game';
 
-const width = 800;
-const height = 400;
+const pxWidth = 800;
+const pxHeight = 400;
+const tileWidth = 40;
+const tileHeight = 20;
+
+const gameConfig: IGameConfig = {
+  pxWidth, pxHeight, tileWidth, tileHeight,
+};
 
 export default class App extends React.Component {
+  game: Game;
 
   componentDidMount() {
-    drawTiles();
-    drawObstacles(10);
+    this.game = new Game(gameConfig);
+    this.game.init();
   }
 
   render() {
@@ -18,14 +25,14 @@ export default class App extends React.Component {
         <svg
           id='svg-layer-0'
           className='board layer-0'
-          width={width}
-          height={height}
+          width={pxWidth}
+          height={pxHeight}
         />
         <svg
           id='svg-layer-1'
           className='board layer-1'
-          width={width}
-          height={height}
+          width={pxWidth}
+          height={pxHeight}
         />
       </div>
     );
