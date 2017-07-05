@@ -10,3 +10,7 @@ const numberGenerator = d3.randomNormal(1, 0.3);
 
 const data = Array(20).fill(1).map(() => numberGenerator());
 console.log(data);
+
+class TimeOutLoop {
+
+}
