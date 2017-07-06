@@ -1,6 +1,7 @@
 import * as d3 from 'd3';
 
 import Tile from './tile';
+import { UP, DOWN, LEFT, RIGHT } from '../constants/directions';
 
 export interface IGameConfig {
   pxWidth: number;
@@ -9,13 +10,22 @@ export interface IGameConfig {
   tileHeight: number;
 }
 
+export interface IGameState {
+  nextDirection: string;
+  spinning: boolean;
+  frames: number;
+}
+
 export default class Game {
   boardSVG: d3.Selection<SVGElement, {}, HTMLElement, any>;
   boardTiles: Tile[];
   frames: number;
+  gamePieces: Tile[];
+  gameState: IGameState;
   gameSVG: d3.Selection<SVGElement, {}, HTMLElement, any>;
   pxWidth: number;
   pxHeight: number;
+  nextDirection: string;
   spinning: boolean;
   tileWidth: number;
   tileHeight: number;
@@ -36,8 +46,12 @@ export default class Game {
     this.yScale = d3.scaleLinear()
       .domain([0, this.tileHeight]).range([0, this.pxHeight]);
 
-    this.spinning = false;
-    this.frames = 0;
+    // Initial game state
+    this.gameState = {
+      spinning: false,
+      frames: 0,
+      nextDirection: RIGHT,
+    }
 
     this.handleKeydown = this.handleKeydown.bind(this);
     this.mainLoop = this.mainLoop.bind(this);
@@ -46,12 +60,13 @@ export default class Game {
 
   init() {
     this.boardTiles = this.createBoardTiles();
+    this.gamePieces = this.createGamePieces();
     this.drawBoard();
 
     d3.select('body').on('keydown', this.handleKeydown);
   }
 
-  createBoardTiles() {
+  createBoardTiles(): Tile[] {
     function getTileFill(i: number, j: number): string {
       const red = 'rgba(255, 0, 0, 0.5)';
       const black = 'rgba(0, 0, 0, 0.5)';
@@ -73,22 +88,60 @@ export default class Game {
     return tiles;
   }
 
-  createGamePieces() {}
+  createGamePieces(): Tile[] {
+    const tiles = [];
+    for (let i = 0; i < this.tileWidth; i += 5) {
+      for (let j = 0; j < this.tileHeight; j += 5) {
+        tiles.push(new Tile({
+          x: i,
+          y: j,
+          fill: 'rgba(0, 255, 0, 1)',
+        }));
+      }
+    }
+
+    return tiles;
+  }
 
   runGame() {
-    if (this.spinning) {
-      this.spinning = false;
+    if (this.gameState.spinning) {
+      this.updateGameState({ spinning: false });
     } else {
-      this.spinning = true;
+      this.updateGameState({ spinning: true });
       this.mainLoop();
     }
   }
 
   mainLoop() {
-    if (this.spinning) {
-      this.frames++;
-      console.log('loop', this.frames);
+    if (this.gameState.spinning) {
+      this.updateGameState({ frames: this.gameState.frames++});
+      this.updateGame();
+      this.drawGamePieces();
       setTimeout(this.mainLoop, 50);
+    }
+  }
+
+  updateGameState(partialState: Partial<IGameState>) {
+    this.gameState = (<any>Object).assign({}, this.gameState, partialState);
+  }
+
+  updateGame() {
+    switch(this.gameState.nextDirection) {
+      case UP:
+        this.gamePieces.forEach((piece) => piece.y--);
+        break;
+      case DOWN:
+        this.gamePieces.forEach((piece) => piece.y++);
+        break;
+      case LEFT:
+        this.gamePieces.forEach((piece) => piece.x--);
+        break;
+      case RIGHT:
+        this.gamePieces.forEach((piece) => piece.x++);
+        break;
+      default:
+        console.log('updateGame ERROR', this.gameState);
+        break;
     }
   }
 
@@ -103,10 +156,51 @@ export default class Game {
       .attr('fill', d => d.fill);
   }
 
+  drawGamePieces() {
+    // JOIN
+    const gamePieces = this.gameSVG.selectAll('rect')
+      .data(this.gamePieces);
+
+    // UPDATE
+    gamePieces
+      .transition().duration(30)
+      .attr('x', d => this.xScale(d.x))
+      .attr('y', d => this.yScale(d.y));
+
+    // ENTER
+    gamePieces.enter().append('rect')
+      .attr('width', this.xScale(1))
+      .attr('height', this.yScale(1))
+      .attr('x', d => this.xScale(d.x))
+      .attr('y', d => this.yScale(d.y))
+      .attr('fill', d => d.fill);
+  }
+
   handleKeydown() {
     switch(d3.event.keyCode) {
       case 32:
+        // SPACE
         this.runGame();
+        break;
+      case 38:
+        // UP
+        this.updateGameState({ nextDirection: UP });
+        break;
+      case 40:
+        // DOWN
+        this.updateGameState({ nextDirection: DOWN });
+        break;
+      case 37:
+        // LEFT
+        this.updateGameState({ nextDirection: LEFT });
+        break;
+      case 39:
+        // RIGHT
+        this.updateGameState({ nextDirection: RIGHT });
+        break;
+      default:
+        this.updateGameState({});
+        break;
     }
   }
 }

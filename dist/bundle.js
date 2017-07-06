@@ -150,6 +150,7 @@ exports.default = App;
 Object.defineProperty(exports, "__esModule", { value: true });
 var d3 = __webpack_require__(5);
 var tile_1 = __webpack_require__(6);
+var directions_1 = __webpack_require__(7);
 var Game = (function () {
     function Game(config) {
         this.boardSVG = d3.select('#svg-layer-0');
@@ -162,14 +163,19 @@ var Game = (function () {
             .domain([0, this.tileWidth]).range([0, this.pxWidth]);
         this.yScale = d3.scaleLinear()
             .domain([0, this.tileHeight]).range([0, this.pxHeight]);
-        this.spinning = false;
-        this.frames = 0;
+        // Initial game state
+        this.gameState = {
+            spinning: false,
+            frames: 0,
+            nextDirection: directions_1.RIGHT,
+        };
         this.handleKeydown = this.handleKeydown.bind(this);
         this.mainLoop = this.mainLoop.bind(this);
         this.runGame = this.runGame.bind(this);
     }
     Game.prototype.init = function () {
         this.boardTiles = this.createBoardTiles();
+        this.gamePieces = this.createGamePieces();
         this.drawBoard();
         d3.select('body').on('keydown', this.handleKeydown);
     };
@@ -191,21 +197,56 @@ var Game = (function () {
         }
         return tiles;
     };
-    Game.prototype.createGamePieces = function () { };
+    Game.prototype.createGamePieces = function () {
+        var tiles = [];
+        for (var i = 0; i < this.tileWidth; i += 5) {
+            for (var j = 0; j < this.tileHeight; j += 5) {
+                tiles.push(new tile_1.default({
+                    x: i,
+                    y: j,
+                    fill: 'rgba(0, 255, 0, 1)',
+                }));
+            }
+        }
+        return tiles;
+    };
     Game.prototype.runGame = function () {
-        if (this.spinning) {
-            this.spinning = false;
+        if (this.gameState.spinning) {
+            this.updateGameState({ spinning: false });
         }
         else {
-            this.spinning = true;
+            this.updateGameState({ spinning: true });
             this.mainLoop();
         }
     };
     Game.prototype.mainLoop = function () {
-        if (this.spinning) {
-            this.frames++;
-            console.log('loop', this.frames);
+        if (this.gameState.spinning) {
+            this.updateGameState({ frames: this.gameState.frames++ });
+            this.updateGame();
+            this.drawGamePieces();
             setTimeout(this.mainLoop, 50);
+        }
+    };
+    Game.prototype.updateGameState = function (partialState) {
+        this.gameState = Object.assign({}, this.gameState, partialState);
+    };
+    Game.prototype.updateGame = function () {
+        switch (this.gameState.nextDirection) {
+            case directions_1.UP:
+                this.gamePieces.forEach(function (piece) { return piece.y--; });
+                break;
+            case directions_1.DOWN:
+                this.gamePieces.forEach(function (piece) { return piece.y++; });
+                break;
+            case directions_1.LEFT:
+                this.gamePieces.forEach(function (piece) { return piece.x--; });
+                break;
+            case directions_1.RIGHT:
+                this.gamePieces.forEach(function (piece) { return piece.x++; });
+                break;
+            default:
+                console.log('updateGame ERROR', this.gameState);
+                break;
         }
     };
     Game.prototype.drawBoard = function () {
@@ -219,10 +260,49 @@ var Game = (function () {
             .attr('y', function (d) { return _this.yScale(d.y); })
             .attr('fill', function (d) { return d.fill; });
     };
+    Game.prototype.drawGamePieces = function () {
+        var _this = this;
+        // JOIN
+        var gamePieces = this.gameSVG.selectAll('rect')
+            .data(this.gamePieces);
+        // UPDATE
+        gamePieces
+            .transition().duration(30)
+            .attr('x', function (d) { return _this.xScale(d.x); })
+            .attr('y', function (d) { return _this.yScale(d.y); });
+        // ENTER
+        gamePieces.enter().append('rect')
+            .attr('width', this.xScale(1))
+            .attr('height', this.yScale(1))
+            .attr('x', function (d) { return _this.xScale(d.x); })
+            .attr('y', function (d) { return _this.yScale(d.y); })
+            .attr('fill', function (d) { return d.fill; });
+    };
     Game.prototype.handleKeydown = function () {
         switch (d3.event.keyCode) {
             case 32:
+                // SPACE
                 this.runGame();
+                break;
+            case 38:
+                // UP
+                this.updateGameState({ nextDirection: directions_1.UP });
+                break;
+            case 40:
+                // DOWN
+                this.updateGameState({ nextDirection: directions_1.DOWN });
+                break;
+            case 37:
+                // LEFT
+                this.updateGameState({ nextDirection: directions_1.LEFT });
+                break;
+            case 39:
+                // RIGHT
+                this.updateGameState({ nextDirection: directions_1.RIGHT });
+                break;
+            default:
+                this.updateGameState({});
+                break;
         }
     };
     return Game;
@@ -17119,6 +17199,19 @@ var Tile = (function () {
     return Tile;
 }());
 exports.default = Tile;
+
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.UP = 'UP';
+exports.DOWN = 'DOWN';
+exports.LEFT = 'LEFT';
+exports.RIGHT = 'RIGHT';
 
 
 /***/ })
