@@ -12,9 +12,11 @@ export interface IGameConfig {
 export default class Game {
   boardSVG: d3.Selection<SVGElement, {}, HTMLElement, any>;
   boardTiles: Tile[];
+  frames: number;
   gameSVG: d3.Selection<SVGElement, {}, HTMLElement, any>;
   pxWidth: number;
   pxHeight: number;
+  spinning: boolean;
   tileWidth: number;
   tileHeight: number;
   xScale: d3.ScaleLinear<number, number>;
@@ -33,11 +35,20 @@ export default class Game {
       .domain([0, this.tileWidth]).range([0, this.pxWidth]);
     this.yScale = d3.scaleLinear()
       .domain([0, this.tileHeight]).range([0, this.pxHeight]);
+
+    this.spinning = false;
+    this.frames = 0;
+
+    this.handleKeydown = this.handleKeydown.bind(this);
+    this.mainLoop = this.mainLoop.bind(this);
+    this.runGame = this.runGame.bind(this);
   }
 
   init() {
     this.boardTiles = this.createBoardTiles();
     this.drawBoard();
+
+    d3.select('body').on('keydown', this.handleKeydown);
   }
 
   createBoardTiles() {
@@ -62,6 +73,25 @@ export default class Game {
     return tiles;
   }
 
+  createGamePieces() {}
+
+  runGame() {
+    if (this.spinning) {
+      this.spinning = false;
+    } else {
+      this.spinning = true;
+      this.mainLoop();
+    }
+  }
+
+  mainLoop() {
+    if (this.spinning) {
+      this.frames++;
+      console.log('loop', this.frames);
+      setTimeout(this.mainLoop, 50);
+    }
+  }
+
   drawBoard() {
     this.boardSVG.selectAll('rect')
       .data(this.boardTiles)
@@ -71,5 +101,12 @@ export default class Game {
       .attr('x', d => this.xScale(d.x))
       .attr('y', d => this.yScale(d.y))
       .attr('fill', d => d.fill);
+  }
+
+  handleKeydown() {
+    switch(d3.event.keyCode) {
+      case 32:
+        this.runGame();
+    }
   }
 }

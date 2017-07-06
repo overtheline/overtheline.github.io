@@ -114,19 +114,27 @@ var tileHeight = 20;
 var gameConfig = {
     pxWidth: pxWidth, pxHeight: pxHeight, tileWidth: tileWidth, tileHeight: tileHeight,
 };
+var boardContainerStyle = {
+    width: pxWidth,
+    height: pxHeight,
+};
 var App = (function (_super) {
     __extends(App, _super);
-    function App() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    function App(props) {
+        return _super.call(this, props) || this;
     }
     App.prototype.componentDidMount = function () {
         this.game = new game_1.default(gameConfig);
         this.game.init();
     };
     App.prototype.render = function () {
+        console.log('App render');
         return (React.createElement("div", { id: 'main' },
-            React.createElement("svg", { id: 'svg-layer-0', className: 'board layer-0', width: pxWidth, height: pxHeight }),
-            React.createElement("svg", { id: 'svg-layer-1', className: 'board layer-1', width: pxWidth, height: pxHeight })));
+            React.createElement("div", { className: 'board-container', style: boardContainerStyle },
+                React.createElement("svg", { id: 'svg-layer-0', className: 'board layer-0', width: pxWidth, height: pxHeight }),
+                React.createElement("svg", { id: 'svg-layer-1', className: 'board layer-1', width: pxWidth, height: pxHeight })),
+            React.createElement("div", { className: 'text-panel' },
+                React.createElement("p", null, "Press 'space' to start and stop."))));
     };
     return App;
 }(React.Component));
@@ -154,10 +162,16 @@ var Game = (function () {
             .domain([0, this.tileWidth]).range([0, this.pxWidth]);
         this.yScale = d3.scaleLinear()
             .domain([0, this.tileHeight]).range([0, this.pxHeight]);
+        this.spinning = false;
+        this.frames = 0;
+        this.handleKeydown = this.handleKeydown.bind(this);
+        this.mainLoop = this.mainLoop.bind(this);
+        this.runGame = this.runGame.bind(this);
     }
     Game.prototype.init = function () {
         this.boardTiles = this.createBoardTiles();
         this.drawBoard();
+        d3.select('body').on('keydown', this.handleKeydown);
     };
     Game.prototype.createBoardTiles = function () {
         function getTileFill(i, j) {
@@ -177,6 +191,23 @@ var Game = (function () {
         }
         return tiles;
     };
+    Game.prototype.createGamePieces = function () { };
+    Game.prototype.runGame = function () {
+        if (this.spinning) {
+            this.spinning = false;
+        }
+        else {
+            this.spinning = true;
+            this.mainLoop();
+        }
+    };
+    Game.prototype.mainLoop = function () {
+        if (this.spinning) {
+            this.frames++;
+            console.log('loop', this.frames);
+            setTimeout(this.mainLoop, 50);
+        }
+    };
     Game.prototype.drawBoard = function () {
         var _this = this;
         this.boardSVG.selectAll('rect')
@@ -187,6 +218,12 @@ var Game = (function () {
             .attr('x', function (d) { return _this.xScale(d.x); })
             .attr('y', function (d) { return _this.yScale(d.y); })
             .attr('fill', function (d) { return d.fill; });
+    };
+    Game.prototype.handleKeydown = function () {
+        switch (d3.event.keyCode) {
+            case 32:
+                this.runGame();
+        }
     };
     return Game;
 }());

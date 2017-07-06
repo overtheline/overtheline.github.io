@@ -11,8 +11,16 @@ const gameConfig: IGameConfig = {
   pxWidth, pxHeight, tileWidth, tileHeight,
 };
 
+const boardContainerStyle = {
+  width: pxWidth,
+  height: pxHeight,
+};
+
 export default class App extends React.Component {
   game: Game;
+  constructor(props: any) {
+    super(props);
+  }
 
   componentDidMount() {
     this.game = new Game(gameConfig);
@@ -20,20 +28,29 @@ export default class App extends React.Component {
   }
 
   render() {
+    console.log('App render');
     return (
       <div id='main'>
-        <svg
-          id='svg-layer-0'
-          className='board layer-0'
-          width={pxWidth}
-          height={pxHeight}
-        />
-        <svg
-          id='svg-layer-1'
-          className='board layer-1'
-          width={pxWidth}
-          height={pxHeight}
-        />
+        <div
+          className='board-container'
+          style={boardContainerStyle}
+        >
+          <svg
+            id='svg-layer-0'
+            className='board layer-0'
+            width={pxWidth}
+            height={pxHeight}
+          />
+          <svg
+            id='svg-layer-1'
+            className='board layer-1'
+            width={pxWidth}
+            height={pxHeight}
+          />
+        </div>
+        <div className='text-panel'>
+          <p>Press 'space' to start and stop.</p>
+        </div>
       </div>
     );
   }
