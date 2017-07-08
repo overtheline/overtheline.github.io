@@ -23,6 +23,7 @@ export default class Game {
   gamePieces: Tile[];
   gameState: IGameState;
   gameSVG: d3.Selection<SVGElement, {}, HTMLElement, any>;
+  player: Tile[];
   pxWidth: number;
   pxHeight: number;
   nextDirection: string;
@@ -60,6 +61,11 @@ export default class Game {
 
   init() {
     this.boardTiles = this.createBoardTiles();
+    this.player = [new Tile({
+      x: Math.floor(this.tileWidth / 2),
+      y: Math.floor(this.tileHeight / 2),
+      fill: 'green',
+    })];
     this.gamePieces = this.createGamePieces();
     this.drawBoard();
 
@@ -89,18 +95,7 @@ export default class Game {
   }
 
   createGamePieces(): Tile[] {
-    const tiles = [];
-    for (let i = 0; i < this.tileWidth; i += 5) {
-      for (let j = 0; j < this.tileHeight; j += 5) {
-        tiles.push(new Tile({
-          x: i,
-          y: j,
-          fill: 'rgba(0, 255, 0, 1)',
-        }));
-      }
-    }
-
-    return tiles;
+    return [...this.player];
   }
 
   runGame() {
@@ -115,7 +110,7 @@ export default class Game {
   mainLoop() {
     if (this.gameState.spinning) {
       this.updateGameState({ frames: this.gameState.frames++});
-      this.updateGame();
+      this.movePlayer();
       this.drawGamePieces();
       setTimeout(this.mainLoop, 50);
     }
@@ -125,22 +120,22 @@ export default class Game {
     this.gameState = (<any>Object).assign({}, this.gameState, partialState);
   }
 
-  updateGame() {
+  movePlayer() {
     switch(this.gameState.nextDirection) {
       case UP:
-        this.gamePieces.forEach((piece) => piece.y--);
+        this.player.forEach((piece) => piece.y--);
         break;
       case DOWN:
-        this.gamePieces.forEach((piece) => piece.y++);
+        this.player.forEach((piece) => piece.y++);
         break;
       case LEFT:
-        this.gamePieces.forEach((piece) => piece.x--);
+        this.player.forEach((piece) => piece.x--);
         break;
       case RIGHT:
-        this.gamePieces.forEach((piece) => piece.x++);
+        this.player.forEach((piece) => piece.x++);
         break;
       default:
-        console.log('updateGame ERROR', this.gameState);
+        console.log('movePlayer ERROR', this.gameState);
         break;
     }
   }

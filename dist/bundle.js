@@ -175,6 +175,11 @@ var Game = (function () {
     }
     Game.prototype.init = function () {
         this.boardTiles = this.createBoardTiles();
+        this.player = [new tile_1.default({
+                x: Math.floor(this.tileWidth / 2),
+                y: Math.floor(this.tileHeight / 2),
+                fill: 'green',
+            })];
         this.gamePieces = this.createGamePieces();
         this.drawBoard();
         d3.select('body').on('keydown', this.handleKeydown);
@@ -198,17 +203,7 @@ var Game = (function () {
         return tiles;
     };
     Game.prototype.createGamePieces = function () {
-        var tiles = [];
-        for (var i = 0; i < this.tileWidth; i += 5) {
-            for (var j = 0; j < this.tileHeight; j += 5) {
-                tiles.push(new tile_1.default({
-                    x: i,
-                    y: j,
-                    fill: 'rgba(0, 255, 0, 1)',
-                }));
-            }
-        }
-        return tiles;
+        return this.player.slice();
     };
     Game.prototype.runGame = function () {
         if (this.gameState.spinning) {
@@ -222,7 +217,7 @@ var Game = (function () {
     Game.prototype.mainLoop = function () {
         if (this.gameState.spinning) {
             this.updateGameState({ frames: this.gameState.frames++ });
-            this.updateGame();
+            this.movePlayer();
             this.drawGamePieces();
             setTimeout(this.mainLoop, 50);
         }
@@ -230,22 +225,22 @@ var Game = (function () {
     Game.prototype.updateGameState = function (partialState) {
         this.gameState = Object.assign({}, this.gameState, partialState);
     };
-    Game.prototype.updateGame = function () {
+    Game.prototype.movePlayer = function () {
         switch (this.gameState.nextDirection) {
             case directions_1.UP:
-                this.gamePieces.forEach(function (piece) { return piece.y--; });
+                this.player.forEach(function (piece) { return piece.y--; });
                 break;
             case directions_1.DOWN:
-                this.gamePieces.forEach(function (piece) { return piece.y++; });
+                this.player.forEach(function (piece) { return piece.y++; });
                 break;
             case directions_1.LEFT:
-                this.gamePieces.forEach(function (piece) { return piece.x--; });
+                this.player.forEach(function (piece) { return piece.x--; });
                 break;
             case directions_1.RIGHT:
-                this.gamePieces.forEach(function (piece) { return piece.x++; });
+                this.player.forEach(function (piece) { return piece.x++; });
                 break;
             default:
-                console.log('updateGame ERROR', this.gameState);
+                console.log('movePlayer ERROR', this.gameState);
                 break;
         }
     };
