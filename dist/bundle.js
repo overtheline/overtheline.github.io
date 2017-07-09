@@ -149,8 +149,10 @@ exports.default = App;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var d3 = __webpack_require__(5);
-var tile_1 = __webpack_require__(6);
+var Player_1 = __webpack_require__(10);
+var tile_1 = __webpack_require__(8);
 var directions_1 = __webpack_require__(7);
+var boardFill_1 = __webpack_require__(9);
 var Game = (function () {
     function Game(config) {
         this.boardSVG = d3.select('#svg-layer-0');
@@ -169,41 +171,45 @@ var Game = (function () {
             frames: 0,
             nextDirection: directions_1.RIGHT,
         };
+        // bindings
         this.handleKeydown = this.handleKeydown.bind(this);
         this.mainLoop = this.mainLoop.bind(this);
         this.runGame = this.runGame.bind(this);
     }
     Game.prototype.init = function () {
         this.boardTiles = this.createBoardTiles();
-        this.player = [new tile_1.default({
-                x: Math.floor(this.tileWidth / 2),
-                y: Math.floor(this.tileHeight / 2),
-                fill: 'green',
-            })];
+        this.playerTiles = this.createPlayerTiles();
+        this.player = new Player_1.default(this.playerTiles);
         this.gamePieces = this.createGamePieces();
         this.drawBoard();
         d3.select('body').on('keydown', this.handleKeydown);
     };
     Game.prototype.createBoardTiles = function () {
-        function getTileFill(i, j) {
-            var red = 'rgba(255, 0, 0, 0.5)';
-            var black = 'rgba(0, 0, 0, 0.5)';
-            return (i + j) % 2 === 0 ? black : red;
-        }
         var tiles = [];
         for (var i = 0; i < this.tileWidth; i++) {
             for (var j = 0; j < this.tileHeight; j++) {
                 tiles.push(new tile_1.default({
                     x: i,
                     y: j,
-                    fill: getTileFill(i, j),
+                    fill: boardFill_1.default(i, j),
                 }));
             }
         }
         return tiles;
     };
+    Game.prototype.createPlayerTiles = function () {
+        var tiles = [];
+        for (var i = 0; i < 3; i++) {
+            tiles.push(new tile_1.default({
+                x: Math.floor(this.tileWidth / 2),
+                y: Math.floor(this.tileHeight / 2),
+                fill: 'rgba(0, 255, 100, 0.7)',
+            }));
+        }
+        return tiles;
+    };
     Game.prototype.createGamePieces = function () {
-        return this.player.slice();
+        return this.playerTiles.slice();
     };
     Game.prototype.runGame = function () {
         if (this.gameState.spinning) {
@@ -216,33 +222,14 @@ var Game = (function () {
     };
     Game.prototype.mainLoop = function () {
         if (this.gameState.spinning) {
+            this.player.updatePosition(this.gameState.nextDirection);
             this.updateGameState({ frames: this.gameState.frames++ });
-            this.movePlayer();
             this.drawGamePieces();
             setTimeout(this.mainLoop, 50);
         }
     };
     Game.prototype.updateGameState = function (partialState) {
         this.gameState = Object.assign({}, this.gameState, partialState);
-    };
-    Game.prototype.movePlayer = function () {
-        switch (this.gameState.nextDirection) {
-            case directions_1.UP:
-                this.player.forEach(function (piece) { return piece.y--; });
-                break;
-            case directions_1.DOWN:
-                this.player.forEach(function (piece) { return piece.y++; });
-                break;
-            case directions_1.LEFT:
-                this.player.forEach(function (piece) { return piece.x--; });
-                break;
-            case directions_1.RIGHT:
-                this.player.forEach(function (piece) { return piece.x++; });
-                break;
-            default:
-                console.log('movePlayer ERROR', this.gameState);
-                break;
-        }
     };
     Game.prototype.drawBoard = function () {
         var _this = this;
@@ -17178,7 +17165,21 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 
 /***/ }),
-/* 6 */
+/* 6 */,
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.UP = 'UP';
+exports.DOWN = 'DOWN';
+exports.LEFT = 'LEFT';
+exports.RIGHT = 'RIGHT';
+
+
+/***/ }),
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17197,16 +17198,62 @@ exports.default = Tile;
 
 
 /***/ }),
-/* 7 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UP = 'UP';
-exports.DOWN = 'DOWN';
-exports.LEFT = 'LEFT';
-exports.RIGHT = 'RIGHT';
+var red = 'rgba(255, 0, 0, 0.5)';
+var black = 'rgba(0, 0, 0, 0.5)';
+function boardFill(i, j) {
+    return (i + j) % 2 === 0 ? black : red;
+}
+exports.default = boardFill;
+
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var directions_1 = __webpack_require__(7);
+var Player = (function () {
+    function Player(playerTiles) {
+        this.playerTiles = playerTiles;
+        this.currentDirection = directions_1.RIGHT;
+    }
+    Player.prototype.updatePosition = function (nextDirection) {
+        if ((nextDirection === directions_1.UP && this.currentDirection !== directions_1.DOWN)
+            || (nextDirection === directions_1.DOWN && this.currentDirection !== directions_1.UP)
+            || (nextDirection === directions_1.RIGHT && this.currentDirection !== directions_1.LEFT)
+            || (nextDirection === directions_1.LEFT && this.currentDirection !== directions_1.RIGHT)) {
+            this.currentDirection = nextDirection;
+        }
+        for (var i = this.playerTiles.length - 1; i > 0; i--) {
+            this.playerTiles[i].x = this.playerTiles[i - 1].x;
+            this.playerTiles[i].y = this.playerTiles[i - 1].y;
+        }
+        switch (this.currentDirection) {
+            case directions_1.UP:
+                this.playerTiles[0].y -= 1;
+                break;
+            case directions_1.DOWN:
+                this.playerTiles[0].y += 1;
+                break;
+            case directions_1.LEFT:
+                this.playerTiles[0].x -= 1;
+                break;
+            case directions_1.RIGHT:
+                this.playerTiles[0].x += 1;
+                break;
+        }
+    };
+    return Player;
+}());
+exports.default = Player;
 
 
 /***/ })

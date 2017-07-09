@@ -1,7 +1,12 @@
 import * as d3 from 'd3';
 
-import Tile from './tile';
+import Player from './Player';
+
+import Tile from '../components/tile';
+
 import { UP, DOWN, LEFT, RIGHT } from '../constants/directions';
+
+import boardFill from '../utils/boardFill';
 
 export interface IGameConfig {
   pxWidth: number;
@@ -19,15 +24,13 @@ export interface IGameState {
 export default class Game {
   boardSVG: d3.Selection<SVGElement, {}, HTMLElement, any>;
   boardTiles: Tile[];
-  frames: number;
   gamePieces: Tile[];
   gameState: IGameState;
   gameSVG: d3.Selection<SVGElement, {}, HTMLElement, any>;
-  player: Tile[];
+  player: Player;
+  playerTiles: Tile[];
   pxWidth: number;
   pxHeight: number;
-  nextDirection: string;
-  spinning: boolean;
   tileWidth: number;
   tileHeight: number;
   xScale: d3.ScaleLinear<number, number>;
@@ -54,6 +57,7 @@ export default class Game {
       nextDirection: RIGHT,
     }
 
+    // bindings
     this.handleKeydown = this.handleKeydown.bind(this);
     this.mainLoop = this.mainLoop.bind(this);
     this.runGame = this.runGame.bind(this);
@@ -61,32 +65,26 @@ export default class Game {
 
   init() {
     this.boardTiles = this.createBoardTiles();
-    this.player = [new Tile({
-      x: Math.floor(this.tileWidth / 2),
-      y: Math.floor(this.tileHeight / 2),
-      fill: 'green',
-    })];
+
+    this.playerTiles = this.createPlayerTiles();
+
+    this.player = new Player(this.playerTiles);
+
     this.gamePieces = this.createGamePieces();
+
     this.drawBoard();
 
     d3.select('body').on('keydown', this.handleKeydown);
   }
 
   createBoardTiles(): Tile[] {
-    function getTileFill(i: number, j: number): string {
-      const red = 'rgba(255, 0, 0, 0.5)';
-      const black = 'rgba(0, 0, 0, 0.5)';
-
-      return (i + j) % 2 === 0 ? black : red;
-    }
-
     const tiles = [];
     for (let i = 0; i < this.tileWidth; i++) {
       for (let j = 0; j < this.tileHeight; j++) {
         tiles.push(new Tile({
           x: i,
           y: j,
-          fill: getTileFill(i, j),
+          fill: boardFill(i, j),
         }));
       }
     }
@@ -94,8 +92,21 @@ export default class Game {
     return tiles;
   }
 
+  createPlayerTiles(): Tile[] {
+    const tiles =[];
+    for (let i = 0; i < 3; i++) {
+      tiles.push(new Tile({
+        x: Math.floor(this.tileWidth / 2),
+        y: Math.floor(this.tileHeight / 2),
+        fill: 'rgba(0, 255, 100, 0.7)',
+      }))
+    }
+
+    return tiles;
+  }
+
   createGamePieces(): Tile[] {
-    return [...this.player];
+    return [...this.playerTiles];
   }
 
   runGame() {
@@ -109,8 +120,8 @@ export default class Game {
 
   mainLoop() {
     if (this.gameState.spinning) {
+      this.player.updatePosition(this.gameState.nextDirection);
       this.updateGameState({ frames: this.gameState.frames++});
-      this.movePlayer();
       this.drawGamePieces();
       setTimeout(this.mainLoop, 50);
     }
@@ -118,26 +129,6 @@ export default class Game {
 
   updateGameState(partialState: Partial<IGameState>) {
     this.gameState = (<any>Object).assign({}, this.gameState, partialState);
-  }
-
-  movePlayer() {
-    switch(this.gameState.nextDirection) {
-      case UP:
-        this.player.forEach((piece) => piece.y--);
-        break;
-      case DOWN:
-        this.player.forEach((piece) => piece.y++);
-        break;
-      case LEFT:
-        this.player.forEach((piece) => piece.x--);
-        break;
-      case RIGHT:
-        this.player.forEach((piece) => piece.x++);
-        break;
-      default:
-        console.log('movePlayer ERROR', this.gameState);
-        break;
-    }
   }
 
   drawBoard() {
