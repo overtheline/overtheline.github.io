@@ -70,8 +70,6 @@ export default class Game {
 
     this.player = new Player(this.playerTiles);
 
-    this.gamePieces = this.createGamePieces();
-
     this.drawBoard();
 
     d3.select('body').on('keydown', this.handleKeydown);
@@ -94,19 +92,15 @@ export default class Game {
 
   createPlayerTiles(): Tile[] {
     const tiles =[];
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 10; i++) {
       tiles.push(new Tile({
         x: Math.floor(this.tileWidth / 2),
         y: Math.floor(this.tileHeight / 2),
-        fill: 'rgba(0, 255, 100, 0.7)',
+        fill: 'rgba(0, 255, 100, 0.6)',
       }))
     }
 
     return tiles;
-  }
-
-  createGamePieces(): Tile[] {
-    return [...this.playerTiles];
   }
 
   runGame() {
@@ -119,11 +113,25 @@ export default class Game {
   }
 
   mainLoop() {
+    this.player.updatePosition(this.gameState.nextDirection);
+    this.checkCollisions();
+    this.updateGameState({ frames: this.gameState.frames++});
+    this.drawGamePieces();
+
     if (this.gameState.spinning) {
-      this.player.updatePosition(this.gameState.nextDirection);
-      this.updateGameState({ frames: this.gameState.frames++});
-      this.drawGamePieces();
       setTimeout(this.mainLoop, 50);
+    }
+  }
+
+  checkCollisions() {
+    const playerHead = this.playerTiles[0];
+
+    if (
+      playerHead.x < 0 || playerHead.x > this.tileWidth
+      || playerHead.y < 0 || playerHead.y > this.tileHeight
+    ) {
+      this.playerTiles = [];
+      this.updateGameState({ spinning: false });
     }
   }
 
@@ -135,31 +143,48 @@ export default class Game {
     this.boardSVG.selectAll('rect')
       .data(this.boardTiles)
       .enter().append('rect')
-      .attr('width', this.xScale(1))
-      .attr('height', this.yScale(1))
-      .attr('x', d => this.xScale(d.x))
-      .attr('y', d => this.yScale(d.y))
-      .attr('fill', d => d.fill);
+        .attr('width', this.xScale(1))
+        .attr('height', this.yScale(1))
+        .attr('x', d => this.xScale(d.x))
+        .attr('y', d => this.yScale(d.y))
+        .attr('fill', d => d.fill);
   }
 
   drawGamePieces() {
     // JOIN
     const gamePieces = this.gameSVG.selectAll('rect')
-      .data(this.gamePieces);
+      .data([...this.playerTiles]);
+
+    // EXIT
+    gamePieces.exit()
+        .attr('fill', 'rgba(255, 20, 100, 0.7)')
+      .transition().duration(30)
+        .attr('x', (d: Tile) => this.xScale(d.x - 1))
+        .attr('y', (d: Tile) => this.yScale(d.y - 1))
+        .attr('width', this.xScale(3))
+        .attr('height', this.yScale(3))
+        .attr('fill', 'rgba(255, 20, 100, 0)')
+        .remove();
 
     // UPDATE
     gamePieces
       .transition().duration(30)
-      .attr('x', d => this.xScale(d.x))
-      .attr('y', d => this.yScale(d.y));
+        .attr('x', d => this.xScale(d.x))
+        .attr('y', d => this.yScale(d.y));
 
     // ENTER
-    gamePieces.enter().append('rect')
-      .attr('width', this.xScale(1))
-      .attr('height', this.yScale(1))
-      .attr('x', d => this.xScale(d.x))
-      .attr('y', d => this.yScale(d.y))
-      .attr('fill', d => d.fill);
+    gamePieces
+      .enter().append('rect')
+        .attr('x', d => this.xScale(d.x - 1))
+        .attr('y', d => this.yScale(d.y - 1))
+        .attr('width', this.xScale(3))
+        .attr('height', this.yScale(3))
+      .transition().duration(30)
+        .attr('width', this.xScale(1))
+        .attr('height', this.yScale(1))
+        .attr('x', d => this.xScale(d.x))
+        .attr('y', d => this.yScale(d.y))
+        .attr('fill', d => d.fill);
   }
 
   handleKeydown() {

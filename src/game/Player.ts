@@ -10,6 +10,7 @@ export default class Player {
   }
 
   updatePosition(nextDirection: string) {
+    const playerHead = this.playerTiles[0];
     if (
       (nextDirection === UP && this.currentDirection !== DOWN)
       || (nextDirection === DOWN && this.currentDirection !== UP)
@@ -26,16 +27,16 @@ export default class Player {
 
     switch(this.currentDirection) {
       case UP:
-        this.playerTiles[0].y -= 1;
+        playerHead.y -= 1;
         break;
       case DOWN:
-        this.playerTiles[0].y += 1;
+        playerHead.y += 1;
         break;
       case LEFT:
-        this.playerTiles[0].x -= 1;
+        playerHead.x -= 1;
         break;
       case RIGHT:
-        this.playerTiles[0].x += 1;
+        playerHead.x += 1;
         break;
     }
   }

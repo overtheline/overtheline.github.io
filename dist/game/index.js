@@ -32,7 +32,6 @@ var Game = (function () {
         this.boardTiles = this.createBoardTiles();
         this.playerTiles = this.createPlayerTiles();
         this.player = new Player_1.default(this.playerTiles);
-        this.gamePieces = this.createGamePieces();
         this.drawBoard();
         d3.select('body').on('keydown', this.handleKeydown);
     };
@@ -51,17 +50,14 @@ var Game = (function () {
     };
     Game.prototype.createPlayerTiles = function () {
         var tiles = [];
-        for (var i = 0; i < 3; i++) {
+        for (var i = 0; i < 10; i++) {
             tiles.push(new tile_1.default({
                 x: Math.floor(this.tileWidth / 2),
                 y: Math.floor(this.tileHeight / 2),
-                fill: 'rgba(0, 255, 100, 0.7)',
+                fill: 'rgba(0, 255, 100, 0.6)',
             }));
         }
         return tiles;
-    };
-    Game.prototype.createGamePieces = function () {
-        return this.playerTiles.slice();
     };
     Game.prototype.runGame = function () {
         if (this.gameState.spinning) {
@@ -73,11 +69,20 @@ var Game = (function () {
         }
     };
     Game.prototype.mainLoop = function () {
+        this.player.updatePosition(this.gameState.nextDirection);
+        this.checkCollisions();
+        this.updateGameState({ frames: this.gameState.frames++ });
+        this.drawGamePieces();
         if (this.gameState.spinning) {
-            this.player.updatePosition(this.gameState.nextDirection);
-            this.updateGameState({ frames: this.gameState.frames++ });
-            this.drawGamePieces();
             setTimeout(this.mainLoop, 50);
+        }
+    };
+    Game.prototype.checkCollisions = function () {
+        var playerHead = this.playerTiles[0];
+        if (playerHead.x < 0 || playerHead.x > this.tileWidth
+            || playerHead.y < 0 || playerHead.y > this.tileHeight) {
+            this.playerTiles = [];
+            this.updateGameState({ spinning: false });
         }
     };
     Game.prototype.updateGameState = function (partialState) {
@@ -98,14 +103,30 @@ var Game = (function () {
         var _this = this;
         // JOIN
         var gamePieces = this.gameSVG.selectAll('rect')
-            .data(this.gamePieces);
+            .data(this.playerTiles.slice());
+        // EXIT
+        gamePieces.exit()
+            .attr('fill', 'rgba(255, 20, 100, 0.7)')
+            .transition().duration(30)
+            .attr('x', function (d) { return _this.xScale(d.x - 1); })
+            .attr('y', function (d) { return _this.yScale(d.y - 1); })
+            .attr('width', this.xScale(3))
+            .attr('height', this.yScale(3))
+            .attr('fill', 'rgba(255, 20, 100, 0)')
+            .remove();
         // UPDATE
         gamePieces
             .transition().duration(30)
             .attr('x', function (d) { return _this.xScale(d.x); })
             .attr('y', function (d) { return _this.yScale(d.y); });
         // ENTER
-        gamePieces.enter().append('rect')
+        gamePieces
+            .enter().append('rect')
+            .attr('x', function (d) { return _this.xScale(d.x - 1); })
+            .attr('y', function (d) { return _this.yScale(d.y - 1); })
+            .attr('width', this.xScale(3))
+            .attr('height', this.yScale(3))
+            .transition().duration(30)
             .attr('width', this.xScale(1))
             .attr('height', this.yScale(1))
             .attr('x', function (d) { return _this.xScale(d.x); })

@@ -7,6 +7,7 @@ var Player = (function () {
         this.currentDirection = directions_1.RIGHT;
     }
     Player.prototype.updatePosition = function (nextDirection) {
+        var playerHead = this.playerTiles[0];
         if ((nextDirection === directions_1.UP && this.currentDirection !== directions_1.DOWN)
             || (nextDirection === directions_1.DOWN && this.currentDirection !== directions_1.UP)
             || (nextDirection === directions_1.RIGHT && this.currentDirection !== directions_1.LEFT)
@@ -19,16 +20,16 @@ var Player = (function () {
         }
         switch (this.currentDirection) {
             case directions_1.UP:
-                this.playerTiles[0].y -= 1;
+                playerHead.y -= 1;
                 break;
             case directions_1.DOWN:
-                this.playerTiles[0].y += 1;
+                playerHead.y += 1;
                 break;
             case directions_1.LEFT:
-                this.playerTiles[0].x -= 1;
+                playerHead.x -= 1;
                 break;
             case directions_1.RIGHT:
-                this.playerTiles[0].x += 1;
+                playerHead.x += 1;
                 break;
         }
     };
