@@ -19,6 +19,7 @@ var Game = (function () {
             .domain([0, this.tileHeight]).range([0, this.pxHeight]);
         // Initial game state
         this.gameState = {
+            active: false,
             spinning: false,
             frames: 0,
             nextDirection: directions_1.RIGHT,
@@ -34,6 +35,7 @@ var Game = (function () {
         this.player = new Player_1.default(this.playerTiles);
         this.drawBoard();
         d3.select('body').on('keydown', this.handleKeydown);
+        this.updateGameState({ active: true });
     };
     Game.prototype.createBoardTiles = function () {
         var tiles = [];
@@ -54,7 +56,7 @@ var Game = (function () {
             tiles.push(new tile_1.default({
                 x: Math.floor(this.tileWidth / 2),
                 y: Math.floor(this.tileHeight / 2),
-                fill: 'rgba(0, 255, 100, 0.6)',
+                fill: 'rgba(0, 255, 100, 0.8)',
             }));
         }
         return tiles;
@@ -79,10 +81,10 @@ var Game = (function () {
     };
     Game.prototype.checkCollisions = function () {
         var playerHead = this.playerTiles[0];
-        if (playerHead.x < 0 || playerHead.x > this.tileWidth
-            || playerHead.y < 0 || playerHead.y > this.tileHeight) {
+        if (playerHead.x < 0 || playerHead.x >= this.tileWidth
+            || playerHead.y < 0 || playerHead.y >= this.tileHeight) {
             this.playerTiles = [];
-            this.updateGameState({ spinning: false });
+            this.updateGameState({ active: false, spinning: false });
         }
     };
     Game.prototype.updateGameState = function (partialState) {
@@ -107,11 +109,11 @@ var Game = (function () {
         // EXIT
         gamePieces.exit()
             .attr('fill', 'rgba(255, 20, 100, 0.7)')
-            .transition().duration(30)
-            .attr('x', function (d) { return _this.xScale(d.x - 1); })
-            .attr('y', function (d) { return _this.yScale(d.y - 1); })
-            .attr('width', this.xScale(3))
-            .attr('height', this.yScale(3))
+            .transition().duration(500)
+            .attr('x', function (d) { return _this.xScale(d.x + 0.5); })
+            .attr('y', function (d) { return _this.yScale(d.y + 0.5); })
+            .attr('width', this.xScale(0))
+            .attr('height', this.yScale(0))
             .attr('fill', 'rgba(255, 20, 100, 0)')
             .remove();
         // UPDATE
@@ -137,6 +139,10 @@ var Game = (function () {
         switch (d3.event.keyCode) {
             case 32:
                 // SPACE
+                if (!this.gameState.active) {
+                    this.playerTiles = this.createPlayerTiles();
+                    this.player = new Player_1.default(this.playerTiles);
+                }
                 this.runGame();
                 break;
             case 38:

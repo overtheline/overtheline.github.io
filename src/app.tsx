@@ -4,8 +4,8 @@ import Game, { IGameConfig } from './game';
 
 const pxWidth = 800;
 const pxHeight = 400;
-const tileWidth = 40;
-const tileHeight = 20;
+const tileWidth = 80;
+const tileHeight = 40;
 
 const gameConfig: IGameConfig = {
   pxWidth, pxHeight, tileWidth, tileHeight,

@@ -14,8 +14,8 @@ var React = require("react");
 var game_1 = require("./game");
 var pxWidth = 800;
 var pxHeight = 400;
-var tileWidth = 40;
-var tileHeight = 20;
+var tileWidth = 80;
+var tileHeight = 40;
 var gameConfig = {
     pxWidth: pxWidth, pxHeight: pxHeight, tileWidth: tileWidth, tileHeight: tileHeight,
 };

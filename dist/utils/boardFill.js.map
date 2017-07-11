@@ -1,0 +1,1 @@
+{"version":3,"file":"boardFill.js","sourceRoot":"","sources":["../../src/utils/boardFill.ts"],"names":[],"mappings":";;AAAA,IAAM,GAAG,GAAG,sBAAsB,CAAC;AACnC,IAAM,KAAK,GAAG,oBAAoB,CAAC;AAEnC,mBAAkC,CAAS,EAAE,CAAS;IACpD,MAAM,CAAC,CAAC,CAAC,GAAG,CAAC,CAAC,GAAG,CAAC,KAAK,CAAC,GAAG,KAAK,GAAG,GAAG,CAAC;AACzC,CAAC;AAFD,4BAEC"}
