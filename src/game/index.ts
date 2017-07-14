@@ -222,9 +222,11 @@ export default class Game {
           this.playerTiles = this.createPlayerTiles();
           this.player = new Player(this.playerTiles);
           this.updateGameState({ active: true });
+          setTimeout(this.runGame, 600);
+          return;
         }
 
-        this.runGame();
+        this.runGame()
         break;
 
       case 38:

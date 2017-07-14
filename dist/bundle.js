@@ -341,6 +341,8 @@ var Game = (function () {
                     this.playerTiles = this.createPlayerTiles();
                     this.player = new Player_1.default(this.playerTiles);
                     this.updateGameState({ active: true });
+                    setTimeout(this.runGame, 600);
+                    return;
                 }
                 this.runGame();
                 break;
