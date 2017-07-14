@@ -73,6 +73,7 @@ var Game = (function () {
         // Dead.
         if (wall || body) {
             this.playerTiles = [];
+            this.foodTiles = [];
             this.updateGameState({ active: false, spinning: false });
         }
     };
