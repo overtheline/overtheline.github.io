@@ -221,6 +221,7 @@ export default class Game {
         if (!this.gameState.active) {
           this.playerTiles = this.createPlayerTiles();
           this.player = new Player(this.playerTiles);
+          this.updateGameState({ active: true });
         }
 
         this.runGame();
