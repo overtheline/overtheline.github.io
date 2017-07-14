@@ -5,6 +5,7 @@ import Player from './Player';
 import Tile from '../components/tile';
 
 import { UP, DOWN, LEFT, RIGHT } from '../constants/directions';
+import { snakeColor, dyingColor, deadColor, foodColor } from '../constants/colors';
 
 import boardFill from '../utils/boardFill';
 
@@ -30,6 +31,7 @@ export default class Game {
   gameSVG: d3.Selection<SVGElement, {}, HTMLElement, any>;
   player: Player;
   playerTiles: Tile[];
+  foodTiles: Tile[];
   pxWidth: number;
   pxHeight: number;
   tileWidth: number;
@@ -65,10 +67,15 @@ export default class Game {
     this.runGame = this.runGame.bind(this);
   }
 
+  updateGameState(partialState: Partial<IGameState>) {
+    this.gameState = (<any>Object).assign({}, this.gameState, partialState);
+  }
+
   init() {
     this.boardTiles = this.createBoardTiles();
 
     this.playerTiles = this.createPlayerTiles();
+    this.foodTiles = this.createFoodTiles();
 
     this.player = new Player(this.playerTiles);
 
@@ -77,34 +84,6 @@ export default class Game {
     d3.select('body').on('keydown', this.handleKeydown);
 
     this.updateGameState({ active: true });
-  }
-
-  createBoardTiles(): Tile[] {
-    const tiles = [];
-    for (let i = 0; i < this.tileWidth; i++) {
-      for (let j = 0; j < this.tileHeight; j++) {
-        tiles.push(new Tile({
-          x: i,
-          y: j,
-          fill: boardFill(i, j),
-        }));
-      }
-    }
-
-    return tiles;
-  }
-
-  createPlayerTiles(): Tile[] {
-    const tiles =[];
-    for (let i = 0; i < 10; i++) {
-      tiles.push(new Tile({
-        x: Math.floor(this.tileWidth / 2),
-        y: Math.floor(this.tileHeight / 2),
-        fill: 'rgba(0, 255, 100, 0.8)',
-      }))
-    }
-
-    return tiles;
   }
 
   runGame() {
@@ -128,19 +107,62 @@ export default class Game {
   }
 
   checkCollisions() {
-    const playerHead = this.playerTiles[0];
+    const [ playerHead, ...playerBody ] = this.playerTiles;
 
-    if (
-      playerHead.x < 0 || playerHead.x >= this.tileWidth
-      || playerHead.y < 0 || playerHead.y >= this.tileHeight
-    ) {
+    const wall: boolean = playerHead.x < 0 || playerHead.x >= this.tileWidth
+    || playerHead.y < 0 || playerHead.y >= this.tileHeight;
+
+    const body: boolean = playerBody.reduce((hit, bodyPart) => {
+      if (hit) { return hit; }
+      return bodyPart.x === playerHead.x && bodyPart.y === playerHead.y;
+    }, false);
+
+    // Dead.
+    if (wall || body) {
       this.playerTiles = [];
       this.updateGameState({ active: false, spinning: false });
     }
   }
 
-  updateGameState(partialState: Partial<IGameState>) {
-    this.gameState = (<any>Object).assign({}, this.gameState, partialState);
+  createBoardTiles(): Tile[] {
+    const tiles = [];
+    for (let i = 0; i < this.tileWidth; i++) {
+      for (let j = 0; j < this.tileHeight; j++) {
+        tiles.push(new Tile({
+          x: i,
+          y: j,
+          fill: boardFill(i, j),
+        }));
+      }
+    }
+
+    return tiles;
+  }
+
+  createPlayerTiles(): Tile[] {
+    const tiles = [];
+    for (let i = 0; i < 15; i++) {
+      tiles.push(new Tile({
+        x: Math.floor(this.tileWidth / 2),
+        y: Math.floor(this.tileHeight / 2),
+        fill: snakeColor,
+      }))
+    }
+
+    return tiles;
+  }
+
+  createFoodTiles(): Tile[] {
+    const tiles = [];
+    for (let i = 0; i < 3; i++) {
+      tiles.push(new Tile({
+        x: Math.floor(Math.random() * this.tileWidth),
+        y: Math.floor(Math.random() * this.tileHeight),
+        fill: foodColor,
+      }))
+    }
+
+    return tiles;
   }
 
   drawBoard() {
@@ -157,17 +179,17 @@ export default class Game {
   drawGamePieces() {
     // JOIN
     const gamePieces = this.gameSVG.selectAll('rect')
-      .data([...this.playerTiles]);
+      .data([...this.playerTiles, ...this.foodTiles]);
 
     // EXIT
     gamePieces.exit()
-        .attr('fill', 'rgba(255, 20, 100, 0.7)')
+        .attr('fill', dyingColor)
       .transition().duration(500)
         .attr('x', (d: Tile) => this.xScale(d.x + 0.5))
         .attr('y', (d: Tile) => this.yScale(d.y + 0.5))
         .attr('width', this.xScale(0))
         .attr('height', this.yScale(0))
-        .attr('fill', 'rgba(255, 20, 100, 0)')
+        .attr('fill', deadColor)
         .remove();
 
     // UPDATE

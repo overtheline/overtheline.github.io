@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -89,20 +89,35 @@ exports.RIGHT = 'RIGHT';
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(0);
-var ReactDOM = __webpack_require__(3);
-var app_1 = __webpack_require__(4);
-ReactDOM.render(React.createElement(app_1.default, null), document.getElementById("example"));
+exports.snakeColor = 'rgba(0, 255, 100, 0.8)';
+exports.dyingColor = 'rgba(255, 20, 100, 0.7)';
+exports.deadColor = 'rgba(255, 20, 100, 0)';
+exports.red = 'rgba(255, 0, 0, 0.1)';
+exports.black = 'rgba(0, 0, 0, 0.1)';
+exports.foodColor = 'rgb(229, 242, 84)';
 
 
 /***/ }),
 /* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(0);
+var ReactDOM = __webpack_require__(4);
+var app_1 = __webpack_require__(5);
+ReactDOM.render(React.createElement(app_1.default, null), document.getElementById("example"));
+
+
+/***/ }),
+/* 4 */
 /***/ (function(module, exports) {
 
 module.exports = ReactDOM;
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -119,7 +134,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-var game_1 = __webpack_require__(5);
+var game_1 = __webpack_require__(6);
 var pxWidth = 800;
 var pxHeight = 400;
 var tileWidth = 80;
@@ -155,17 +170,18 @@ exports.default = App;
 
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var d3 = __webpack_require__(6);
-var Player_1 = __webpack_require__(7);
-var tile_1 = __webpack_require__(8);
+var d3 = __webpack_require__(7);
+var Player_1 = __webpack_require__(8);
+var tile_1 = __webpack_require__(9);
 var directions_1 = __webpack_require__(1);
-var boardFill_1 = __webpack_require__(9);
+var colors_1 = __webpack_require__(2);
+var boardFill_1 = __webpack_require__(10);
 var Game = (function () {
     function Game(config) {
         this.boardSVG = d3.select('#svg-layer-0');
@@ -190,37 +206,17 @@ var Game = (function () {
         this.mainLoop = this.mainLoop.bind(this);
         this.runGame = this.runGame.bind(this);
     }
+    Game.prototype.updateGameState = function (partialState) {
+        this.gameState = Object.assign({}, this.gameState, partialState);
+    };
     Game.prototype.init = function () {
         this.boardTiles = this.createBoardTiles();
         this.playerTiles = this.createPlayerTiles();
+        this.foodTiles = this.createFoodTiles();
         this.player = new Player_1.default(this.playerTiles);
         this.drawBoard();
         d3.select('body').on('keydown', this.handleKeydown);
         this.updateGameState({ active: true });
-    };
-    Game.prototype.createBoardTiles = function () {
-        var tiles = [];
-        for (var i = 0; i < this.tileWidth; i++) {
-            for (var j = 0; j < this.tileHeight; j++) {
-                tiles.push(new tile_1.default({
-                    x: i,
-                    y: j,
-                    fill: boardFill_1.default(i, j),
-                }));
-            }
-        }
-        return tiles;
-    };
-    Game.prototype.createPlayerTiles = function () {
-        var tiles = [];
-        for (var i = 0; i < 10; i++) {
-            tiles.push(new tile_1.default({
-                x: Math.floor(this.tileWidth / 2),
-                y: Math.floor(this.tileHeight / 2),
-                fill: 'rgba(0, 255, 100, 0.8)',
-            }));
-        }
-        return tiles;
     };
     Game.prototype.runGame = function () {
         if (this.gameState.spinning) {
@@ -241,15 +237,55 @@ var Game = (function () {
         }
     };
     Game.prototype.checkCollisions = function () {
-        var playerHead = this.playerTiles[0];
-        if (playerHead.x < 0 || playerHead.x >= this.tileWidth
-            || playerHead.y < 0 || playerHead.y >= this.tileHeight) {
+        var _a = this.playerTiles, playerHead = _a[0], playerBody = _a.slice(1);
+        var wall = playerHead.x < 0 || playerHead.x >= this.tileWidth
+            || playerHead.y < 0 || playerHead.y >= this.tileHeight;
+        var body = playerBody.reduce(function (hit, bodyPart) {
+            if (hit) {
+                return hit;
+            }
+            return bodyPart.x === playerHead.x && bodyPart.y === playerHead.y;
+        }, false);
+        // Dead.
+        if (wall || body) {
             this.playerTiles = [];
             this.updateGameState({ active: false, spinning: false });
         }
     };
-    Game.prototype.updateGameState = function (partialState) {
-        this.gameState = Object.assign({}, this.gameState, partialState);
+    Game.prototype.createBoardTiles = function () {
+        var tiles = [];
+        for (var i = 0; i < this.tileWidth; i++) {
+            for (var j = 0; j < this.tileHeight; j++) {
+                tiles.push(new tile_1.default({
+                    x: i,
+                    y: j,
+                    fill: boardFill_1.default(i, j),
+                }));
+            }
+        }
+        return tiles;
+    };
+    Game.prototype.createPlayerTiles = function () {
+        var tiles = [];
+        for (var i = 0; i < 15; i++) {
+            tiles.push(new tile_1.default({
+                x: Math.floor(this.tileWidth / 2),
+                y: Math.floor(this.tileHeight / 2),
+                fill: colors_1.snakeColor,
+            }));
+        }
+        return tiles;
+    };
+    Game.prototype.createFoodTiles = function () {
+        var tiles = [];
+        for (var i = 0; i < 3; i++) {
+            tiles.push(new tile_1.default({
+                x: Math.floor(Math.random() * this.tileWidth),
+                y: Math.floor(Math.random() * this.tileHeight),
+                fill: colors_1.foodColor,
+            }));
+        }
+        return tiles;
     };
     Game.prototype.drawBoard = function () {
         var _this = this;
@@ -266,16 +302,16 @@ var Game = (function () {
         var _this = this;
         // JOIN
         var gamePieces = this.gameSVG.selectAll('rect')
-            .data(this.playerTiles.slice());
+            .data(this.playerTiles.concat(this.foodTiles));
         // EXIT
         gamePieces.exit()
-            .attr('fill', 'rgba(255, 20, 100, 0.7)')
+            .attr('fill', colors_1.dyingColor)
             .transition().duration(500)
             .attr('x', function (d) { return _this.xScale(d.x + 0.5); })
             .attr('y', function (d) { return _this.yScale(d.y + 0.5); })
             .attr('width', this.xScale(0))
             .attr('height', this.yScale(0))
-            .attr('fill', 'rgba(255, 20, 100, 0)')
+            .attr('fill', colors_1.deadColor)
             .remove();
         // UPDATE
         gamePieces
@@ -333,7 +369,7 @@ exports.default = Game;
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://d3js.org Version 4.9.1. Copyright 2017 Mike Bostock.
@@ -17205,7 +17241,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17250,7 +17286,7 @@ exports.default = Player;
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17269,16 +17305,15 @@ exports.default = Tile;
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var red = 'rgba(255, 0, 0, 0.1)';
-var black = 'rgba(0, 0, 0, 0.1)';
+var colors_1 = __webpack_require__(2);
 function boardFill(i, j) {
-    return (i + j) % 2 === 0 ? black : red;
+    return (i + j) % 2 === 0 ? colors_1.black : colors_1.red;
 }
 exports.default = boardFill;
 

@@ -1,9 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var red = 'rgba(255, 0, 0, 0.1)';
-var black = 'rgba(0, 0, 0, 0.1)';
+var colors_1 = require("../constants/colors");
 function boardFill(i, j) {
-    return (i + j) % 2 === 0 ? black : red;
+    return (i + j) % 2 === 0 ? colors_1.black : colors_1.red;
 }
 exports.default = boardFill;
 //# sourceMappingURL=boardFill.js.map

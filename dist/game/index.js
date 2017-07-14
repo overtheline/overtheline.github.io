@@ -4,6 +4,7 @@ var d3 = require("d3");
 var Player_1 = require("./Player");
 var tile_1 = require("../components/tile");
 var directions_1 = require("../constants/directions");
+var colors_1 = require("../constants/colors");
 var boardFill_1 = require("../utils/boardFill");
 var Game = (function () {
     function Game(config) {
@@ -29,37 +30,17 @@ var Game = (function () {
         this.mainLoop = this.mainLoop.bind(this);
         this.runGame = this.runGame.bind(this);
     }
+    Game.prototype.updateGameState = function (partialState) {
+        this.gameState = Object.assign({}, this.gameState, partialState);
+    };
     Game.prototype.init = function () {
         this.boardTiles = this.createBoardTiles();
         this.playerTiles = this.createPlayerTiles();
+        this.foodTiles = this.createFoodTiles();
         this.player = new Player_1.default(this.playerTiles);
         this.drawBoard();
         d3.select('body').on('keydown', this.handleKeydown);
         this.updateGameState({ active: true });
-    };
-    Game.prototype.createBoardTiles = function () {
-        var tiles = [];
-        for (var i = 0; i < this.tileWidth; i++) {
-            for (var j = 0; j < this.tileHeight; j++) {
-                tiles.push(new tile_1.default({
-                    x: i,
-                    y: j,
-                    fill: boardFill_1.default(i, j),
-                }));
-            }
-        }
-        return tiles;
-    };
-    Game.prototype.createPlayerTiles = function () {
-        var tiles = [];
-        for (var i = 0; i < 10; i++) {
-            tiles.push(new tile_1.default({
-                x: Math.floor(this.tileWidth / 2),
-                y: Math.floor(this.tileHeight / 2),
-                fill: 'rgba(0, 255, 100, 0.8)',
-            }));
-        }
-        return tiles;
     };
     Game.prototype.runGame = function () {
         if (this.gameState.spinning) {
@@ -80,15 +61,55 @@ var Game = (function () {
         }
     };
     Game.prototype.checkCollisions = function () {
-        var playerHead = this.playerTiles[0];
-        if (playerHead.x < 0 || playerHead.x >= this.tileWidth
-            || playerHead.y < 0 || playerHead.y >= this.tileHeight) {
+        var _a = this.playerTiles, playerHead = _a[0], playerBody = _a.slice(1);
+        var wall = playerHead.x < 0 || playerHead.x >= this.tileWidth
+            || playerHead.y < 0 || playerHead.y >= this.tileHeight;
+        var body = playerBody.reduce(function (hit, bodyPart) {
+            if (hit) {
+                return hit;
+            }
+            return bodyPart.x === playerHead.x && bodyPart.y === playerHead.y;
+        }, false);
+        // Dead.
+        if (wall || body) {
             this.playerTiles = [];
             this.updateGameState({ active: false, spinning: false });
         }
     };
-    Game.prototype.updateGameState = function (partialState) {
-        this.gameState = Object.assign({}, this.gameState, partialState);
+    Game.prototype.createBoardTiles = function () {
+        var tiles = [];
+        for (var i = 0; i < this.tileWidth; i++) {
+            for (var j = 0; j < this.tileHeight; j++) {
+                tiles.push(new tile_1.default({
+                    x: i,
+                    y: j,
+                    fill: boardFill_1.default(i, j),
+                }));
+            }
+        }
+        return tiles;
+    };
+    Game.prototype.createPlayerTiles = function () {
+        var tiles = [];
+        for (var i = 0; i < 15; i++) {
+            tiles.push(new tile_1.default({
+                x: Math.floor(this.tileWidth / 2),
+                y: Math.floor(this.tileHeight / 2),
+                fill: colors_1.snakeColor,
+            }));
+        }
+        return tiles;
+    };
+    Game.prototype.createFoodTiles = function () {
+        var tiles = [];
+        for (var i = 0; i < 3; i++) {
+            tiles.push(new tile_1.default({
+                x: Math.floor(Math.random() * this.tileWidth),
+                y: Math.floor(Math.random() * this.tileHeight),
+                fill: colors_1.foodColor,
+            }));
+        }
+        return tiles;
     };
     Game.prototype.drawBoard = function () {
         var _this = this;
@@ -105,16 +126,16 @@ var Game = (function () {
         var _this = this;
         // JOIN
         var gamePieces = this.gameSVG.selectAll('rect')
-            .data(this.playerTiles.slice());
+            .data(this.playerTiles.concat(this.foodTiles));
         // EXIT
         gamePieces.exit()
-            .attr('fill', 'rgba(255, 20, 100, 0.7)')
+            .attr('fill', colors_1.dyingColor)
             .transition().duration(500)
             .attr('x', function (d) { return _this.xScale(d.x + 0.5); })
             .attr('y', function (d) { return _this.yScale(d.y + 0.5); })
             .attr('width', this.xScale(0))
             .attr('height', this.yScale(0))
-            .attr('fill', 'rgba(255, 20, 100, 0)')
+            .attr('fill', colors_1.deadColor)
             .remove();
         // UPDATE
         gamePieces
