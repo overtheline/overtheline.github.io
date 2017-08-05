@@ -60,320 +60,36 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ 	return __webpack_require__(__webpack_require__.s = 5);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.foodColor = 'rgba(229, 242, 84, 0.8)';
+exports.wallColor = 'rgba(100, 100, 100, 1)';
+exports.clear = 'rgba(255, 255, 255, 0)';
+exports.red = 'rgba(255, 0, 0, 0.1)';
+exports.black = 'rgba(0, 0, 0, 0.1)';
+exports.playerWillEnter = 'rgba(0, 200, 0, 0)';
+exports.playerDidEnter = 'rgba(0, 200, 0, 6)';
+exports.playerUpdate = exports.playerDidEnter;
+exports.playerWillExit = 'rgba(255, 20, 100, 0.7)';
+exports.playerDidExit = 'rgba(255, 20, 100, 0)';
+
+
+/***/ }),
+/* 1 */
 /***/ (function(module, exports) {
 
 module.exports = React;
 
 /***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.UP = 'UP';
-exports.DOWN = 'DOWN';
-exports.LEFT = 'LEFT';
-exports.RIGHT = 'RIGHT';
-
-
-/***/ }),
 /* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.snakeColor = 'rgba(0, 255, 100, 0.8)';
-exports.dyingColor = 'rgba(255, 20, 100, 0.7)';
-exports.deadColor = 'rgba(255, 20, 100, 0)';
-exports.red = 'rgba(255, 0, 0, 0.1)';
-exports.black = 'rgba(0, 0, 0, 0.1)';
-exports.foodColor = 'rgb(229, 242, 84)';
-
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(0);
-var ReactDOM = __webpack_require__(4);
-var app_1 = __webpack_require__(5);
-ReactDOM.render(React.createElement(app_1.default, null), document.getElementById("example"));
-
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports) {
-
-module.exports = ReactDOM;
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(0);
-var game_1 = __webpack_require__(6);
-var pxWidth = 800;
-var pxHeight = 400;
-var tileWidth = 80;
-var tileHeight = 40;
-var gameConfig = {
-    pxWidth: pxWidth, pxHeight: pxHeight, tileWidth: tileWidth, tileHeight: tileHeight,
-};
-var boardContainerStyle = {
-    width: pxWidth,
-    height: pxHeight,
-};
-var App = (function (_super) {
-    __extends(App, _super);
-    function App(props) {
-        return _super.call(this, props) || this;
-    }
-    App.prototype.componentDidMount = function () {
-        this.game = new game_1.default(gameConfig);
-        this.game.init();
-    };
-    App.prototype.render = function () {
-        console.log('App render');
-        return (React.createElement("div", { id: 'main' },
-            React.createElement("div", { className: 'board-container', style: boardContainerStyle },
-                React.createElement("svg", { id: 'svg-layer-0', className: 'board layer-0', width: pxWidth, height: pxHeight }),
-                React.createElement("svg", { id: 'svg-layer-1', className: 'board layer-1', width: pxWidth, height: pxHeight })),
-            React.createElement("div", { className: 'text-panel' },
-                React.createElement("p", null, "Press 'space' to start and stop."))));
-    };
-    return App;
-}(React.Component));
-exports.default = App;
-
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var d3 = __webpack_require__(7);
-var Player_1 = __webpack_require__(8);
-var tile_1 = __webpack_require__(9);
-var directions_1 = __webpack_require__(1);
-var colors_1 = __webpack_require__(2);
-var boardFill_1 = __webpack_require__(10);
-var Game = (function () {
-    function Game(config) {
-        this.boardSVG = d3.select('#svg-layer-0');
-        this.gameSVG = d3.select('#svg-layer-1');
-        this.pxWidth = config.pxWidth;
-        this.pxHeight = config.pxHeight;
-        this.tileWidth = config.tileWidth;
-        this.tileHeight = config.tileHeight;
-        this.xScale = d3.scaleLinear()
-            .domain([0, this.tileWidth]).range([0, this.pxWidth]);
-        this.yScale = d3.scaleLinear()
-            .domain([0, this.tileHeight]).range([0, this.pxHeight]);
-        // Initial game state
-        this.gameState = {
-            active: false,
-            spinning: false,
-            frames: 0,
-            nextDirection: directions_1.RIGHT,
-        };
-        // bindings
-        this.handleKeydown = this.handleKeydown.bind(this);
-        this.mainLoop = this.mainLoop.bind(this);
-        this.runGame = this.runGame.bind(this);
-    }
-    Game.prototype.updateGameState = function (partialState) {
-        this.gameState = Object.assign({}, this.gameState, partialState);
-    };
-    Game.prototype.init = function () {
-        this.boardTiles = this.createBoardTiles();
-        this.playerTiles = this.createPlayerTiles();
-        this.foodTiles = this.createFoodTiles();
-        this.player = new Player_1.default(this.playerTiles);
-        this.drawBoard();
-        d3.select('body').on('keydown', this.handleKeydown);
-        this.updateGameState({ active: true });
-    };
-    Game.prototype.runGame = function () {
-        if (this.gameState.spinning) {
-            this.updateGameState({ spinning: false });
-        }
-        else {
-            this.updateGameState({ spinning: true });
-            this.mainLoop();
-        }
-    };
-    Game.prototype.mainLoop = function () {
-        this.player.updatePosition(this.gameState.nextDirection);
-        this.checkCollisions();
-        this.updateGameState({ frames: this.gameState.frames++ });
-        this.drawGamePieces();
-        if (this.gameState.spinning) {
-            setTimeout(this.mainLoop, 50);
-        }
-    };
-    Game.prototype.checkCollisions = function () {
-        var _a = this.playerTiles, playerHead = _a[0], playerBody = _a.slice(1);
-        var wall = playerHead.x < 0 || playerHead.x >= this.tileWidth
-            || playerHead.y < 0 || playerHead.y >= this.tileHeight;
-        var body = playerBody.reduce(function (hit, bodyPart) {
-            if (hit) {
-                return hit;
-            }
-            return bodyPart.x === playerHead.x && bodyPart.y === playerHead.y;
-        }, false);
-        // Dead.
-        if (wall || body) {
-            this.playerTiles = [];
-            this.foodTiles = [];
-            this.updateGameState({ active: false, spinning: false });
-        }
-    };
-    Game.prototype.createBoardTiles = function () {
-        var tiles = [];
-        for (var i = 0; i < this.tileWidth; i++) {
-            for (var j = 0; j < this.tileHeight; j++) {
-                tiles.push(new tile_1.default({
-                    x: i,
-                    y: j,
-                    fill: boardFill_1.default(i, j),
-                }));
-            }
-        }
-        return tiles;
-    };
-    Game.prototype.createPlayerTiles = function () {
-        var tiles = [];
-        for (var i = 0; i < 15; i++) {
-            tiles.push(new tile_1.default({
-                x: Math.floor(this.tileWidth / 2),
-                y: Math.floor(this.tileHeight / 2),
-                fill: colors_1.snakeColor,
-            }));
-        }
-        return tiles;
-    };
-    Game.prototype.createFoodTiles = function () {
-        var tiles = [];
-        for (var i = 0; i < 3; i++) {
-            tiles.push(new tile_1.default({
-                x: Math.floor(Math.random() * this.tileWidth),
-                y: Math.floor(Math.random() * this.tileHeight),
-                fill: colors_1.foodColor,
-            }));
-        }
-        return tiles;
-    };
-    Game.prototype.drawBoard = function () {
-        var _this = this;
-        this.boardSVG.selectAll('rect')
-            .data(this.boardTiles)
-            .enter().append('rect')
-            .attr('width', this.xScale(1))
-            .attr('height', this.yScale(1))
-            .attr('x', function (d) { return _this.xScale(d.x); })
-            .attr('y', function (d) { return _this.yScale(d.y); })
-            .attr('fill', function (d) { return d.fill; });
-    };
-    Game.prototype.drawGamePieces = function () {
-        var _this = this;
-        // JOIN
-        var gamePieces = this.gameSVG.selectAll('rect')
-            .data(this.playerTiles.concat(this.foodTiles));
-        // EXIT
-        gamePieces.exit()
-            .attr('fill', colors_1.dyingColor)
-            .transition().duration(500)
-            .attr('x', function (d) { return _this.xScale(d.x + 0.5); })
-            .attr('y', function (d) { return _this.yScale(d.y + 0.5); })
-            .attr('width', this.xScale(0))
-            .attr('height', this.yScale(0))
-            .attr('fill', colors_1.deadColor)
-            .remove();
-        // UPDATE
-        gamePieces
-            .transition().duration(30)
-            .attr('x', function (d) { return _this.xScale(d.x); })
-            .attr('y', function (d) { return _this.yScale(d.y); });
-        // ENTER
-        gamePieces
-            .enter().append('rect')
-            .attr('x', function (d) { return _this.xScale(d.x - 1); })
-            .attr('y', function (d) { return _this.yScale(d.y - 1); })
-            .attr('width', this.xScale(3))
-            .attr('height', this.yScale(3))
-            .transition().duration(30)
-            .attr('width', this.xScale(1))
-            .attr('height', this.yScale(1))
-            .attr('x', function (d) { return _this.xScale(d.x); })
-            .attr('y', function (d) { return _this.yScale(d.y); })
-            .attr('fill', function (d) { return d.fill; });
-    };
-    Game.prototype.handleKeydown = function () {
-        switch (d3.event.keyCode) {
-            case 32:
-                // SPACE
-                if (!this.gameState.active) {
-                    this.playerTiles = this.createPlayerTiles();
-                    this.player = new Player_1.default(this.playerTiles);
-                    this.updateGameState({ active: true });
-                    setTimeout(this.runGame, 600);
-                    return;
-                }
-                this.runGame();
-                break;
-            case 38:
-                // UP
-                this.updateGameState({ nextDirection: directions_1.UP });
-                break;
-            case 40:
-                // DOWN
-                this.updateGameState({ nextDirection: directions_1.DOWN });
-                break;
-            case 37:
-                // LEFT
-                this.updateGameState({ nextDirection: directions_1.LEFT });
-                break;
-            case 39:
-                // RIGHT
-                this.updateGameState({ nextDirection: directions_1.RIGHT });
-                break;
-            default:
-                this.updateGameState({});
-                break;
-        }
-    };
-    return Game;
-}());
-exports.default = Game;
-
-
-/***/ }),
-/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://d3js.org Version 4.9.1. Copyright 2017 Mike Bostock.
@@ -17245,52 +16961,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 
 /***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var directions_1 = __webpack_require__(1);
-var Player = (function () {
-    function Player(playerTiles) {
-        this.playerTiles = playerTiles;
-        this.currentDirection = directions_1.RIGHT;
-    }
-    Player.prototype.updatePosition = function (nextDirection) {
-        var playerHead = this.playerTiles[0];
-        if ((nextDirection === directions_1.UP && this.currentDirection !== directions_1.DOWN)
-            || (nextDirection === directions_1.DOWN && this.currentDirection !== directions_1.UP)
-            || (nextDirection === directions_1.RIGHT && this.currentDirection !== directions_1.LEFT)
-            || (nextDirection === directions_1.LEFT && this.currentDirection !== directions_1.RIGHT)) {
-            this.currentDirection = nextDirection;
-        }
-        for (var i = this.playerTiles.length - 1; i > 0; i--) {
-            this.playerTiles[i].x = this.playerTiles[i - 1].x;
-            this.playerTiles[i].y = this.playerTiles[i - 1].y;
-        }
-        switch (this.currentDirection) {
-            case directions_1.UP:
-                playerHead.y -= 1;
-                break;
-            case directions_1.DOWN:
-                playerHead.y += 1;
-                break;
-            case directions_1.LEFT:
-                playerHead.x -= 1;
-                break;
-            case directions_1.RIGHT:
-                playerHead.x += 1;
-                break;
-        }
-    };
-    return Player;
-}());
-exports.default = Player;
-
-
-/***/ }),
-/* 9 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17301,11 +16972,266 @@ var Tile = (function () {
     function Tile(config) {
         this.x = config.x;
         this.y = config.y;
-        this.fill = config.fill;
+        this.willEnterColor = config.willEnterColor;
+        this.didEnterColor = config.didEnterColor;
+        this.updateColor = config.updateColor;
+        this.willExitColor = config.willExitColor;
+        this.didExitColor = config.didExitColor;
     }
     return Tile;
 }());
 exports.default = Tile;
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.UP = 'UP';
+exports.DOWN = 'DOWN';
+exports.LEFT = 'LEFT';
+exports.RIGHT = 'RIGHT';
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(1);
+var ReactDOM = __webpack_require__(6);
+var app_1 = __webpack_require__(7);
+ReactDOM.render(React.createElement(app_1.default, null), document.getElementById("example"));
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+module.exports = ReactDOM;
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(1);
+var game_1 = __webpack_require__(8);
+var pxWidth = 750;
+var pxHeight = 400;
+var tileWidth = 80;
+var tileHeight = 40;
+var gameConfig = {
+    pxWidth: pxWidth, pxHeight: pxHeight, tileWidth: tileWidth, tileHeight: tileHeight,
+};
+var boardContainerStyle = {
+    width: pxWidth,
+    height: pxHeight,
+};
+var App = (function (_super) {
+    __extends(App, _super);
+    function App(props) {
+        return _super.call(this, props) || this;
+    }
+    App.prototype.componentDidMount = function () {
+        this.game = new game_1.default(gameConfig);
+        this.game.init();
+    };
+    App.prototype.render = function () {
+        console.log('App render');
+        return (React.createElement("div", { id: 'main' },
+            React.createElement("div", { className: 'board-container', style: boardContainerStyle },
+                React.createElement("svg", { id: 'svg-layer-0', className: 'board layer-0', width: pxWidth, height: pxHeight }),
+                React.createElement("svg", { id: 'svg-layer-1', className: 'board layer-1', width: pxWidth, height: pxHeight })),
+            React.createElement("div", { className: 'text-panel' },
+                React.createElement("p", null, "Press 'space' to start and stop."))));
+    };
+    return App;
+}(React.Component));
+exports.default = App;
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var d3 = __webpack_require__(2);
+var player_1 = __webpack_require__(9);
+var board_1 = __webpack_require__(11);
+var directions_1 = __webpack_require__(4);
+var direction_1 = __webpack_require__(13);
+var loop_1 = __webpack_require__(14);
+var Game = (function () {
+    function Game(config) {
+        this.pxWidth = config.pxWidth;
+        this.pxHeight = config.pxHeight;
+        this.tileWidth = config.tileWidth;
+        this.tileHeight = config.tileHeight;
+        // Initial game state
+        this.gameState = {
+            frame: 0,
+            direction: directions_1.RIGHT,
+            playerAlive: false,
+            readyToPlay: false,
+        };
+        // bindings
+        this.handleKeydown = this.handleKeydown.bind(this);
+        this.updateGameState = this.updateGameState.bind(this);
+    }
+    Game.prototype.updateGameState = function (partialState) {
+        this.gameState = Object.assign({}, this.gameState, partialState);
+    };
+    Game.prototype.frameFunction = function (n) {
+        console.log(n);
+    };
+    Game.prototype.init = function () {
+        console.log('game init');
+        this.board = new board_1.default(this.tileWidth, this.tileHeight, this.pxWidth, this.pxHeight);
+        this.player = new player_1.default();
+        d3.select('body').on('keydown', this.handleKeydown);
+        this.board.createBoardTiles();
+        this.board.drawBoard();
+        this.loop = new loop_1.default(this.frameFunction);
+    };
+    Game.prototype.handleKeydown = function () {
+        console.log(d3.event.keyCode);
+        var _a = this.gameState, direction = _a.direction, playerAlive = _a.playerAlive, readyToPlay = _a.readyToPlay;
+        var _b = this, loop = _b.loop, updateGameState = _b.updateGameState;
+        switch (d3.event.keyCode) {
+            case 32:
+                // SPACE
+                if (readyToPlay && !playerAlive) {
+                    updateGameState({ playerAlive: true });
+                    loop.start();
+                }
+                break;
+            case 38:
+                // UP
+                updateGameState(direction_1.default(directions_1.UP, direction));
+                break;
+            case 40:
+                // DOWN
+                updateGameState(direction_1.default(directions_1.DOWN, direction));
+                break;
+            case 37:
+                // LEFT
+                updateGameState(direction_1.default(directions_1.LEFT, direction));
+                break;
+            case 39:
+                // RIGHT
+                updateGameState(direction_1.default(directions_1.RIGHT, direction));
+                break;
+            // a
+            case 65:
+                if (!playerAlive) {
+                    updateGameState({ playerAlive: true });
+                    loop.start();
+                }
+                break;
+            // s
+            case 83:
+                if (playerAlive) {
+                    updateGameState({ playerAlive: false });
+                    loop.stop();
+                }
+                break;
+            default:
+                updateGameState({});
+                break;
+        }
+    };
+    return Game;
+}());
+exports.default = Game;
+
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Tile_1 = __webpack_require__(3);
+var directions_1 = __webpack_require__(4);
+var status = __webpack_require__(10);
+var fill = __webpack_require__(0);
+var Player = (function () {
+    function Player() {
+        this.currentDirection = directions_1.RIGHT;
+        this.tiles = [];
+        this.status = status.WILL_SPAWN;
+    }
+    Player.prototype.spawn = function (x, y) {
+        var tiles = [];
+        for (var i = 0; i < 15; i++) {
+            tiles.push(new Tile_1.default({
+                x: x,
+                y: y,
+                willEnterColor: fill.playerDidEnter,
+                didEnterColor: fill.playerDidEnter,
+                updateColor: fill.playerUpdate,
+                willExitColor: fill.playerWillExit,
+                didExitColor: fill.playerDidExit,
+            }));
+        }
+        this.status = status.DID_SPAWN;
+        return tiles;
+    };
+    Player.prototype.getTiles = function () {
+        return this.tiles;
+    };
+    Player.prototype.updatePosition = function (nextDirection) {
+        var head = this.tiles[0];
+        // Do not back up on yourself
+        if ((nextDirection === directions_1.UP && this.currentDirection !== directions_1.DOWN)
+            || (nextDirection === directions_1.DOWN && this.currentDirection !== directions_1.UP)
+            || (nextDirection === directions_1.RIGHT && this.currentDirection !== directions_1.LEFT)
+            || (nextDirection === directions_1.LEFT && this.currentDirection !== directions_1.RIGHT)) {
+            this.currentDirection = nextDirection;
+        }
+        for (var i = this.tiles.length - 1; i > 0; i--) {
+            this.tiles[i].x = this.tiles[i - 1].x;
+            this.tiles[i].y = this.tiles[i - 1].y;
+        }
+        switch (this.currentDirection) {
+            case directions_1.UP:
+                head.y -= 1;
+                break;
+            case directions_1.DOWN:
+                head.y += 1;
+                break;
+            case directions_1.LEFT:
+                head.x -= 1;
+                break;
+            case directions_1.RIGHT:
+                head.x += 1;
+                break;
+        }
+    };
+    return Player;
+}());
+exports.default = Player;
 
 
 /***/ }),
@@ -17315,11 +17241,171 @@ exports.default = Tile;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var colors_1 = __webpack_require__(2);
-function boardFill(i, j) {
+exports.WILL_SPAWN = 'WILL_SPAWN';
+exports.DID_SPAWN = 'DID_SPAWN';
+exports.ALIVE = 'ALIVE';
+exports.WILL_DIE = 'WILL_DIE';
+exports.DID_DIE = 'DID_DIE';
+
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var d3 = __webpack_require__(2);
+var Tile_1 = __webpack_require__(3);
+var checker_fill_1 = __webpack_require__(12);
+var fill = __webpack_require__(0);
+var Board = (function () {
+    function Board(tileWidth, tileHeight, pxWidth, pxHeight) {
+        this.tileWidth = tileWidth;
+        this.tileHeight = tileHeight;
+        this.pxWidth = pxWidth;
+        this.pxHeight = pxHeight;
+        this.boardSVG = d3.select('#svg-layer-0');
+        this.gameSVG = d3.select('#svg-layer-1');
+        this.xScale = d3.scaleLinear()
+            .domain([0, this.tileWidth])
+            .range([0, this.pxWidth]);
+        this.yScale = d3.scaleLinear()
+            .domain([0, this.tileHeight])
+            .range([0, this.pxHeight]);
+    }
+    Board.prototype.createBoardTiles = function () {
+        var tiles = [];
+        for (var i = 0; i < this.tileWidth; i++) {
+            for (var j = 0; j < this.tileHeight; j++) {
+                tiles.push(new Tile_1.default({
+                    x: i,
+                    y: j,
+                    willEnterColor: fill.clear,
+                    didEnterColor: checker_fill_1.default(i, j),
+                    updateColor: checker_fill_1.default(i, j),
+                    willExitColor: checker_fill_1.default(i, j),
+                    didExitColor: fill.clear,
+                }));
+            }
+        }
+        this.tiles = tiles;
+    };
+    Board.prototype.drawBoard = function () {
+        var _this = this;
+        var boardTiles = this.boardSVG.selectAll('rect')
+            .data(this.tiles);
+        boardTiles
+            .enter().append('rect')
+            .attr('width', this.xScale(1))
+            .attr('height', this.yScale(1))
+            .attr('x', function (d) { return _this.xScale(d.x); })
+            .attr('y', function (d) { return _this.yScale(d.y); })
+            .attr('fill', function (d) { return d.updateColor; });
+    };
+    Board.prototype.drawGamePieces = function (tiles, onRenderEnd) {
+        var _this = this;
+        // JOIN
+        var gamePieces = this.gameSVG.selectAll('rect')
+            .data(tiles);
+        // EXIT
+        gamePieces.exit()
+            .attr('fill', function (d) { return d.willExitColor; })
+            .transition().duration(500)
+            .attr('x', function (d) { return _this.xScale(d.x + 0.5); })
+            .attr('y', function (d) { return _this.yScale(d.y + 0.5); })
+            .attr('width', this.xScale(0))
+            .attr('height', this.yScale(0))
+            .attr('fill', function (d) { return d.didExitColor; })
+            .remove()
+            .call(onRenderEnd);
+        // UPDATE
+        gamePieces
+            .transition().duration(30)
+            .attr('x', function (d) { return _this.xScale(d.x); })
+            .attr('y', function (d) { return _this.yScale(d.y); })
+            .attr('fill', function (d) { return d.updateColor; })
+            .call(onRenderEnd);
+        // ENTER
+        gamePieces
+            .enter().append('rect')
+            .attr('x', function (d) { return _this.xScale(d.x - 1); })
+            .attr('y', function (d) { return _this.yScale(d.y - 1); })
+            .attr('width', this.xScale(3))
+            .attr('height', this.yScale(3))
+            .attr('fill', function (d) { return d.willEnterColor; })
+            .transition().duration(30)
+            .attr('width', this.xScale(1))
+            .attr('height', this.yScale(1))
+            .attr('x', function (d) { return _this.xScale(d.x); })
+            .attr('y', function (d) { return _this.yScale(d.y); })
+            .attr('fill', function (d) { return d.didEnterColor; })
+            .call(onRenderEnd);
+    };
+    return Board;
+}());
+exports.default = Board;
+
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var colors_1 = __webpack_require__(0);
+function checkerFill(i, j) {
     return (i + j) % 2 === 0 ? colors_1.black : colors_1.red;
 }
-exports.default = boardFill;
+exports.default = checkerFill;
+
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var dir = __webpack_require__(4);
+function getDirection(nextDirection, prevDirection) {
+    if ((nextDirection === dir.DOWN && prevDirection !== dir.UP)
+        || (nextDirection === dir.UP && prevDirection !== dir.DOWN)
+        || (nextDirection === dir.LEFT && prevDirection !== dir.RIGHT)
+        || (nextDirection === dir.RIGHT && prevDirection !== dir.LEFT)) {
+        return { direction: nextDirection };
+    }
+    return { direction: prevDirection };
+}
+exports.default = getDirection;
+
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var d3 = __webpack_require__(2);
+var Loop = (function () {
+    function Loop(cb) {
+        this.cb = cb;
+        this.timer = d3.timer(cb);
+        this.timer.stop();
+        this.stop = this.stop.bind(this);
+        this.start = this.start.bind(this);
+    }
+    Loop.prototype.stop = function () {
+        this.timer.stop();
+    };
+    Loop.prototype.start = function () {
+        this.timer.restart(this.cb);
+    };
+    return Loop;
+}());
+exports.default = Loop;
 
 
 /***/ })

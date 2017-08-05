@@ -2,7 +2,7 @@ import * as React from "react";
 
 import Game, { IGameConfig } from './game';
 
-const pxWidth = 800;
+const pxWidth = 750;
 const pxHeight = 400;
 const tileWidth = 80;
 const tileHeight = 40;

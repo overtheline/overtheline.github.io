@@ -27,4 +27,10 @@ export default class Queue {
       return output;
     }
   }
+
+  reset(): void {
+    this.headIndex = 1;
+    this.tailIndex = 1;
+    this.storage = {};
+  }
 }

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var directions_1 = require("../constants/directions");
+var directions_1 = require("../game/constants/directions");
 var Player = (function () {
     function Player(playerTiles) {
         this.playerTiles = playerTiles;

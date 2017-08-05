@@ -12,7 +12,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = require("react");
 var game_1 = require("./game");
-var pxWidth = 800;
+var pxWidth = 750;
 var pxHeight = 400;
 var tileWidth = 80;
 var tileHeight = 40;

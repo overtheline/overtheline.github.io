@@ -1,13 +1,13 @@
 import * as d3 from 'd3';
 
-import Player from './Player';
+import Player from './components/player';
+import Board from './components/board';
 
-import Tile from '../components/tile';
+import { UP, DOWN, LEFT, RIGHT } from './constants/directions';
 
-import { UP, DOWN, LEFT, RIGHT } from '../constants/directions';
-import { snakeColor, dyingColor, deadColor, foodColor } from '../constants/colors';
-
-import boardFill from '../utils/boardFill';
+import collision from './utils/collision';
+import getDirection from './utils/direction';
+import Loop from './utils/loop';
 
 export interface IGameConfig {
   pxWidth: number;
@@ -17,240 +17,128 @@ export interface IGameConfig {
 }
 
 export interface IGameState {
-  active: boolean;
-  nextDirection: string;
-  spinning: boolean;
-  frames: number;
+  frame: number;
+  direction: string;
+  playerAlive: boolean;
+  readyToPlay: boolean;
 }
 
 export default class Game {
-  boardSVG: d3.Selection<SVGElement, {}, HTMLElement, any>;
-  boardTiles: Tile[];
-  gamePieces: Tile[];
+  board: Board;
   gameState: IGameState;
-  gameSVG: d3.Selection<SVGElement, {}, HTMLElement, any>;
+  loop?: Loop;
   player: Player;
-  playerTiles: Tile[];
-  foodTiles: Tile[];
-  pxWidth: number;
   pxHeight: number;
-  tileWidth: number;
+  pxWidth: number;
   tileHeight: number;
-  xScale: d3.ScaleLinear<number, number>;
-  yScale: d3.ScaleLinear<number, number>;
+  tileWidth: number;
 
   constructor(config: IGameConfig) {
-    this.boardSVG = d3.select('#svg-layer-0');
-    this.gameSVG = d3.select('#svg-layer-1');
-
     this.pxWidth = config.pxWidth;
     this.pxHeight = config.pxHeight;
     this.tileWidth = config.tileWidth;
     this.tileHeight = config.tileHeight;
 
-    this.xScale = d3.scaleLinear()
-      .domain([0, this.tileWidth]).range([0, this.pxWidth]);
-    this.yScale = d3.scaleLinear()
-      .domain([0, this.tileHeight]).range([0, this.pxHeight]);
-
     // Initial game state
     this.gameState = {
-      active: false,
-      spinning: false,
-      frames: 0,
-      nextDirection: RIGHT,
+      frame: 0,
+      direction: RIGHT,
+      playerAlive: false,
+      readyToPlay: false,
     }
 
     // bindings
     this.handleKeydown = this.handleKeydown.bind(this);
-    this.mainLoop = this.mainLoop.bind(this);
-    this.runGame = this.runGame.bind(this);
+    this.updateGameState = this.updateGameState.bind(this);
   }
 
   updateGameState(partialState: Partial<IGameState>) {
     this.gameState = (<any>Object).assign({}, this.gameState, partialState);
   }
 
+  frameFunction(n: number) {
+    console.log(n);
+  }
+
   init() {
-    this.boardTiles = this.createBoardTiles();
+    console.log('game init');
+    this.board = new Board(
+      this.tileWidth,
+      this.tileHeight,
+      this.pxWidth,
+      this.pxHeight
+    );
 
-    this.playerTiles = this.createPlayerTiles();
-    this.foodTiles = this.createFoodTiles();
-
-    this.player = new Player(this.playerTiles);
-
-    this.drawBoard();
+    this.player = new Player();
 
     d3.select('body').on('keydown', this.handleKeydown);
 
-    this.updateGameState({ active: true });
-  }
+    this.board.createBoardTiles();
+    this.board.drawBoard();
 
-  runGame() {
-    if (this.gameState.spinning) {
-      this.updateGameState({ spinning: false });
-    } else {
-      this.updateGameState({ spinning: true });
-      this.mainLoop();
-    }
-  }
-
-  mainLoop() {
-    this.player.updatePosition(this.gameState.nextDirection);
-    this.checkCollisions();
-    this.updateGameState({ frames: this.gameState.frames++});
-    this.drawGamePieces();
-
-    if (this.gameState.spinning) {
-      setTimeout(this.mainLoop, 50);
-    }
-  }
-
-  checkCollisions() {
-    const [ playerHead, ...playerBody ] = this.playerTiles;
-
-    const wall: boolean = playerHead.x < 0 || playerHead.x >= this.tileWidth
-    || playerHead.y < 0 || playerHead.y >= this.tileHeight;
-
-    const body: boolean = playerBody.reduce((hit, bodyPart) => {
-      if (hit) { return hit; }
-      return bodyPart.x === playerHead.x && bodyPart.y === playerHead.y;
-    }, false);
-
-    // Dead.
-    if (wall || body) {
-      this.playerTiles = [];
-      this.foodTiles = [];
-      this.updateGameState({ active: false, spinning: false });
-    }
-  }
-
-  createBoardTiles(): Tile[] {
-    const tiles = [];
-    for (let i = 0; i < this.tileWidth; i++) {
-      for (let j = 0; j < this.tileHeight; j++) {
-        tiles.push(new Tile({
-          x: i,
-          y: j,
-          fill: boardFill(i, j),
-        }));
-      }
-    }
-
-    return tiles;
-  }
-
-  createPlayerTiles(): Tile[] {
-    const tiles = [];
-    for (let i = 0; i < 15; i++) {
-      tiles.push(new Tile({
-        x: Math.floor(this.tileWidth / 2),
-        y: Math.floor(this.tileHeight / 2),
-        fill: snakeColor,
-      }))
-    }
-
-    return tiles;
-  }
-
-  createFoodTiles(): Tile[] {
-    const tiles = [];
-    for (let i = 0; i < 3; i++) {
-      tiles.push(new Tile({
-        x: Math.floor(Math.random() * this.tileWidth),
-        y: Math.floor(Math.random() * this.tileHeight),
-        fill: foodColor,
-      }))
-    }
-
-    return tiles;
-  }
-
-  drawBoard() {
-    this.boardSVG.selectAll('rect')
-      .data(this.boardTiles)
-      .enter().append('rect')
-        .attr('width', this.xScale(1))
-        .attr('height', this.yScale(1))
-        .attr('x', d => this.xScale(d.x))
-        .attr('y', d => this.yScale(d.y))
-        .attr('fill', d => d.fill);
-  }
-
-  drawGamePieces() {
-    // JOIN
-    const gamePieces = this.gameSVG.selectAll('rect')
-      .data([...this.playerTiles, ...this.foodTiles]);
-
-    // EXIT
-    gamePieces.exit()
-        .attr('fill', dyingColor)
-      .transition().duration(500)
-        .attr('x', (d: Tile) => this.xScale(d.x + 0.5))
-        .attr('y', (d: Tile) => this.yScale(d.y + 0.5))
-        .attr('width', this.xScale(0))
-        .attr('height', this.yScale(0))
-        .attr('fill', deadColor)
-        .remove();
-
-    // UPDATE
-    gamePieces
-      .transition().duration(30)
-        .attr('x', d => this.xScale(d.x))
-        .attr('y', d => this.yScale(d.y));
-
-    // ENTER
-    gamePieces
-      .enter().append('rect')
-        .attr('x', d => this.xScale(d.x - 1))
-        .attr('y', d => this.yScale(d.y - 1))
-        .attr('width', this.xScale(3))
-        .attr('height', this.yScale(3))
-      .transition().duration(30)
-        .attr('width', this.xScale(1))
-        .attr('height', this.yScale(1))
-        .attr('x', d => this.xScale(d.x))
-        .attr('y', d => this.yScale(d.y))
-        .attr('fill', d => d.fill);
+    this.loop = new Loop(this.frameFunction);
   }
 
   handleKeydown() {
+    console.log(d3.event.keyCode)
+    const {
+      direction,
+      playerAlive,
+      readyToPlay,
+    } = this.gameState;
+
+    const {
+      loop,
+      updateGameState,
+    } = this;
+
     switch(d3.event.keyCode) {
       case 32:
         // SPACE
-        if (!this.gameState.active) {
-          this.playerTiles = this.createPlayerTiles();
-          this.player = new Player(this.playerTiles);
-          this.updateGameState({ active: true });
-          setTimeout(this.runGame, 600);
-          return;
+        if (readyToPlay && !playerAlive) {
+          updateGameState({ playerAlive: true });
+          loop.start();
         }
-
-        this.runGame()
         break;
 
       case 38:
         // UP
-        this.updateGameState({ nextDirection: UP });
+        updateGameState(getDirection(UP, direction));
         break;
 
       case 40:
         // DOWN
-        this.updateGameState({ nextDirection: DOWN });
+        updateGameState(getDirection(DOWN, direction));
         break;
 
       case 37:
         // LEFT
-        this.updateGameState({ nextDirection: LEFT });
+        updateGameState(getDirection(LEFT, direction));
         break;
 
       case 39:
         // RIGHT
-        this.updateGameState({ nextDirection: RIGHT });
+        updateGameState(getDirection(RIGHT, direction));
+        break;
+
+      // a
+      case 65:
+        if (!playerAlive) {
+          updateGameState({ playerAlive: true });
+          loop.start();
+        }
+        break;
+
+      // s
+      case 83:
+        if (playerAlive) {
+          updateGameState({ playerAlive: false });
+          loop.stop();
+        }
         break;
 
       default:
-        this.updateGameState({});
+        updateGameState({});
         break;
     }
   }
