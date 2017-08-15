@@ -16,11 +16,9 @@ var Player = (function () {
             tiles.push(new Tile_1.default({
                 x: x,
                 y: y,
-                willEnterColor: fill.playerDidEnter,
-                didEnterColor: fill.playerDidEnter,
+                enterColor: fill.playerEnter,
                 updateColor: fill.playerUpdate,
-                willExitColor: fill.playerWillExit,
-                didExitColor: fill.playerDidExit,
+                exitColor: fill.playerExit,
             }));
         }
         this.status = status.DID_SPAWN;
@@ -60,4 +58,4 @@ var Player = (function () {
     return Player;
 }());
 exports.default = Player;
-//# sourceMappingURL=Player.js.map
+//# sourceMappingURL=player.js.map

@@ -26,11 +26,9 @@ var Board = (function () {
                 tiles.push(new Tile_1.default({
                     x: i,
                     y: j,
-                    willEnterColor: fill.clear,
-                    didEnterColor: checker_fill_1.default(i, j),
+                    enterColor: checker_fill_1.default(i, j),
                     updateColor: checker_fill_1.default(i, j),
-                    willExitColor: checker_fill_1.default(i, j),
-                    didExitColor: fill.clear,
+                    exitColor: checker_fill_1.default(i, j),
                 }));
             }
         }
@@ -55,13 +53,13 @@ var Board = (function () {
             .data(tiles);
         // EXIT
         gamePieces.exit()
-            .attr('fill', function (d) { return d.willExitColor; })
+            .attr('fill', function (d) { return d.exitColor; })
             .transition().duration(500)
             .attr('x', function (d) { return _this.xScale(d.x + 0.5); })
             .attr('y', function (d) { return _this.yScale(d.y + 0.5); })
             .attr('width', this.xScale(0))
             .attr('height', this.yScale(0))
-            .attr('fill', function (d) { return d.didExitColor; })
+            .attr('fill', function (d) { return fill.clear; })
             .remove()
             .call(onRenderEnd);
         // UPDATE
@@ -78,16 +76,16 @@ var Board = (function () {
             .attr('y', function (d) { return _this.yScale(d.y - 1); })
             .attr('width', this.xScale(3))
             .attr('height', this.yScale(3))
-            .attr('fill', function (d) { return d.willEnterColor; })
+            .attr('fill', function (d) { return fill.clear; })
             .transition().duration(30)
             .attr('width', this.xScale(1))
             .attr('height', this.yScale(1))
             .attr('x', function (d) { return _this.xScale(d.x); })
             .attr('y', function (d) { return _this.yScale(d.y); })
-            .attr('fill', function (d) { return d.didEnterColor; })
+            .attr('fill', function (d) { return d.enterColor; })
             .call(onRenderEnd);
     };
     return Board;
 }());
 exports.default = Board;
-//# sourceMappingURL=Board.js.map
+//# sourceMappingURL=board.js.map

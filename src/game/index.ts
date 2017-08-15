@@ -26,10 +26,12 @@ export interface IGameState {
 export default class Game {
   board: Board;
   gameState: IGameState;
+  lastTime: number;
   loop?: Loop;
   player: Player;
   pxHeight: number;
   pxWidth: number;
+  targetMS: number;
   tileHeight: number;
   tileWidth: number;
 
@@ -50,14 +52,20 @@ export default class Game {
     // bindings
     this.handleKeydown = this.handleKeydown.bind(this);
     this.updateGameState = this.updateGameState.bind(this);
+    this.frameFunction = this.frameFunction.bind(this);
+
+    this.lastTime = 0;
+    this.targetMS = 40;
   }
 
   updateGameState(partialState: Partial<IGameState>) {
     this.gameState = (<any>Object).assign({}, this.gameState, partialState);
   }
 
-  frameFunction(n: number) {
-    console.log(n);
+  frameFunction(elapsed: number) {
+    if (elapsed - this.lastTime >= this.targetMS) {
+      this.lastTime = elapsed;
+    }
   }
 
   init() {
@@ -134,6 +142,7 @@ export default class Game {
         if (playerAlive) {
           updateGameState({ playerAlive: false });
           loop.stop();
+          this.lastTime = 0;
         }
         break;
 

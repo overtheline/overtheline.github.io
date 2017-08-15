@@ -1,29 +1,23 @@
 export interface ITileConfig {
   x: number;
   y: number;
-  willEnterColor: string;
-  didEnterColor: string;
+  enterColor: string;
   updateColor: string;
-  willExitColor: string;
-  didExitColor: string;
+  exitColor: string;
 };
 
 export default class Tile {
   x: number;
   y: number;
-  willEnterColor: string;
-  didEnterColor: string;
+  enterColor: string;
   updateColor: string;
-  willExitColor: string;
-  didExitColor: string;
+  exitColor: string;
 
   constructor(config: ITileConfig) {
     this.x = config.x;
     this.y = config.y;
-    this.willEnterColor= config.willEnterColor;
-    this.didEnterColor= config.didEnterColor;
+    this.enterColor= config.enterColor;
     this.updateColor= config.updateColor;
-    this.willExitColor= config.willExitColor;
-    this.didExitColor= config.didExitColor;
+    this.exitColor= config.exitColor;
   }
 }

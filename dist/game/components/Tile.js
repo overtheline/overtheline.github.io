@@ -5,11 +5,9 @@ var Tile = (function () {
     function Tile(config) {
         this.x = config.x;
         this.y = config.y;
-        this.willEnterColor = config.willEnterColor;
-        this.didEnterColor = config.didEnterColor;
+        this.enterColor = config.enterColor;
         this.updateColor = config.updateColor;
-        this.willExitColor = config.willExitColor;
-        this.didExitColor = config.didExitColor;
+        this.exitColor = config.exitColor;
     }
     return Tile;
 }());

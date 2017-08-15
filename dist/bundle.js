@@ -67,31 +67,6 @@
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.foodColor = 'rgba(229, 242, 84, 0.8)';
-exports.wallColor = 'rgba(100, 100, 100, 1)';
-exports.clear = 'rgba(255, 255, 255, 0)';
-exports.red = 'rgba(255, 0, 0, 0.1)';
-exports.black = 'rgba(0, 0, 0, 0.1)';
-exports.playerWillEnter = 'rgba(0, 200, 0, 0)';
-exports.playerDidEnter = 'rgba(0, 200, 0, 6)';
-exports.playerUpdate = exports.playerDidEnter;
-exports.playerWillExit = 'rgba(255, 20, 100, 0.7)';
-exports.playerDidExit = 'rgba(255, 20, 100, 0)';
-
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports) {
-
-module.exports = React;
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
 // https://d3js.org Version 4.9.1. Copyright 2017 Mike Bostock.
 (function (global, factory) {
 	 true ? factory(exports) :
@@ -16961,30 +16936,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 
 /***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-;
-var Tile = (function () {
-    function Tile(config) {
-        this.x = config.x;
-        this.y = config.y;
-        this.willEnterColor = config.willEnterColor;
-        this.didEnterColor = config.didEnterColor;
-        this.updateColor = config.updateColor;
-        this.willExitColor = config.willExitColor;
-        this.didExitColor = config.didExitColor;
-    }
-    return Tile;
-}());
-exports.default = Tile;
-
-
-/***/ }),
-/* 4 */
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16997,13 +16949,57 @@ exports.RIGHT = 'RIGHT';
 
 
 /***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.foodColor = 'rgba(229, 242, 84, 0.8)';
+exports.wallColor = 'rgba(100, 100, 100, 1)';
+exports.clear = 'rgba(255, 255, 255, 0)';
+exports.red = 'rgba(255, 0, 0, 0.1)';
+exports.black = 'rgba(0, 0, 0, 0.1)';
+exports.playerEnter = 'rgba(0, 200, 0, 0.7)';
+exports.playerUpdate = exports.playerEnter;
+exports.playerExit = 'rgba(255, 20, 100, 0.1)';
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports) {
+
+module.exports = React;
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+;
+var Tile = (function () {
+    function Tile(config) {
+        this.x = config.x;
+        this.y = config.y;
+        this.enterColor = config.enterColor;
+        this.updateColor = config.updateColor;
+        this.exitColor = config.exitColor;
+    }
+    return Tile;
+}());
+exports.default = Tile;
+
+
+/***/ }),
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(1);
+var React = __webpack_require__(3);
 var ReactDOM = __webpack_require__(6);
 var app_1 = __webpack_require__(7);
 ReactDOM.render(React.createElement(app_1.default, null), document.getElementById("example"));
@@ -17032,7 +17028,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(1);
+var React = __webpack_require__(3);
 var game_1 = __webpack_require__(8);
 var pxWidth = 750;
 var pxHeight = 400;
@@ -17075,10 +17071,10 @@ exports.default = App;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var d3 = __webpack_require__(2);
+var d3 = __webpack_require__(0);
 var player_1 = __webpack_require__(9);
 var board_1 = __webpack_require__(11);
-var directions_1 = __webpack_require__(4);
+var directions_1 = __webpack_require__(1);
 var direction_1 = __webpack_require__(13);
 var loop_1 = __webpack_require__(14);
 var Game = (function () {
@@ -17097,12 +17093,17 @@ var Game = (function () {
         // bindings
         this.handleKeydown = this.handleKeydown.bind(this);
         this.updateGameState = this.updateGameState.bind(this);
+        this.frameFunction = this.frameFunction.bind(this);
+        this.lastTime = 0;
+        this.targetMS = 40;
     }
     Game.prototype.updateGameState = function (partialState) {
         this.gameState = Object.assign({}, this.gameState, partialState);
     };
-    Game.prototype.frameFunction = function (n) {
-        console.log(n);
+    Game.prototype.frameFunction = function (elapsed) {
+        if (elapsed - this.lastTime >= this.targetMS) {
+            this.lastTime = elapsed;
+        }
     };
     Game.prototype.init = function () {
         console.log('game init');
@@ -17153,6 +17154,7 @@ var Game = (function () {
                 if (playerAlive) {
                     updateGameState({ playerAlive: false });
                     loop.stop();
+                    this.lastTime = 0;
                 }
                 break;
             default:
@@ -17172,10 +17174,10 @@ exports.default = Game;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var Tile_1 = __webpack_require__(3);
-var directions_1 = __webpack_require__(4);
+var Tile_1 = __webpack_require__(4);
+var directions_1 = __webpack_require__(1);
 var status = __webpack_require__(10);
-var fill = __webpack_require__(0);
+var fill = __webpack_require__(2);
 var Player = (function () {
     function Player() {
         this.currentDirection = directions_1.RIGHT;
@@ -17188,11 +17190,9 @@ var Player = (function () {
             tiles.push(new Tile_1.default({
                 x: x,
                 y: y,
-                willEnterColor: fill.playerDidEnter,
-                didEnterColor: fill.playerDidEnter,
+                enterColor: fill.playerEnter,
                 updateColor: fill.playerUpdate,
-                willExitColor: fill.playerWillExit,
-                didExitColor: fill.playerDidExit,
+                exitColor: fill.playerExit,
             }));
         }
         this.status = status.DID_SPAWN;
@@ -17255,10 +17255,10 @@ exports.DID_DIE = 'DID_DIE';
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var d3 = __webpack_require__(2);
-var Tile_1 = __webpack_require__(3);
+var d3 = __webpack_require__(0);
+var Tile_1 = __webpack_require__(4);
 var checker_fill_1 = __webpack_require__(12);
-var fill = __webpack_require__(0);
+var fill = __webpack_require__(2);
 var Board = (function () {
     function Board(tileWidth, tileHeight, pxWidth, pxHeight) {
         this.tileWidth = tileWidth;
@@ -17281,11 +17281,9 @@ var Board = (function () {
                 tiles.push(new Tile_1.default({
                     x: i,
                     y: j,
-                    willEnterColor: fill.clear,
-                    didEnterColor: checker_fill_1.default(i, j),
+                    enterColor: checker_fill_1.default(i, j),
                     updateColor: checker_fill_1.default(i, j),
-                    willExitColor: checker_fill_1.default(i, j),
-                    didExitColor: fill.clear,
+                    exitColor: checker_fill_1.default(i, j),
                 }));
             }
         }
@@ -17310,13 +17308,13 @@ var Board = (function () {
             .data(tiles);
         // EXIT
         gamePieces.exit()
-            .attr('fill', function (d) { return d.willExitColor; })
+            .attr('fill', function (d) { return d.exitColor; })
             .transition().duration(500)
             .attr('x', function (d) { return _this.xScale(d.x + 0.5); })
             .attr('y', function (d) { return _this.yScale(d.y + 0.5); })
             .attr('width', this.xScale(0))
             .attr('height', this.yScale(0))
-            .attr('fill', function (d) { return d.didExitColor; })
+            .attr('fill', function (d) { return fill.clear; })
             .remove()
             .call(onRenderEnd);
         // UPDATE
@@ -17333,13 +17331,13 @@ var Board = (function () {
             .attr('y', function (d) { return _this.yScale(d.y - 1); })
             .attr('width', this.xScale(3))
             .attr('height', this.yScale(3))
-            .attr('fill', function (d) { return d.willEnterColor; })
+            .attr('fill', function (d) { return fill.clear; })
             .transition().duration(30)
             .attr('width', this.xScale(1))
             .attr('height', this.yScale(1))
             .attr('x', function (d) { return _this.xScale(d.x); })
             .attr('y', function (d) { return _this.yScale(d.y); })
-            .attr('fill', function (d) { return d.didEnterColor; })
+            .attr('fill', function (d) { return d.enterColor; })
             .call(onRenderEnd);
     };
     return Board;
@@ -17354,7 +17352,7 @@ exports.default = Board;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var colors_1 = __webpack_require__(0);
+var colors_1 = __webpack_require__(2);
 function checkerFill(i, j) {
     return (i + j) % 2 === 0 ? colors_1.black : colors_1.red;
 }
@@ -17368,7 +17366,7 @@ exports.default = checkerFill;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var dir = __webpack_require__(4);
+var dir = __webpack_require__(1);
 function getDirection(nextDirection, prevDirection) {
     if ((nextDirection === dir.DOWN && prevDirection !== dir.UP)
         || (nextDirection === dir.UP && prevDirection !== dir.DOWN)
@@ -17388,7 +17386,7 @@ exports.default = getDirection;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var d3 = __webpack_require__(2);
+var d3 = __webpack_require__(0);
 var Loop = (function () {
     function Loop(cb) {
         this.cb = cb;

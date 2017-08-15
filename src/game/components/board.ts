@@ -47,11 +47,9 @@ export default class Board {
         tiles.push(new Tile({
           x: i,
           y: j,
-          willEnterColor: fill.clear,
-          didEnterColor: checkerFill(i, j),
+          enterColor: checkerFill(i, j),
           updateColor: checkerFill(i, j),
-          willExitColor: checkerFill(i, j),
-          didExitColor: fill.clear,
+          exitColor: checkerFill(i, j),
         }));
       }
     }
@@ -79,13 +77,13 @@ export default class Board {
 
     // EXIT
     gamePieces.exit()
-        .attr('fill', (d: Tile) => d.willExitColor)
+        .attr('fill', (d: Tile) => d.exitColor)
       .transition().duration(500)
         .attr('x', (d: Tile) => this.xScale(d.x + 0.5))
         .attr('y', (d: Tile) => this.yScale(d.y + 0.5))
         .attr('width', this.xScale(0))
         .attr('height', this.yScale(0))
-        .attr('fill', (d: Tile) => d.didExitColor)
+        .attr('fill', (d: Tile) => fill.clear)
       .remove()
       .call(onRenderEnd);
 
@@ -104,13 +102,13 @@ export default class Board {
         .attr('y', d => this.yScale(d.y - 1))
         .attr('width', this.xScale(3))
         .attr('height', this.yScale(3))
-        .attr('fill', (d: Tile) => d.willEnterColor)
+        .attr('fill', (d: Tile) => fill.clear)
       .transition().duration(30)
         .attr('width', this.xScale(1))
         .attr('height', this.yScale(1))
         .attr('x', d => this.xScale(d.x))
         .attr('y', d => this.yScale(d.y))
-        .attr('fill', (d: Tile) => d.didEnterColor)
+        .attr('fill', (d: Tile) => d.enterColor)
       .call(onRenderEnd);
   }
 }

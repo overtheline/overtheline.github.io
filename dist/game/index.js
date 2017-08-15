@@ -22,12 +22,17 @@ var Game = (function () {
         // bindings
         this.handleKeydown = this.handleKeydown.bind(this);
         this.updateGameState = this.updateGameState.bind(this);
+        this.frameFunction = this.frameFunction.bind(this);
+        this.lastTime = 0;
+        this.targetMS = 40;
     }
     Game.prototype.updateGameState = function (partialState) {
         this.gameState = Object.assign({}, this.gameState, partialState);
     };
-    Game.prototype.frameFunction = function (n) {
-        console.log(n);
+    Game.prototype.frameFunction = function (elapsed) {
+        if (elapsed - this.lastTime >= this.targetMS) {
+            this.lastTime = elapsed;
+        }
     };
     Game.prototype.init = function () {
         console.log('game init');
@@ -78,6 +83,7 @@ var Game = (function () {
                 if (playerAlive) {
                     updateGameState({ playerAlive: false });
                     loop.stop();
+                    this.lastTime = 0;
                 }
                 break;
             default:

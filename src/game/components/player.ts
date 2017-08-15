@@ -21,11 +21,9 @@ export default class Player {
       tiles.push(new Tile({
         x,
         y,
-        willEnterColor: fill.playerDidEnter,
-        didEnterColor: fill.playerDidEnter,
+        enterColor: fill.playerEnter,
         updateColor: fill.playerUpdate,
-        willExitColor: fill.playerWillExit,
-        didExitColor: fill.playerDidExit,
+        exitColor: fill.playerExit,
       }))
     }
 
