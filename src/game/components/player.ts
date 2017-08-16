@@ -1,7 +1,6 @@
 import Tile from './Tile';
 
 import { UP, DOWN, LEFT, RIGHT } from '../constants/directions';
-import * as status from '../constants/tile-status';
 import * as fill from '../constants/colors';
 
 export default class Player {
@@ -9,16 +8,12 @@ export default class Player {
   tiles: Tile[];
   status: string;
 
-  constructor() {
+  constructor(x: number, y: number) {
     this.currentDirection = RIGHT;
     this.tiles = [];
-    this.status = status.WILL_SPAWN;
-  }
 
-  spawn(x: number, y: number) {
-    const tiles = [];
     for (let i = 0; i < 15; i++) {
-      tiles.push(new Tile({
+      this.tiles.push(new Tile({
         x,
         y,
         enterColor: fill.playerEnter,
@@ -26,10 +21,6 @@ export default class Player {
         exitColor: fill.playerExit,
       }))
     }
-
-    this.status = status.DID_SPAWN;
-
-    return tiles;
   }
 
   getTiles() {

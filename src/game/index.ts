@@ -21,6 +21,7 @@ export interface IGameState {
   direction: string;
   playerAlive: boolean;
   readyToPlay: boolean;
+  readyToUpdate: boolean;
 }
 
 export default class Game {
@@ -47,14 +48,15 @@ export default class Game {
       direction: RIGHT,
       playerAlive: false,
       readyToPlay: false,
+      readyToUpdate: true,
     }
 
     // bindings
     this.handleKeydown = this.handleKeydown.bind(this);
     this.updateGameState = this.updateGameState.bind(this);
-    // this.frameFunction = this.frameFunction.bind(this);
+    this.frameFunction = this.frameFunction.bind(this);
 
-    // this.lastTime = 0;
+    this.lastTime = 0;
     this.targetMS = 40;
   }
 
@@ -62,11 +64,14 @@ export default class Game {
     this.gameState = (<any>Object).assign({}, this.gameState, partialState);
   }
 
-  // frameFunction(elapsed: number) {
-  //   if (elapsed - this.lastTime >= this.targetMS) {
-  //     this.lastTime = elapsed;
-  //   }
-  // }
+  frameFunction(elapsed: number) {
+    if (elapsed - this.lastTime >= this.targetMS && this.gameState.readyToUpdate) {
+      this.updateGameState({ readyToUpdate: false });
+      this.player.updatePosition(this.gameState.direction);
+      this.board.drawGamePieces(this.player.getTiles(), () => { this.updateGameState({ readyToUpdate: true }) });
+      this.lastTime = elapsed;
+    }
+  }
 
   init() {
     console.log('game init');
@@ -77,14 +82,14 @@ export default class Game {
       this.pxHeight
     );
 
-    this.player = new Player();
+    this.player = new Player(this.tileWidth / 2, this.tileHeight / 2);
 
     d3.select('body').on('keydown', this.handleKeydown);
 
     this.board.createBoardTiles();
-    this.board.drawBoard();
+    this.board.drawBoard(() => this.updateGameState({ readyToPlay: true }));
 
-    // this.loop = new Loop(this.frameFunction);
+    this.loop = new Loop(this.frameFunction);
   }
 
   handleKeydown() {
@@ -104,6 +109,7 @@ export default class Game {
         // SPACE
         if (readyToPlay && !playerAlive) {
           updateGameState({ playerAlive: true });
+          this.loop.start();
         }
         break;
 
@@ -131,6 +137,7 @@ export default class Game {
       case 65:
         if (!playerAlive) {
           updateGameState({ playerAlive: true });
+          this.loop.start();
         }
         break;
 
@@ -138,6 +145,7 @@ export default class Game {
       case 83:
         if (playerAlive) {
           updateGameState({ playerAlive: false });
+          this.loop.stop();
         }
         break;
 

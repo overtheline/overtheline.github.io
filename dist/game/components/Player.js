@@ -2,18 +2,13 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var Tile_1 = require("./Tile");
 var directions_1 = require("../constants/directions");
-var status = require("../constants/tile-status");
 var fill = require("../constants/colors");
 var Player = (function () {
-    function Player() {
+    function Player(x, y) {
         this.currentDirection = directions_1.RIGHT;
         this.tiles = [];
-        this.status = status.WILL_SPAWN;
-    }
-    Player.prototype.spawn = function (x, y) {
-        var tiles = [];
         for (var i = 0; i < 15; i++) {
-            tiles.push(new Tile_1.default({
+            this.tiles.push(new Tile_1.default({
                 x: x,
                 y: y,
                 enterColor: fill.playerEnter,
@@ -21,9 +16,7 @@ var Player = (function () {
                 exitColor: fill.playerExit,
             }));
         }
-        this.status = status.DID_SPAWN;
-        return tiles;
-    };
+    }
     Player.prototype.getTiles = function () {
         return this.tiles;
     };

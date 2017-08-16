@@ -34,7 +34,7 @@ var Board = (function () {
         }
         this.tiles = tiles;
     };
-    Board.prototype.drawBoard = function () {
+    Board.prototype.drawBoard = function (cb) {
         var _this = this;
         var boardTiles = this.boardSVG.selectAll('rect')
             .data(this.tiles);
@@ -48,9 +48,10 @@ var Board = (function () {
             .transition().duration(1000).ease(d3.easeBounceOut)
             .attr('y', function (d) { return _this.yScale(d.y); })
             .attr('x', function (d) { return _this.xScale(d.x); })
-            .attr('fill', function (d) { return d.updateColor; });
+            .attr('fill', function (d) { return d.updateColor; })
+            .on('end', cb);
     };
-    Board.prototype.drawGamePieces = function (tiles, onRenderEnd) {
+    Board.prototype.drawGamePieces = function (tiles, cb) {
         var _this = this;
         // JOIN
         var gamePieces = this.gameSVG.selectAll('rect')
@@ -65,14 +66,7 @@ var Board = (function () {
             .attr('height', this.yScale(0))
             .attr('fill', function (d) { return fill.clear; })
             .remove()
-            .call(onRenderEnd);
-        // UPDATE
-        gamePieces
-            .transition().duration(30)
-            .attr('x', function (d) { return _this.xScale(d.x); })
-            .attr('y', function (d) { return _this.yScale(d.y); })
-            .attr('fill', function (d) { return d.updateColor; })
-            .call(onRenderEnd);
+            .on('end', cb);
         // ENTER
         gamePieces
             .enter().append('rect')
@@ -81,13 +75,19 @@ var Board = (function () {
             .attr('width', this.xScale(3))
             .attr('height', this.yScale(3))
             .attr('fill', function (d) { return fill.clear; })
-            .transition().duration(30)
+            .transition().duration(100)
             .attr('width', this.xScale(1))
             .attr('height', this.yScale(1))
             .attr('x', function (d) { return _this.xScale(d.x); })
             .attr('y', function (d) { return _this.yScale(d.y); })
             .attr('fill', function (d) { return d.enterColor; })
-            .call(onRenderEnd);
+            .on('end', cb);
+        // UPDATE
+        gamePieces
+            .attr('x', function (d) { return _this.xScale((d.x % _this.tileWidth) < 0 ? (d.x % _this.tileWidth) + _this.tileWidth : d.x % _this.tileWidth); })
+            .attr('y', function (d) { return _this.yScale((d.y % _this.tileHeight) < 0 ? (d.y % _this.tileHeight) + _this.tileHeight : d.y % _this.tileHeight); })
+            .attr('fill', function (d) { return d.updateColor; })
+            .call(cb);
     };
     return Board;
 }());

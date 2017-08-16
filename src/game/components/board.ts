@@ -57,7 +57,7 @@ export default class Board {
     this.tiles = tiles;
   }
 
-  drawBoard() {
+  drawBoard(cb: () => void) {
     const boardTiles = this.boardSVG.selectAll('rect')
       .data(this.tiles);
 
@@ -71,10 +71,11 @@ export default class Board {
       .transition().duration(1000).ease(d3.easeBounceOut)
         .attr('y', d => this.yScale(d.y))
         .attr('x', d => this.xScale(d.x))
-        .attr('fill', d => d.updateColor);
+        .attr('fill', d => d.updateColor)
+      .on('end', cb);
   }
 
-  drawGamePieces(tiles: Tile[], onRenderEnd: () => boolean) {
+  drawGamePieces(tiles: Tile[], cb: () => void) {
     // JOIN
     const gamePieces = this.gameSVG.selectAll('rect')
       .data(tiles);
@@ -89,15 +90,7 @@ export default class Board {
         .attr('height', this.yScale(0))
         .attr('fill', (d: Tile) => fill.clear)
       .remove()
-      .call(onRenderEnd);
-
-    // UPDATE
-    gamePieces
-      .transition().duration(30)
-        .attr('x', d => this.xScale(d.x))
-        .attr('y', d => this.yScale(d.y))
-        .attr('fill', (d: Tile) => d.updateColor)
-      .call(onRenderEnd);
+      .on('end', cb);
 
     // ENTER
     gamePieces
@@ -107,12 +100,19 @@ export default class Board {
         .attr('width', this.xScale(3))
         .attr('height', this.yScale(3))
         .attr('fill', (d: Tile) => fill.clear)
-      .transition().duration(30)
+      .transition().duration(100)
         .attr('width', this.xScale(1))
         .attr('height', this.yScale(1))
         .attr('x', d => this.xScale(d.x))
         .attr('y', d => this.yScale(d.y))
         .attr('fill', (d: Tile) => d.enterColor)
-      .call(onRenderEnd);
+      .on('end', cb);
+
+    // UPDATE
+    gamePieces
+        .attr('x', d => this.xScale((d.x % this.tileWidth) < 0 ? (d.x % this.tileWidth) + this.tileWidth : d.x % this.tileWidth))
+        .attr('y', d => this.yScale((d.y % this.tileHeight) < 0 ? (d.y % this.tileHeight) + this.tileHeight : d.y % this.tileHeight))
+        .attr('fill', (d: Tile) => d.updateColor)
+      .call(cb);
   }
 }
