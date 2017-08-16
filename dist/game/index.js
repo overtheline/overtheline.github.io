@@ -5,7 +5,6 @@ var player_1 = require("./components/player");
 var board_1 = require("./components/board");
 var directions_1 = require("./constants/directions");
 var direction_1 = require("./utils/direction");
-var loop_1 = require("./utils/loop");
 var Game = (function () {
     function Game(config) {
         this.pxWidth = config.pxWidth;
@@ -22,18 +21,18 @@ var Game = (function () {
         // bindings
         this.handleKeydown = this.handleKeydown.bind(this);
         this.updateGameState = this.updateGameState.bind(this);
-        this.frameFunction = this.frameFunction.bind(this);
-        this.lastTime = 0;
+        // this.frameFunction = this.frameFunction.bind(this);
+        // this.lastTime = 0;
         this.targetMS = 40;
     }
     Game.prototype.updateGameState = function (partialState) {
         this.gameState = Object.assign({}, this.gameState, partialState);
     };
-    Game.prototype.frameFunction = function (elapsed) {
-        if (elapsed - this.lastTime >= this.targetMS) {
-            this.lastTime = elapsed;
-        }
-    };
+    // frameFunction(elapsed: number) {
+    //   if (elapsed - this.lastTime >= this.targetMS) {
+    //     this.lastTime = elapsed;
+    //   }
+    // }
     Game.prototype.init = function () {
         console.log('game init');
         this.board = new board_1.default(this.tileWidth, this.tileHeight, this.pxWidth, this.pxHeight);
@@ -41,18 +40,17 @@ var Game = (function () {
         d3.select('body').on('keydown', this.handleKeydown);
         this.board.createBoardTiles();
         this.board.drawBoard();
-        this.loop = new loop_1.default(this.frameFunction);
+        // this.loop = new Loop(this.frameFunction);
     };
     Game.prototype.handleKeydown = function () {
         console.log(d3.event.keyCode);
         var _a = this.gameState, direction = _a.direction, playerAlive = _a.playerAlive, readyToPlay = _a.readyToPlay;
-        var _b = this, loop = _b.loop, updateGameState = _b.updateGameState;
+        var updateGameState = this.updateGameState;
         switch (d3.event.keyCode) {
             case 32:
                 // SPACE
                 if (readyToPlay && !playerAlive) {
                     updateGameState({ playerAlive: true });
-                    loop.start();
                 }
                 break;
             case 38:
@@ -75,20 +73,16 @@ var Game = (function () {
             case 65:
                 if (!playerAlive) {
                     updateGameState({ playerAlive: true });
-                    loop.start();
                 }
                 break;
             // s
             case 83:
                 if (playerAlive) {
                     updateGameState({ playerAlive: false });
-                    loop.stop();
-                    this.lastTime = 0;
                 }
                 break;
             default:
-                updateGameState({});
-                break;
+                return;
         }
     };
     return Game;

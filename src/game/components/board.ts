@@ -65,8 +65,12 @@ export default class Board {
       .enter().append('rect')
         .attr('width', this.xScale(1))
         .attr('height', this.yScale(1))
-        .attr('x', d => this.xScale(d.x))
+        .attr('x', d => this.xScale(this.tileWidth / 2))
+        .attr('y', d => this.yScale(this.tileHeight / 2))
+        .attr('fill', fill.clear)
+      .transition().duration(1000).ease(d3.easeBounceOut)
         .attr('y', d => this.yScale(d.y))
+        .attr('x', d => this.xScale(d.x))
         .attr('fill', d => d.updateColor);
   }
 

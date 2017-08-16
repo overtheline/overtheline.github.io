@@ -52,9 +52,9 @@ export default class Game {
     // bindings
     this.handleKeydown = this.handleKeydown.bind(this);
     this.updateGameState = this.updateGameState.bind(this);
-    this.frameFunction = this.frameFunction.bind(this);
+    // this.frameFunction = this.frameFunction.bind(this);
 
-    this.lastTime = 0;
+    // this.lastTime = 0;
     this.targetMS = 40;
   }
 
@@ -62,11 +62,11 @@ export default class Game {
     this.gameState = (<any>Object).assign({}, this.gameState, partialState);
   }
 
-  frameFunction(elapsed: number) {
-    if (elapsed - this.lastTime >= this.targetMS) {
-      this.lastTime = elapsed;
-    }
-  }
+  // frameFunction(elapsed: number) {
+  //   if (elapsed - this.lastTime >= this.targetMS) {
+  //     this.lastTime = elapsed;
+  //   }
+  // }
 
   init() {
     console.log('game init');
@@ -84,7 +84,7 @@ export default class Game {
     this.board.createBoardTiles();
     this.board.drawBoard();
 
-    this.loop = new Loop(this.frameFunction);
+    // this.loop = new Loop(this.frameFunction);
   }
 
   handleKeydown() {
@@ -96,7 +96,6 @@ export default class Game {
     } = this.gameState;
 
     const {
-      loop,
       updateGameState,
     } = this;
 
@@ -105,7 +104,6 @@ export default class Game {
         // SPACE
         if (readyToPlay && !playerAlive) {
           updateGameState({ playerAlive: true });
-          loop.start();
         }
         break;
 
@@ -133,7 +131,6 @@ export default class Game {
       case 65:
         if (!playerAlive) {
           updateGameState({ playerAlive: true });
-          loop.start();
         }
         break;
 
@@ -141,14 +138,11 @@ export default class Game {
       case 83:
         if (playerAlive) {
           updateGameState({ playerAlive: false });
-          loop.stop();
-          this.lastTime = 0;
         }
         break;
 
       default:
-        updateGameState({});
-        break;
+        return;
     }
   }
 }

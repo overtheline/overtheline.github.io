@@ -42,8 +42,12 @@ var Board = (function () {
             .enter().append('rect')
             .attr('width', this.xScale(1))
             .attr('height', this.yScale(1))
-            .attr('x', function (d) { return _this.xScale(d.x); })
+            .attr('x', function (d) { return _this.xScale(_this.tileWidth / 2); })
+            .attr('y', function (d) { return _this.yScale(_this.tileHeight / 2); })
+            .attr('fill', fill.clear)
+            .transition().duration(1000).ease(d3.easeBounceOut)
             .attr('y', function (d) { return _this.yScale(d.y); })
+            .attr('x', function (d) { return _this.xScale(d.x); })
             .attr('fill', function (d) { return d.updateColor; });
     };
     Board.prototype.drawGamePieces = function (tiles, onRenderEnd) {
