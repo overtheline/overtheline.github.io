@@ -1,13 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-;
 var Tile = (function () {
-    function Tile(config) {
-        this.x = config.x;
-        this.y = config.y;
-        this.enterColor = config.enterColor;
-        this.updateColor = config.updateColor;
-        this.exitColor = config.exitColor;
+    function Tile(x, y, enterColor, updateColor, exitColor) {
+        this.x = x;
+        this.y = y;
+        this.enterColor = enterColor;
+        this.updateColor = updateColor;
+        this.exitColor = exitColor;
     }
     return Tile;
 }());

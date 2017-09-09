@@ -1,54 +1,23 @@
 "use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
 var Tile_1 = require("./Tile");
-var directions_1 = require("../constants/directions");
 var fill = require("../constants/colors");
-var Player = (function () {
+var Player = (function (_super) {
+    __extends(Player, _super);
     function Player(x, y) {
-        this.currentDirection = directions_1.RIGHT;
-        this.tiles = [];
-        for (var i = 0; i < 15; i++) {
-            this.tiles.push(new Tile_1.default({
-                x: x,
-                y: y,
-                enterColor: fill.playerEnter,
-                updateColor: fill.playerUpdate,
-                exitColor: fill.playerExit,
-            }));
-        }
+        return _super.call(this, x, y, fill.playerEnter, fill.playerUpdate, fill.playerExit) || this;
     }
-    Player.prototype.getTiles = function () {
-        return this.tiles;
-    };
-    Player.prototype.updatePosition = function (nextDirection) {
-        var head = this.tiles[0];
-        // Do not back up on yourself
-        if ((nextDirection === directions_1.UP && this.currentDirection !== directions_1.DOWN)
-            || (nextDirection === directions_1.DOWN && this.currentDirection !== directions_1.UP)
-            || (nextDirection === directions_1.RIGHT && this.currentDirection !== directions_1.LEFT)
-            || (nextDirection === directions_1.LEFT && this.currentDirection !== directions_1.RIGHT)) {
-            this.currentDirection = nextDirection;
-        }
-        for (var i = this.tiles.length - 1; i > 0; i--) {
-            this.tiles[i].x = this.tiles[i - 1].x;
-            this.tiles[i].y = this.tiles[i - 1].y;
-        }
-        switch (this.currentDirection) {
-            case directions_1.UP:
-                head.y -= 1;
-                break;
-            case directions_1.DOWN:
-                head.y += 1;
-                break;
-            case directions_1.LEFT:
-                head.x -= 1;
-                break;
-            case directions_1.RIGHT:
-                head.x += 1;
-                break;
-        }
-    };
     return Player;
-}());
+}(Tile_1.default));
 exports.default = Player;
 //# sourceMappingURL=player.js.map

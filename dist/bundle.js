@@ -4684,12 +4684,15 @@ exports.wallColor = 'rgba(100, 100, 100, 1)';
 exports.clear = 'rgba(255, 255, 255, 0)';
 exports.red = 'rgba(255, 0, 0, 0.1)';
 exports.black = 'rgba(0, 0, 0, 0.1)';
-exports.playerEnter = 'rgba(0, 200, 0, 0.7)';
-exports.playerUpdate = exports.playerEnter;
+exports.playerEnter = 'rgba(0, 0, 200, 0.1)';
+exports.playerUpdate = 'rgba(0, 200, 0, 0.7)';
 exports.playerExit = 'rgba(255, 20, 100, 0.1)';
-exports.foodEnter = 'rgba(255, 128, 0, 0.7)';
-exports.foodUpdate = exports.foodEnter;
+exports.foodEnter = 'rgba(255, 128, 0, 0.1)';
+exports.foodUpdate = 'rgba(255, 128, 0, 0.7)';
 exports.foodExit = 'rgba(255, 128, 0, 0.1)';
+exports.blockEnter = 'rgba(150, 150, 150, 0.1)';
+exports.blockUpdate = 'rgba(150, 150, 150, 0.7)';
+exports.blockExit = 'rgba(150, 150, 150, 0.1)';
 
 
 /***/ }),
@@ -23447,27 +23450,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 
 /***/ }),
-/* 51 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-;
-var Tile = (function () {
-    function Tile(config) {
-        this.x = config.x;
-        this.y = config.y;
-        this.enterColor = config.enterColor;
-        this.updateColor = config.updateColor;
-        this.exitColor = config.exitColor;
-    }
-    return Tile;
-}());
-exports.default = Tile;
-
-
-/***/ }),
+/* 51 */,
 /* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -39482,94 +39465,15 @@ exports.default = Game;
 
 /***/ }),
 /* 190 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var Tile_1 = __webpack_require__(51);
-var directions_1 = __webpack_require__(52);
-var fill = __webpack_require__(32);
-var Player = (function () {
-    function Player(x, y) {
-        this.currentDirection = directions_1.RIGHT;
-        this.tiles = [];
-        for (var i = 0; i < 15; i++) {
-            this.tiles.push(new Tile_1.default({
-                x: x,
-                y: y,
-                enterColor: fill.playerEnter,
-                updateColor: fill.playerUpdate,
-                exitColor: fill.playerExit,
-            }));
-        }
-    }
-    Player.prototype.getTiles = function () {
-        return this.tiles;
-    };
-    Player.prototype.updatePosition = function (nextDirection) {
-        var head = this.tiles[0];
-        // Do not back up on yourself
-        if ((nextDirection === directions_1.UP && this.currentDirection !== directions_1.DOWN)
-            || (nextDirection === directions_1.DOWN && this.currentDirection !== directions_1.UP)
-            || (nextDirection === directions_1.RIGHT && this.currentDirection !== directions_1.LEFT)
-            || (nextDirection === directions_1.LEFT && this.currentDirection !== directions_1.RIGHT)) {
-            this.currentDirection = nextDirection;
-        }
-        for (var i = this.tiles.length - 1; i > 0; i--) {
-            this.tiles[i].x = this.tiles[i - 1].x;
-            this.tiles[i].y = this.tiles[i - 1].y;
-        }
-        switch (this.currentDirection) {
-            case directions_1.UP:
-                head.y -= 1;
-                break;
-            case directions_1.DOWN:
-                head.y += 1;
-                break;
-            case directions_1.LEFT:
-                head.x -= 1;
-                break;
-            case directions_1.RIGHT:
-                head.x += 1;
-                break;
-        }
-    };
-    return Player;
-}());
-exports.default = Player;
-
+throw new Error("Module build failed: Error: ENOENT: no such file or directory, open '/Users/tdat/Sites/overtheline.github.io/src/game/components/player.ts'\n    at Error (native)");
 
 /***/ }),
 /* 191 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var Tile_1 = __webpack_require__(51);
-var fill = __webpack_require__(32);
-var Food = (function () {
-    function Food() {
-    }
-    Food.prototype.getTiles = function () {
-        return this.tiles;
-    };
-    Food.prototype.addFood = function (x, y) {
-        this.tiles = [
-            new Tile_1.default({
-                x: x,
-                y: y,
-                enterColor: fill.foodEnter,
-                updateColor: fill.foodUpdate,
-                exitColor: fill.foodExit,
-            }),
-        ];
-    };
-    return Food;
-}());
-exports.default = Food;
-
+throw new Error("Module build failed: Error: ENOENT: no such file or directory, open '/Users/tdat/Sites/overtheline.github.io/src/game/components/food.ts'\n    at Error (native)");
 
 /***/ }),
 /* 192 */
@@ -39579,7 +39483,10 @@ exports.default = Food;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var d3 = __webpack_require__(50);
-var Tile_1 = __webpack_require__(51);
+var tile_1 = __webpack_require__(196);
+var player_1 = __webpack_require__(197);
+var food_1 = __webpack_require__(199);
+var block_1 = __webpack_require__(200);
 var checker_fill_1 = __webpack_require__(193);
 var fill = __webpack_require__(32);
 var Board = (function () {
@@ -39598,42 +39505,86 @@ var Board = (function () {
             .range([0, this.pxHeight]);
     }
     Board.prototype.createBoardTiles = function () {
-        var tiles = [];
+        var boardTiles = [];
         for (var i = 0; i < this.tileWidth; i++) {
             for (var j = 0; j < this.tileHeight; j++) {
-                tiles.push(new Tile_1.default({
-                    x: i,
-                    y: j,
-                    enterColor: checker_fill_1.default(i, j),
-                    updateColor: checker_fill_1.default(i, j),
-                    exitColor: checker_fill_1.default(i, j),
-                }));
+                boardTiles.push(new tile_1.default(i, j, checker_fill_1.default(i, j, fill.clear, fill.clear), checker_fill_1.default(i, j, fill.red, fill.black), checker_fill_1.default(i, j, fill.clear, fill.clear)));
             }
         }
-        this.tiles = tiles;
+        this.boardTiles = boardTiles;
     };
-    Board.prototype.drawBoard = function (cb) {
+    Board.prototype.destroyBoardTiles = function () {
+        this.boardTiles = [];
+    };
+    Board.prototype.addPlayerTile = function (x, y) {
+        if (this.playerTiles.length) {
+            var lastTile = this.playerTiles[this.playerTiles.length - 1];
+            this.playerTiles.push(player_1.default(lastTile.x, lastTile.y));
+        }
+        else {
+            this.playerTiles.push(player_1.default(x, y));
+        }
+    };
+    Board.prototype.destroyPlayer = function () {
+        this.playerTiles = [];
+    };
+    Board.prototype.addFoodTile = function (x, y) {
+        this.foodTiles.push(food_1.default(x, y));
+    };
+    Board.prototype.removeFoodTile = function (removeObj) {
+        this.foodTiles = this.foodTiles.filter(function (foodObj) { return foodObj !== removeObj; });
+    };
+    Board.prototype.destroyFood = function () {
+        this.foodTiles = [];
+    };
+    Board.prototype.addBlockTile = function (x, y) {
+        this.blockTiles.push(block_1.default(x, y));
+    };
+    Board.prototype.removeBlockTile = function (removeObj) {
+        this.blockTiles = this.blockTiles.filter(function (blockObj) { return blockObj !== removeObj; });
+    };
+    Board.prototype.destroyBlocks = function () {
+        this.blockTiles = [];
+    };
+    Board.prototype.renderBoard = function (cb) {
         var _this = this;
-        var boardTiles = this.boardSVG.selectAll('rect')
-            .data(this.tiles);
-        boardTiles
+        var tiles = this.boardSVG.selectAll('rect')
+            .data(this.boardTiles);
+        tiles
             .enter().append('rect')
             .attr('width', this.xScale(1))
             .attr('height', this.yScale(1))
-            .attr('x', function (d) { return _this.xScale(_this.tileWidth / 2); })
-            .attr('y', function (d) { return _this.yScale(_this.tileHeight / 2); })
-            .attr('fill', fill.clear)
+            .attr('x', this.xScale(this.tileWidth / 2))
+            .attr('y', this.yScale(this.tileHeight / 2))
+            .attr('fill', function (d) { return d.enterColor; })
             .transition().duration(1000).ease(d3.easeBounceOut)
             .attr('y', function (d) { return _this.yScale(d.y); })
             .attr('x', function (d) { return _this.xScale(d.x); })
             .attr('fill', function (d) { return d.updateColor; })
             .on('end', cb);
+        tiles
+            .exit()
+            .attr('fill', function (d) { return d.exitColor; })
+            .transition().duration(500)
+            .attr('x', function (d) { return _this.xScale(d.x - 0.5); })
+            .attr('y', function (d) { return _this.yScale(d.y - 0.5); })
+            .attr('width', this.xScale(0))
+            .attr('height', this.yScale(0))
+            .attr('fill', fill.clear);
     };
-    Board.prototype.drawGamePieces = function (tiles, cb) {
+    Board.prototype.renderPlayerTiles = function (cb) {
+        this.renderGameTiles(this.playerTiles, 'player-tile', cb);
+    };
+    Board.prototype.renderFoodTiles = function (cb) {
+        this.renderGameTiles(this.foodTiles, 'food-tile', cb);
+    };
+    Board.prototype.renderBlockTile = function (cb) {
+        this.renderGameTiles(this.blockTiles, 'block-tile', cb);
+    };
+    Board.prototype.renderGameTiles = function (tiles, targetClass, cb) {
         var _this = this;
         // JOIN
-        var gamePieces = this.gameSVG.selectAll('rect')
-            .data(tiles);
+        var gamePieces = this.gameSVG.selectAll("." + targetClass).data(tiles);
         // EXIT
         gamePieces.exit()
             .attr('fill', function (d) { return d.exitColor; })
@@ -39648,23 +39599,23 @@ var Board = (function () {
         // ENTER
         gamePieces
             .enter().append('rect')
+            .classed(targetClass, true)
             .attr('x', function (d) { return _this.xScale(d.x - 1); })
             .attr('y', function (d) { return _this.yScale(d.y - 1); })
             .attr('width', this.xScale(3))
             .attr('height', this.yScale(3))
-            .attr('fill', function (d) { return fill.clear; })
+            .attr('fill', function (d) { return d.enterColor; })
             .transition().duration(100)
             .attr('width', this.xScale(1))
             .attr('height', this.yScale(1))
             .attr('x', function (d) { return _this.xScale(d.x); })
             .attr('y', function (d) { return _this.yScale(d.y); })
-            .attr('fill', function (d) { return d.enterColor; })
+            .attr('fill', function (d) { return d.updateColor; })
             .on('end', cb);
         // UPDATE
         gamePieces
             .attr('x', function (d) { return _this.xScale((d.x % _this.tileWidth) < 0 ? (d.x % _this.tileWidth) + _this.tileWidth : d.x % _this.tileWidth); })
             .attr('y', function (d) { return _this.yScale((d.y % _this.tileHeight) < 0 ? (d.y % _this.tileHeight) + _this.tileHeight : d.y % _this.tileHeight); })
-            .attr('fill', function (d) { return d.updateColor; })
             .call(cb);
     };
     return Board;
@@ -39679,9 +39630,8 @@ exports.default = Board;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var colors_1 = __webpack_require__(32);
-function checkerFill(i, j) {
-    return (i + j) % 2 === 0 ? colors_1.black : colors_1.red;
+function checkerFill(i, j, fillA, fillB) {
+    return (i + j) % 2 === 0 ? fillA : fillB;
 }
 exports.default = checkerFill;
 
@@ -39731,6 +39681,91 @@ var Loop = (function () {
     return Loop;
 }());
 exports.default = Loop;
+
+
+/***/ }),
+/* 196 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Tile = (function () {
+    function Tile(x, y, enterColor, updateColor, exitColor) {
+        this.x = x;
+        this.y = y;
+        this.enterColor = enterColor;
+        this.updateColor = updateColor;
+        this.exitColor = exitColor;
+    }
+    return Tile;
+}());
+exports.default = Tile;
+
+
+/***/ }),
+/* 197 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Tile_1 = __webpack_require__(198);
+var fill = __webpack_require__(32);
+function getPlayerTile(x, y) {
+    return new Tile_1.default(x, y, fill.playerEnter, fill.playerUpdate, fill.playerExit);
+}
+exports.default = getPlayerTile;
+
+
+/***/ }),
+/* 198 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Tile = (function () {
+    function Tile(x, y, enterColor, updateColor, exitColor) {
+        this.x = x;
+        this.y = y;
+        this.enterColor = enterColor;
+        this.updateColor = updateColor;
+        this.exitColor = exitColor;
+    }
+    return Tile;
+}());
+exports.default = Tile;
+
+
+/***/ }),
+/* 199 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Tile_1 = __webpack_require__(198);
+var fill = __webpack_require__(32);
+function getFoodTile(x, y) {
+    return new Tile_1.default(x, y, fill.foodEnter, fill.foodUpdate, fill.foodExit);
+}
+exports.default = getFoodTile;
+
+
+/***/ }),
+/* 200 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Tile_1 = __webpack_require__(198);
+var fill = __webpack_require__(32);
+function getBlockTile(x, y) {
+    return new Tile_1.default(x, y, fill.blockEnter, fill.blockUpdate, fill.blockExit);
+}
+exports.default = getBlockTile;
 
 
 /***/ })
