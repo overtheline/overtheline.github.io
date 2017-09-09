@@ -8,3 +8,7 @@ export const black: string = 'rgba(0, 0, 0, 0.1)';
 export const playerEnter: string = 'rgba(0, 200, 0, 0.7)';
 export const playerUpdate: string = playerEnter;
 export const playerExit: string = 'rgba(255, 20, 100, 0.1)';
+
+export const foodEnter: string = 'rgba(255, 128, 0, 0.7)';
+export const foodUpdate: string = foodEnter;
+export const foodExit: string = 'rgba(255, 128, 0, 0.1)';

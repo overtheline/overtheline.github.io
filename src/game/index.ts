@@ -1,6 +1,7 @@
 import * as d3 from 'd3';
 
 import Player from './components/player';
+import Food from './components/food';
 import Board from './components/board';
 
 import { UP, DOWN, LEFT, RIGHT } from './constants/directions';
@@ -26,6 +27,7 @@ export interface IGameState {
 
 export default class Game {
   board: Board;
+  food: Food;
   gameState: IGameState;
   lastTime: number;
   loop?: Loop;
@@ -83,6 +85,7 @@ export default class Game {
     );
 
     this.player = new Player(this.tileWidth / 2, this.tileHeight / 2);
+    this.food = new Food();
 
     d3.select('body').on('keydown', this.handleKeydown);
 
@@ -145,6 +148,7 @@ export default class Game {
       case 83:
         if (playerAlive) {
           updateGameState({ playerAlive: false });
+          this.lastTime = 0;
           this.loop.stop();
         }
         break;
