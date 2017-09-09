@@ -1,13 +1,19 @@
 import * as d3 from 'd3';
 
-import Tile from './Tile';
+import Tile from '../tiles/tile';
+import getPlayerTile from '../tiles/player';
+import getFoodTile from '../tiles/food';
+import getBlockTile from '../tiles/block';
 import checkerFill from '../utils/checker-fill';
 import * as fill from '../constants/colors';
 
 export default class Board {
   boardSVG: d3.Selection<SVGElement, {}, HTMLElement, any>;
   gameSVG: d3.Selection<SVGElement, {}, HTMLElement, any>;
-  tiles: Tile[];
+  boardTiles: Tile[];
+  playerTiles: Tile[];
+  foodTiles: Tile[];
+  blockTiles: Tile[];
 
   xScale: d3.ScaleLinear<number, number>;
   yScale: d3.ScaleLinear<number, number>;
@@ -40,45 +46,102 @@ export default class Board {
       .range([0, this.pxHeight]);
   }
 
-  createBoardTiles() {
-    const tiles = [];
+  createBoardTiles(): void {
+    const boardTiles: Tile[] = [];
     for (let i = 0; i < this.tileWidth; i++) {
       for (let j = 0; j < this.tileHeight; j++) {
-        tiles.push(new Tile({
-          x: i,
-          y: j,
-          enterColor: checkerFill(i, j),
-          updateColor: checkerFill(i, j),
-          exitColor: checkerFill(i, j),
-        }));
+        boardTiles.push(new Tile(i, j, checkerFill(i, j, fill.clear, fill.clear), checkerFill(i, j, fill.red, fill.black), checkerFill(i, j, fill.clear, fill.clear)));
       }
     }
 
-    this.tiles = tiles;
+    this.boardTiles = boardTiles;
   }
 
-  drawBoard(cb: () => void) {
-    const boardTiles = this.boardSVG.selectAll('rect')
-      .data(this.tiles);
+  destroyBoardTiles(): void {
+    this.boardTiles = [];
+  }
 
-    boardTiles
+  addPlayerTile(x: number, y: number): void {
+    if (this.playerTiles.length) {
+      const lastTile = this.playerTiles[this.playerTiles.length - 1];
+
+      this.playerTiles.push(getPlayerTile(lastTile.x, lastTile.y));
+    } else {
+      this.playerTiles.push(getPlayerTile(x, y));
+    }
+  }
+
+  destroyPlayer(): void {
+    this.playerTiles = [];
+  }
+
+  addFoodTile(x: number, y: number): void {
+    this.foodTiles.push(getFoodTile(x, y));
+  }
+
+  removeFoodTile(removeObj: Tile): void {
+    this.foodTiles = this.foodTiles.filter((foodObj: Tile) => foodObj !== removeObj);
+  }
+
+  destroyFood(): void {
+    this.foodTiles = [];
+  }
+
+  addBlockTile(x: number, y: number): void {
+    this.blockTiles.push(getBlockTile(x, y));
+  }
+
+  removeBlockTile(removeObj: Tile) {
+    this.blockTiles = this.blockTiles.filter((blockObj) => blockObj !== removeObj);
+  }
+
+  destroyBlocks(): void {
+    this.blockTiles = [];
+  }
+
+  renderBoard(cb: () => void): void {
+    const tiles = this.boardSVG.selectAll('rect')
+      .data(this.boardTiles);
+
+    tiles
       .enter().append('rect')
         .attr('width', this.xScale(1))
         .attr('height', this.yScale(1))
-        .attr('x', d => this.xScale(this.tileWidth / 2))
-        .attr('y', d => this.yScale(this.tileHeight / 2))
-        .attr('fill', fill.clear)
+        .attr('x', this.xScale(this.tileWidth / 2))
+        .attr('y', this.yScale(this.tileHeight / 2))
+        .attr('fill', (d: Tile) => d.enterColor)
       .transition().duration(1000).ease(d3.easeBounceOut)
-        .attr('y', d => this.yScale(d.y))
-        .attr('x', d => this.xScale(d.x))
-        .attr('fill', d => d.updateColor)
+        .attr('y', (d: Tile) => this.yScale(d.y))
+        .attr('x', (d: Tile) => this.xScale(d.x))
+        .attr('fill', (d: Tile) => d.updateColor)
       .on('end', cb);
+
+    tiles
+      .exit()
+        .attr('fill', (d: Tile) => d.exitColor)
+      .transition().duration(500)
+        .attr('x', (d: Tile) => this.xScale(d.x - 0.5))
+        .attr('y', (d: Tile) => this.yScale(d.y - 0.5))
+        .attr('width', this.xScale(0))
+        .attr('height', this.yScale(0))
+        .attr('fill', fill.clear);
   }
 
-  drawGamePieces(tiles: Tile[], cb: () => void) {
+  renderPlayerTiles(cb: () => void): void {
+    this.renderGameTiles(this.playerTiles, 'player-tile', cb);
+  }
+
+  renderFoodTiles(cb: () => void): void {
+    this.renderGameTiles(this.foodTiles, 'food-tile', cb);
+  }
+
+  renderBlockTile(cb: () => void): void {
+    this.renderGameTiles(this.blockTiles, 'block-tile', cb);
+  }
+
+  private renderGameTiles(tiles: Tile[], targetClass: string, cb: () => void): void {
     // JOIN
-    const gamePieces = this.gameSVG.selectAll('rect')
-      .data(tiles);
+    const gamePieces = this.gameSVG.selectAll(`.${targetClass}`).data(tiles);
 
     // EXIT
     gamePieces.exit()
@@ -95,24 +158,24 @@ export default class Board {
     // ENTER
     gamePieces
       .enter().append('rect')
-        .attr('x', d => this.xScale(d.x - 1))
-        .attr('y', d => this.yScale(d.y - 1))
+        .classed(targetClass, true)
+        .attr('x', (d: Tile) => this.xScale(d.x - 1))
+        .attr('y', (d: Tile) => this.yScale(d.y - 1))
         .attr('width', this.xScale(3))
         .attr('height', this.yScale(3))
-        .attr('fill', (d: Tile) => fill.clear)
+        .attr('fill', (d: Tile) => d.enterColor)
       .transition().duration(100)
         .attr('width', this.xScale(1))
         .attr('height', this.yScale(1))
-        .attr('x', d => this.xScale(d.x))
-        .attr('y', d => this.yScale(d.y))
-        .attr('fill', (d: Tile) => d.enterColor)
+        .attr('x', (d: Tile) => this.xScale(d.x))
+        .attr('y', (d: Tile) => this.yScale(d.y))
+        .attr('fill', (d: Tile) => d.updateColor)
       .on('end', cb);
 
     // UPDATE
     gamePieces
-        .attr('x', d => this.xScale((d.x % this.tileWidth) < 0 ? (d.x % this.tileWidth) + this.tileWidth : d.x % this.tileWidth))
-        .attr('y', d => this.yScale((d.y % this.tileHeight) < 0 ? (d.y % this.tileHeight) + this.tileHeight : d.y % this.tileHeight))
-        .attr('fill', (d: Tile) => d.updateColor)
+        .attr('x', (d: Tile) => this.xScale((d.x % this.tileWidth) < 0 ? (d.x % this.tileWidth) + this.tileWidth : d.x % this.tileWidth))
+        .attr('y', (d: Tile) => this.yScale((d.y % this.tileHeight) < 0 ? (d.y % this.tileHeight) + this.tileHeight : d.y % this.tileHeight))
       .call(cb);
   }
 }
