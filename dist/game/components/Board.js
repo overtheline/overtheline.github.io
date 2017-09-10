@@ -6,6 +6,7 @@ var player_1 = require("../tiles/player");
 var food_1 = require("../tiles/food");
 var block_1 = require("../tiles/block");
 var checker_fill_1 = require("../utils/checker-fill");
+var torus_scale_1 = require("../utils/torus-scale");
 var directions_1 = require("../constants/directions");
 var fill = require("../constants/colors");
 var Board = (function () {
@@ -32,14 +33,17 @@ var Board = (function () {
             }
         }
         this.boardTiles = boardTiles;
-        this.playerTiles = [];
-        this.foodTiles = [];
-        this.blockTiles = [];
     };
     Board.prototype.destroyBoardTiles = function () {
         this.boardTiles = [];
     };
     // PLAYER METHODS
+    Board.prototype.createPlayer = function (x, y) {
+        this.playerTiles = [];
+        for (var i = 0; i < 5; i++) {
+            this.addPlayerTile(x, y);
+        }
+    };
     Board.prototype.addPlayerTile = function (x, y) {
         if (this.playerTiles.length) {
             var lastTile = this.playerTiles[this.playerTiles.length - 1];
@@ -74,6 +78,10 @@ var Board = (function () {
         this.playerTiles = [];
     };
     // FOOD METHODS
+    Board.prototype.createFood = function (x, y) {
+        this.foodTiles = [];
+        this.addFoodTile(x, y);
+    };
     Board.prototype.addFoodTile = function (x, y) {
         this.foodTiles.push(food_1.default(x, y));
     };
@@ -162,8 +170,8 @@ var Board = (function () {
             .on('end', cb);
         // UPDATE
         gamePieces
-            .attr('x', function (d) { return _this.xScale((d.x % _this.tileWidth) < 0 ? (d.x % _this.tileWidth) + _this.tileWidth : d.x % _this.tileWidth); })
-            .attr('y', function (d) { return _this.yScale((d.y % _this.tileHeight) < 0 ? (d.y % _this.tileHeight) + _this.tileHeight : d.y % _this.tileHeight); })
+            .attr('x', function (d) { return _this.xScale(torus_scale_1.default(_this.tileWidth)(d.x)); })
+            .attr('y', function (d) { return _this.yScale(torus_scale_1.default(_this.tileHeight)(d.y)); })
             .call(cb);
     };
     return Board;

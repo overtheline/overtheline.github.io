@@ -5,6 +5,7 @@ import getPlayerTile from '../tiles/player';
 import getFoodTile from '../tiles/food';
 import getBlockTile from '../tiles/block';
 import checkerFill from '../utils/checker-fill';
+import torusScale from '../utils/torus-scale';
 import { UP, DOWN, LEFT, RIGHT } from '../constants/directions';
 import * as fill from '../constants/colors';
 
@@ -51,6 +52,7 @@ export default class Board {
 
   createBoard(): void {
     const boardTiles: Tile[] = [];
+
     for (let i = 0; i < this.tileWidth; i++) {
       for (let j = 0; j < this.tileHeight; j++) {
         boardTiles.push(new Tile(i, j, checkerFill(i, j, fill.clear, fill.clear), checkerFill(i, j, fill.red, fill.black), checkerFill(i, j, fill.clear, fill.clear)));
@@ -58,9 +60,6 @@ export default class Board {
     }
 
     this.boardTiles = boardTiles;
-    this.playerTiles = [];
-    this.foodTiles = [];
-    this.blockTiles = [];
   }
 
   destroyBoardTiles(): void {
@@ -68,6 +67,14 @@ export default class Board {
   }
 
   // PLAYER METHODS
+
+  createPlayer(x: number, y: number): void {
+    this.playerTiles = [];
+
+    for (let i = 0; i < 5; i++) {
+      this.addPlayerTile(x, y);
+    }
+  }
 
   addPlayerTile(x: number, y: number): void {
     if (this.playerTiles.length) {
@@ -108,6 +115,12 @@ export default class Board {
   }
 
   // FOOD METHODS
+
+  createFood(x: number, y: number) {
+    this.foodTiles = [];
+
+    this.addFoodTile(x, y);
+  }
 
   addFoodTile(x: number, y: number): void {
     this.foodTiles.push(getFoodTile(x, y));
@@ -212,8 +225,8 @@ export default class Board {
 
     // UPDATE
     gamePieces
-        .attr('x', (d: Tile) => this.xScale((d.x % this.tileWidth) < 0 ? (d.x % this.tileWidth) + this.tileWidth : d.x % this.tileWidth))
-        .attr('y', (d: Tile) => this.yScale((d.y % this.tileHeight) < 0 ? (d.y % this.tileHeight) + this.tileHeight : d.y % this.tileHeight))
+        .attr('x', (d: Tile) => this.xScale(torusScale(this.tileWidth)(d.x)))
+        .attr('y', (d: Tile) => this.yScale(torusScale(this.tileHeight)(d.y)))
       .call(cb);
   }
 }

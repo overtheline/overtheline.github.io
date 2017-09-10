@@ -5,6 +5,7 @@ var board_1 = require("./components/board");
 var directions_1 = require("./constants/directions");
 var direction_1 = require("./utils/direction");
 var loop_1 = require("./utils/loop");
+var distance_1 = require("./utils/distance");
 var Game = (function () {
     function Game(config) {
         this.pxWidth = config.pxWidth;
@@ -25,6 +26,7 @@ var Game = (function () {
         this.frameFunction = this.frameFunction.bind(this);
         this.lastTime = 0;
         this.targetMS = 40;
+        this.boardDistance = distance_1.default(this.tileWidth, this.tileHeight);
     }
     Game.prototype.updateGameState = function (partialState) {
         this.gameState = Object.assign({}, this.gameState, partialState);
@@ -34,8 +36,14 @@ var Game = (function () {
         if (elapsed - this.lastTime >= this.targetMS && this.gameState.readyToUpdate) {
             this.updateGameState({ readyToUpdate: false });
             this.board.movePlayer(this.gameState.direction);
+            this.board.renderFoodTiles(function () { });
             this.board.renderPlayerTiles(function () { _this.updateGameState({ readyToUpdate: true }); });
             this.lastTime = elapsed;
+            console.log(this.board.playerTiles[0].x, this.board.playerTiles[0].y);
+            console.log(this.boardDistance(this.board.playerTiles[0].x, this.board.playerTiles[0].y, this.board.foodTiles[0].x, this.board.foodTiles[0].y));
+            if (this.boardDistance(this.board.playerTiles[0].x, this.board.playerTiles[0].y, this.board.foodTiles[0].x, this.board.foodTiles[0].y) === 0) {
+                console.log('bang');
+            }
         }
     };
     Game.prototype.init = function () {
@@ -43,12 +51,11 @@ var Game = (function () {
         console.log('game init');
         this.board = new board_1.default(this.tileWidth, this.tileHeight, this.pxWidth, this.pxHeight);
         d3.select('body').on('keydown', this.handleKeydown);
-        // build board
+        // setup
         this.board.createBoard();
+        this.board.createPlayer(2, 3);
+        this.board.createFood(20, 20);
         this.board.renderBoard(function () { return _this.updateGameState({ readyToPlay: true }); });
-        for (var i = 0; i < 5; i++) {
-            this.board.addPlayerTile(2, 3);
-        }
         this.loop = new loop_1.default(this.frameFunction);
     };
     Game.prototype.handleKeydown = function () {

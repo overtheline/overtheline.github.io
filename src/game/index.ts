@@ -6,6 +6,7 @@ import { UP, DOWN, LEFT, RIGHT } from './constants/directions';
 
 import getDirection from './utils/direction';
 import Loop from './utils/loop';
+import distance from './utils/distance';
 
 export interface IGameConfig {
   pxWidth: number;
@@ -24,6 +25,7 @@ export interface IGameState {
 
 export default class Game {
   board: Board;
+  boardDistance: (x1: number, y1: number, x2: number, y2: number) => number;
   gameState: IGameState;
   lastTime: number;
   loop?: Loop;
@@ -55,6 +57,8 @@ export default class Game {
 
     this.lastTime = 0;
     this.targetMS = 40;
+
+    this.boardDistance = distance(this.tileWidth, this.tileHeight);
   }
 
   updateGameState(partialState: Partial<IGameState>) {
@@ -64,9 +68,18 @@ export default class Game {
   frameFunction(elapsed: number) {
     if (elapsed - this.lastTime >= this.targetMS && this.gameState.readyToUpdate) {
       this.updateGameState({ readyToUpdate: false });
+
       this.board.movePlayer(this.gameState.direction);
+
+      this.board.renderFoodTiles(() => {});
       this.board.renderPlayerTiles(() => { this.updateGameState({ readyToUpdate: true }) });
+
       this.lastTime = elapsed;
+      console.log(this.board.playerTiles[0].x, this.board.playerTiles[0].y,)
+      console.log(this.boardDistance(this.board.playerTiles[0].x, this.board.playerTiles[0].y, this.board.foodTiles[0].x, this.board.foodTiles[0].y))
+      if(this.boardDistance(this.board.playerTiles[0].x, this.board.playerTiles[0].y, this.board.foodTiles[0].x, this.board.foodTiles[0].y) === 0) {
+        console.log('bang');
+      }
     }
   }
 
@@ -81,13 +94,12 @@ export default class Game {
 
     d3.select('body').on('keydown', this.handleKeydown);
 
-    // build board
+    // setup
     this.board.createBoard();
-    this.board.renderBoard(() => this.updateGameState({ readyToPlay: true }));
+    this.board.createPlayer(2, 3);
+    this.board.createFood(20, 20);
 
-    for (let i = 0; i < 5; i++) {
-      this.board.addPlayerTile(2, 3);
-    }
+    this.board.renderBoard(() => this.updateGameState({ readyToPlay: true }));
 
     this.loop = new Loop(this.frameFunction);
   }

@@ -39382,8 +39382,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var d3 = __webpack_require__(51);
 var board_1 = __webpack_require__(190);
 var directions_1 = __webpack_require__(52);
-var direction_1 = __webpack_require__(195);
-var loop_1 = __webpack_require__(196);
+var direction_1 = __webpack_require__(196);
+var loop_1 = __webpack_require__(197);
+var distance_1 = __webpack_require__(198);
 var Game = (function () {
     function Game(config) {
         this.pxWidth = config.pxWidth;
@@ -39404,6 +39405,7 @@ var Game = (function () {
         this.frameFunction = this.frameFunction.bind(this);
         this.lastTime = 0;
         this.targetMS = 40;
+        this.boardDistance = distance_1.default(this.tileWidth, this.tileHeight);
     }
     Game.prototype.updateGameState = function (partialState) {
         this.gameState = Object.assign({}, this.gameState, partialState);
@@ -39413,8 +39415,14 @@ var Game = (function () {
         if (elapsed - this.lastTime >= this.targetMS && this.gameState.readyToUpdate) {
             this.updateGameState({ readyToUpdate: false });
             this.board.movePlayer(this.gameState.direction);
+            this.board.renderFoodTiles(function () { });
             this.board.renderPlayerTiles(function () { _this.updateGameState({ readyToUpdate: true }); });
             this.lastTime = elapsed;
+            console.log(this.board.playerTiles[0].x, this.board.playerTiles[0].y);
+            console.log(this.boardDistance(this.board.playerTiles[0].x, this.board.playerTiles[0].y, this.board.foodTiles[0].x, this.board.foodTiles[0].y));
+            if (this.boardDistance(this.board.playerTiles[0].x, this.board.playerTiles[0].y, this.board.foodTiles[0].x, this.board.foodTiles[0].y) === 0) {
+                console.log('bang');
+            }
         }
     };
     Game.prototype.init = function () {
@@ -39422,12 +39430,11 @@ var Game = (function () {
         console.log('game init');
         this.board = new board_1.default(this.tileWidth, this.tileHeight, this.pxWidth, this.pxHeight);
         d3.select('body').on('keydown', this.handleKeydown);
-        // build board
+        // setup
         this.board.createBoard();
+        this.board.createPlayer(2, 3);
+        this.board.createFood(20, 20);
         this.board.renderBoard(function () { return _this.updateGameState({ readyToPlay: true }); });
-        for (var i = 0; i < 5; i++) {
-            this.board.addPlayerTile(2, 3);
-        }
         this.loop = new loop_1.default(this.frameFunction);
     };
     Game.prototype.handleKeydown = function () {
@@ -39495,6 +39502,7 @@ var player_1 = __webpack_require__(191);
 var food_1 = __webpack_require__(192);
 var block_1 = __webpack_require__(193);
 var checker_fill_1 = __webpack_require__(194);
+var torus_scale_1 = __webpack_require__(195);
 var directions_1 = __webpack_require__(52);
 var fill = __webpack_require__(33);
 var Board = (function () {
@@ -39521,14 +39529,17 @@ var Board = (function () {
             }
         }
         this.boardTiles = boardTiles;
-        this.playerTiles = [];
-        this.foodTiles = [];
-        this.blockTiles = [];
     };
     Board.prototype.destroyBoardTiles = function () {
         this.boardTiles = [];
     };
     // PLAYER METHODS
+    Board.prototype.createPlayer = function (x, y) {
+        this.playerTiles = [];
+        for (var i = 0; i < 5; i++) {
+            this.addPlayerTile(x, y);
+        }
+    };
     Board.prototype.addPlayerTile = function (x, y) {
         if (this.playerTiles.length) {
             var lastTile = this.playerTiles[this.playerTiles.length - 1];
@@ -39563,6 +39574,10 @@ var Board = (function () {
         this.playerTiles = [];
     };
     // FOOD METHODS
+    Board.prototype.createFood = function (x, y) {
+        this.foodTiles = [];
+        this.addFoodTile(x, y);
+    };
     Board.prototype.addFoodTile = function (x, y) {
         this.foodTiles.push(food_1.default(x, y));
     };
@@ -39651,8 +39666,8 @@ var Board = (function () {
             .on('end', cb);
         // UPDATE
         gamePieces
-            .attr('x', function (d) { return _this.xScale((d.x % _this.tileWidth) < 0 ? (d.x % _this.tileWidth) + _this.tileWidth : d.x % _this.tileWidth); })
-            .attr('y', function (d) { return _this.yScale((d.y % _this.tileHeight) < 0 ? (d.y % _this.tileHeight) + _this.tileHeight : d.y % _this.tileHeight); })
+            .attr('x', function (d) { return _this.xScale(torus_scale_1.default(_this.tileWidth)(d.x)); })
+            .attr('y', function (d) { return _this.yScale(torus_scale_1.default(_this.tileHeight)(d.y)); })
             .call(cb);
     };
     return Board;
@@ -39725,6 +39740,21 @@ exports.default = checkerFill;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+function torusScale(mod) {
+    return function modScale(l) {
+        return (l % mod) < 0 ? (l % mod) + mod : l % mod;
+    };
+}
+exports.default = torusScale;
+
+
+/***/ }),
+/* 196 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
 var dir = __webpack_require__(52);
 function getDirection(nextDirection, prevDirection) {
     if ((nextDirection === dir.DOWN && prevDirection !== dir.UP)
@@ -39739,7 +39769,7 @@ exports.default = getDirection;
 
 
 /***/ }),
-/* 196 */
+/* 197 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39763,6 +39793,24 @@ var Loop = (function () {
     return Loop;
 }());
 exports.default = Loop;
+
+
+/***/ }),
+/* 198 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var torus_scale_1 = __webpack_require__(195);
+function default_1(modX, modY) {
+    var modXScale = torus_scale_1.default(modX);
+    var modYScale = torus_scale_1.default(modY);
+    return function modDistance(x1, y1, x2, y2) {
+        return Math.abs(modXScale(x1) - modXScale(x2)) + Math.abs(modYScale(y1) - modYScale(y2));
+    };
+}
+exports.default = default_1;
 
 
 /***/ })
