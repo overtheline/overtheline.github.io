@@ -7,6 +7,7 @@ import { UP, DOWN, LEFT, RIGHT } from './constants/directions';
 import getDirection from './utils/direction';
 import Loop from './utils/loop';
 import distance from './utils/distance';
+import collision from './utils/collision';
 
 export interface IGameConfig {
   pxWidth: number;
@@ -66,20 +67,31 @@ export default class Game {
   }
 
   frameFunction(elapsed: number) {
-    if (elapsed - this.lastTime >= this.targetMS && this.gameState.readyToUpdate) {
+    if (elapsed - this.lastTime >= this.targetMS && this.gameState.readyToUpdate && this.gameState.playerAlive) {
       this.updateGameState({ readyToUpdate: false });
 
       this.board.movePlayer(this.gameState.direction);
+
+      // collide self
+      const [head, ...body] = this.board.playerTiles;
+      if(collision(head, body, this.boardDistance)) {
+        this.board.destroyPlayer();
+        this.board.destroyFood();
+        this.updateGameState({ playerAlive: false });
+        console.log('self');
+      }
+
+      // collide food
+      const food = this.board.foodTiles;
+      if(collision(head, food, this.boardDistance)) {
+        this.board.addPlayerTile();
+        this.board.destroyFood();
+      }
 
       this.board.renderFoodTiles(() => {});
       this.board.renderPlayerTiles(() => { this.updateGameState({ readyToUpdate: true }) });
 
       this.lastTime = elapsed;
-      console.log(this.board.playerTiles[0].x, this.board.playerTiles[0].y,)
-      console.log(this.boardDistance(this.board.playerTiles[0].x, this.board.playerTiles[0].y, this.board.foodTiles[0].x, this.board.foodTiles[0].y))
-      if(this.boardDistance(this.board.playerTiles[0].x, this.board.playerTiles[0].y, this.board.foodTiles[0].x, this.board.foodTiles[0].y) === 0) {
-        console.log('bang');
-      }
     }
   }
 
@@ -147,8 +159,7 @@ export default class Game {
 
       // a
       case 65:
-        if (readyToPlay && !playerAlive) {
-          updateGameState({ playerAlive: true });
+        if (readyToPlay && playerAlive) {
           this.loop.start();
         }
         break;
@@ -156,7 +167,6 @@ export default class Game {
       // s
       case 83:
         if (readyToPlay && playerAlive) {
-          updateGameState({ playerAlive: false });
           this.lastTime = 0;
           this.loop.stop();
         }

@@ -40,7 +40,7 @@ var Board = (function () {
     // PLAYER METHODS
     Board.prototype.createPlayer = function (x, y) {
         this.playerTiles = [];
-        for (var i = 0; i < 5; i++) {
+        for (var i = 0; i < 25; i++) {
             this.addPlayerTile(x, y);
         }
     };
@@ -49,7 +49,7 @@ var Board = (function () {
             var lastTile = this.playerTiles[this.playerTiles.length - 1];
             this.playerTiles.push(player_1.default(lastTile.x, lastTile.y));
         }
-        else {
+        else if (x && y) {
             this.playerTiles.push(player_1.default(x, y));
         }
     };
@@ -144,7 +144,7 @@ var Board = (function () {
         // EXIT
         gamePieces.exit()
             .attr('fill', function (d) { return d.exitColor; })
-            .transition().duration(500)
+            .transition().duration(100)
             .attr('x', function (d) { return _this.xScale(d.x + 0.5); })
             .attr('y', function (d) { return _this.yScale(d.y + 0.5); })
             .attr('width', this.xScale(0))

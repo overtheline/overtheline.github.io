@@ -1,6 +1,6 @@
 import torusScale from './torus-scale';
 
-export default function(modX: number, modY: number): (x1: number, y1: number, x2: number, y2: number) => number {
+export default function distance(modX: number, modY: number): (x1: number, y1: number, x2: number, y2: number) => number {
   const modXScale = torusScale(modX);
   const modYScale = torusScale(modY);
 

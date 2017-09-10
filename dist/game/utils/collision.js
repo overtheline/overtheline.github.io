@@ -1,8 +1,12 @@
-// 
-// export default function collision(subject: Tile, objects: Tile[]): boolean {
-//   return objects.reduce((hit, object) => {
-//     if (hit) { return hit; }
-//     return object.x === subject.x && object.y === subject.y;
-//   }, false);
-// }
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+function collision(subject, objects, distance) {
+    return objects.reduce(function (hit, object) {
+        if (hit) {
+            return hit;
+        }
+        return distance(object.x, object.y, subject.x, subject.y) === 0;
+    }, false);
+}
+exports.default = collision;
 //# sourceMappingURL=collision.js.map

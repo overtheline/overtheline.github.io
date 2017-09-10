@@ -71,17 +71,17 @@ export default class Board {
   createPlayer(x: number, y: number): void {
     this.playerTiles = [];
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 25; i++) {
       this.addPlayerTile(x, y);
     }
   }
 
-  addPlayerTile(x: number, y: number): void {
+  addPlayerTile(x?: number, y?: number): void {
     if (this.playerTiles.length) {
       const lastTile = this.playerTiles[this.playerTiles.length - 1];
 
       this.playerTiles.push(getPlayerTile(lastTile.x, lastTile.y));
-    } else {
+    } else if(x && y) {
       this.playerTiles.push(getPlayerTile(x, y));
     }
   }
@@ -197,7 +197,7 @@ export default class Board {
     // EXIT
     gamePieces.exit()
         .attr('fill', (d: Tile) => d.exitColor)
-      .transition().duration(500)
+      .transition().duration(100)
         .attr('x', (d: Tile) => this.xScale(d.x + 0.5))
         .attr('y', (d: Tile) => this.yScale(d.y + 0.5))
         .attr('width', this.xScale(0))

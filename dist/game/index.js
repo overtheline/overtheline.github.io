@@ -6,6 +6,7 @@ var directions_1 = require("./constants/directions");
 var direction_1 = require("./utils/direction");
 var loop_1 = require("./utils/loop");
 var distance_1 = require("./utils/distance");
+var collision_1 = require("./utils/collision");
 var Game = (function () {
     function Game(config) {
         this.pxWidth = config.pxWidth;
@@ -33,17 +34,26 @@ var Game = (function () {
     };
     Game.prototype.frameFunction = function (elapsed) {
         var _this = this;
-        if (elapsed - this.lastTime >= this.targetMS && this.gameState.readyToUpdate) {
+        if (elapsed - this.lastTime >= this.targetMS && this.gameState.readyToUpdate && this.gameState.playerAlive) {
             this.updateGameState({ readyToUpdate: false });
             this.board.movePlayer(this.gameState.direction);
+            // collide self
+            var _a = this.board.playerTiles, head = _a[0], body = _a.slice(1);
+            if (collision_1.default(head, body, this.boardDistance)) {
+                this.board.destroyPlayer();
+                this.board.destroyFood();
+                this.updateGameState({ playerAlive: false });
+                console.log('self');
+            }
+            // collide food
+            var food = this.board.foodTiles;
+            if (collision_1.default(head, food, this.boardDistance)) {
+                this.board.addPlayerTile();
+                this.board.destroyFood();
+            }
             this.board.renderFoodTiles(function () { });
             this.board.renderPlayerTiles(function () { _this.updateGameState({ readyToUpdate: true }); });
             this.lastTime = elapsed;
-            console.log(this.board.playerTiles[0].x, this.board.playerTiles[0].y);
-            console.log(this.boardDistance(this.board.playerTiles[0].x, this.board.playerTiles[0].y, this.board.foodTiles[0].x, this.board.foodTiles[0].y));
-            if (this.boardDistance(this.board.playerTiles[0].x, this.board.playerTiles[0].y, this.board.foodTiles[0].x, this.board.foodTiles[0].y) === 0) {
-                console.log('bang');
-            }
         }
     };
     Game.prototype.init = function () {
@@ -88,15 +98,13 @@ var Game = (function () {
                 break;
             // a
             case 65:
-                if (readyToPlay && !playerAlive) {
-                    updateGameState({ playerAlive: true });
+                if (readyToPlay && playerAlive) {
                     this.loop.start();
                 }
                 break;
             // s
             case 83:
                 if (readyToPlay && playerAlive) {
-                    updateGameState({ playerAlive: false });
                     this.lastTime = 0;
                     this.loop.stop();
                 }
