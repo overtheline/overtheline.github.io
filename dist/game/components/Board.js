@@ -24,7 +24,7 @@ var Board = (function () {
             .range([0, this.pxHeight]);
     }
     // BOARD METHODS
-    Board.prototype.createBoardTiles = function () {
+    Board.prototype.createBoard = function () {
         var boardTiles = [];
         for (var i = 0; i < this.tileWidth; i++) {
             for (var j = 0; j < this.tileHeight; j++) {
@@ -32,6 +32,9 @@ var Board = (function () {
             }
         }
         this.boardTiles = boardTiles;
+        this.playerTiles = [];
+        this.foodTiles = [];
+        this.blockTiles = [];
     };
     Board.prototype.destroyBoardTiles = function () {
         this.boardTiles = [];
@@ -46,13 +49,13 @@ var Board = (function () {
             this.playerTiles.push(player_1.default(x, y));
         }
     };
-    Board.prototype.movePlayer = function (nextPlayerDirection, currentPlayerDirection) {
+    Board.prototype.movePlayer = function (nextPlayerDirection) {
         var head = this.playerTiles[0];
         for (var i = this.playerTiles.length - 1; i > 0; i--) {
             this.playerTiles[i].x = this.playerTiles[i - 1].x;
             this.playerTiles[i].y = this.playerTiles[i - 1].y;
         }
-        switch (currentPlayerDirection) {
+        switch (nextPlayerDirection) {
             case directions_1.UP:
                 head.y -= 1;
                 break;

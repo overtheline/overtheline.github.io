@@ -49,7 +49,7 @@ export default class Board {
 
   // BOARD METHODS
 
-  createBoardTiles(): void {
+  createBoard(): void {
     const boardTiles: Tile[] = [];
     for (let i = 0; i < this.tileWidth; i++) {
       for (let j = 0; j < this.tileHeight; j++) {
@@ -58,6 +58,9 @@ export default class Board {
     }
 
     this.boardTiles = boardTiles;
+    this.playerTiles = [];
+    this.foodTiles = [];
+    this.blockTiles = [];
   }
 
   destroyBoardTiles(): void {
@@ -76,7 +79,7 @@ export default class Board {
     }
   }
 
-  movePlayer(nextPlayerDirection: string, currentPlayerDirection: string) {
+  movePlayer(nextPlayerDirection: string) {
     const [head] = this.playerTiles;
 
     for (let i = this.playerTiles.length - 1; i > 0; i--) {
@@ -84,7 +87,7 @@ export default class Board {
       this.playerTiles[i].y = this.playerTiles[i - 1].y;
     }
 
-    switch(currentPlayerDirection) {
+    switch(nextPlayerDirection) {
       case UP:
         head.y -= 1;
         break;
