@@ -46,6 +46,8 @@ export default class Board {
       .range([0, this.pxHeight]);
   }
 
+  // BOARD METHODS
+
   createBoardTiles(): void {
     const boardTiles: Tile[] = [];
     for (let i = 0; i < this.tileWidth; i++) {
@@ -61,6 +63,8 @@ export default class Board {
     this.boardTiles = [];
   }
 
+  // PLAYER METHODS
+
   addPlayerTile(x: number, y: number): void {
     if (this.playerTiles.length) {
       const lastTile = this.playerTiles[this.playerTiles.length - 1];
@@ -71,9 +75,15 @@ export default class Board {
     }
   }
 
+  movePlayer(direction: string) {
+
+  }
+
   destroyPlayer(): void {
     this.playerTiles = [];
   }
+
+  // FOOD METHODS
 
   addFoodTile(x: number, y: number): void {
     this.foodTiles.push(getFoodTile(x, y));
@@ -87,6 +97,8 @@ export default class Board {
     this.foodTiles = [];
   }
 
+  // BLOCK METHODS
+
   addBlockTile(x: number, y: number): void {
     this.blockTiles.push(getBlockTile(x, y));
   }
@@ -98,6 +110,8 @@ export default class Board {
   destroyBlocks(): void {
     this.blockTiles = [];
   }
+
+  // RENDER METHODS
 
   renderBoard(cb: () => void): void {
     const tiles = this.boardSVG.selectAll('rect')

@@ -1,8 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var d3 = require("d3");
-var player_1 = require("./components/player");
-var food_1 = require("./components/food");
 var board_1 = require("./components/board");
 var directions_1 = require("./constants/directions");
 var direction_1 = require("./utils/direction");
@@ -44,8 +42,8 @@ var Game = (function () {
         var _this = this;
         console.log('game init');
         this.board = new board_1.default(this.tileWidth, this.tileHeight, this.pxWidth, this.pxHeight);
-        this.player = new player_1.default(this.tileWidth / 2, this.tileHeight / 2);
-        this.food = new food_1.default();
+        this.player = new Player(this.tileWidth / 2, this.tileHeight / 2);
+        this.food = new Food();
         d3.select('body').on('keydown', this.handleKeydown);
         this.board.createBoardTiles();
         this.board.drawBoard(function () { return _this.updateGameState({ readyToPlay: true }); });

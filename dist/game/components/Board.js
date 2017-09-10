@@ -22,6 +22,7 @@ var Board = (function () {
             .domain([0, this.tileHeight])
             .range([0, this.pxHeight]);
     }
+    // BOARD METHODS
     Board.prototype.createBoardTiles = function () {
         var boardTiles = [];
         for (var i = 0; i < this.tileWidth; i++) {
@@ -34,6 +35,7 @@ var Board = (function () {
     Board.prototype.destroyBoardTiles = function () {
         this.boardTiles = [];
     };
+    // PLAYER METHODS
     Board.prototype.addPlayerTile = function (x, y) {
         if (this.playerTiles.length) {
             var lastTile = this.playerTiles[this.playerTiles.length - 1];
@@ -43,9 +45,12 @@ var Board = (function () {
             this.playerTiles.push(player_1.default(x, y));
         }
     };
+    Board.prototype.movePlayer = function (direction) {
+    };
     Board.prototype.destroyPlayer = function () {
         this.playerTiles = [];
     };
+    // FOOD METHODS
     Board.prototype.addFoodTile = function (x, y) {
         this.foodTiles.push(food_1.default(x, y));
     };
@@ -55,6 +60,7 @@ var Board = (function () {
     Board.prototype.destroyFood = function () {
         this.foodTiles = [];
     };
+    // BLOCK METHODS
     Board.prototype.addBlockTile = function (x, y) {
         this.blockTiles.push(block_1.default(x, y));
     };
@@ -64,6 +70,7 @@ var Board = (function () {
     Board.prototype.destroyBlocks = function () {
         this.blockTiles = [];
     };
+    // RENDER METHODS
     Board.prototype.renderBoard = function (cb) {
         var _this = this;
         var tiles = this.boardSVG.selectAll('rect')

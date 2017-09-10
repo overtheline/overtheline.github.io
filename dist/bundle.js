@@ -39361,8 +39361,6 @@ exports.default = App;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var d3 = __webpack_require__(50);
-var player_1 = __webpack_require__(190);
-var food_1 = __webpack_require__(191);
 var board_1 = __webpack_require__(192);
 var directions_1 = __webpack_require__(52);
 var direction_1 = __webpack_require__(194);
@@ -39404,8 +39402,8 @@ var Game = (function () {
         var _this = this;
         console.log('game init');
         this.board = new board_1.default(this.tileWidth, this.tileHeight, this.pxWidth, this.pxHeight);
-        this.player = new player_1.default(this.tileWidth / 2, this.tileHeight / 2);
-        this.food = new food_1.default();
+        this.player = new Player(this.tileWidth / 2, this.tileHeight / 2);
+        this.food = new Food();
         d3.select('body').on('keydown', this.handleKeydown);
         this.board.createBoardTiles();
         this.board.drawBoard(function () { return _this.updateGameState({ readyToPlay: true }); });
@@ -39464,18 +39462,8 @@ exports.default = Game;
 
 
 /***/ }),
-/* 190 */
-/***/ (function(module, exports) {
-
-throw new Error("Module build failed: Error: ENOENT: no such file or directory, open '/Users/tdat/Sites/overtheline.github.io/src/game/components/player.ts'\n    at Error (native)");
-
-/***/ }),
-/* 191 */
-/***/ (function(module, exports) {
-
-throw new Error("Module build failed: Error: ENOENT: no such file or directory, open '/Users/tdat/Sites/overtheline.github.io/src/game/components/food.ts'\n    at Error (native)");
-
-/***/ }),
+/* 190 */,
+/* 191 */,
 /* 192 */
 /***/ (function(module, exports, __webpack_require__) {
 

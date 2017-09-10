@@ -1,7 +1,5 @@
 import * as d3 from 'd3';
 
-import Player from './components/player';
-import Food from './components/food';
 import Board from './components/board';
 
 import { UP, DOWN, LEFT, RIGHT } from './constants/directions';
@@ -27,11 +25,9 @@ export interface IGameState {
 
 export default class Game {
   board: Board;
-  food: Food;
   gameState: IGameState;
   lastTime: number;
   loop?: Loop;
-  player: Player;
   pxHeight: number;
   pxWidth: number;
   targetMS: number;
