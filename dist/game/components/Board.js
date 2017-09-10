@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var d3 = require("d3");
-var ________e_tse_tileeesssaaabbbtile_1 = require("........e.tse-tileeesssaaabbbtile");
+var base_tile_1 = require("../tiles/base-tile");
 var player_1 = require("../tiles/player");
 var food_1 = require("../tiles/food");
 var block_1 = require("../tiles/block");
@@ -28,7 +28,7 @@ var Board = (function () {
         var boardTiles = [];
         for (var i = 0; i < this.tileWidth; i++) {
             for (var j = 0; j < this.tileHeight; j++) {
-                boardTiles.push(new ________e_tse_tileeesssaaabbbtile_1.default(i, j, checker_fill_1.default(i, j, fill.clear, fill.clear), checker_fill_1.default(i, j, fill.red, fill.black), checker_fill_1.default(i, j, fill.clear, fill.clear)));
+                boardTiles.push(new base_tile_1.default(i, j, checker_fill_1.default(i, j, fill.clear, fill.clear), checker_fill_1.default(i, j, fill.red, fill.black), checker_fill_1.default(i, j, fill.clear, fill.clear)));
             }
         }
         this.boardTiles = boardTiles;

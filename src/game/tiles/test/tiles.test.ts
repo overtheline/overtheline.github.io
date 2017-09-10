@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 
 import * as fill from '../../constants/colors';
-import Tile from '../tile';
+import Tile from '../base-tile';
 import getPlayerTile from '../player';
 import getFoodTile from '../food';
 
