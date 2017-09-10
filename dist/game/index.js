@@ -30,23 +30,23 @@ var Game = (function () {
         this.gameState = Object.assign({}, this.gameState, partialState);
     };
     Game.prototype.frameFunction = function (elapsed) {
-        var _this = this;
-        if (elapsed - this.lastTime >= this.targetMS && this.gameState.readyToUpdate) {
-            this.updateGameState({ readyToUpdate: false });
-            this.player.updatePosition(this.gameState.direction);
-            this.board.drawGamePieces(this.player.getTiles(), function () { _this.updateGameState({ readyToUpdate: true }); });
-            this.lastTime = elapsed;
-        }
+        console.log(this.gameState.direction);
+        // if (elapsed - this.lastTime >= this.targetMS && this.gameState.readyToUpdate) {
+        //   this.updateGameState({ readyToUpdate: false });
+        //   this.player.updatePosition(this.gameState.direction);
+        //   this.board.drawGamePieces(this.player.getTiles(), () => { this.updateGameState({ readyToUpdate: true }) });
+        //   this.lastTime = elapsed;
+        // }
     };
     Game.prototype.init = function () {
         var _this = this;
         console.log('game init');
         this.board = new board_1.default(this.tileWidth, this.tileHeight, this.pxWidth, this.pxHeight);
-        this.player = new Player(this.tileWidth / 2, this.tileHeight / 2);
-        this.food = new Food();
+        // this.player = new Player(this.tileWidth / 2, this.tileHeight / 2);
+        // this.food = new Food();
         d3.select('body').on('keydown', this.handleKeydown);
         this.board.createBoardTiles();
-        this.board.drawBoard(function () { return _this.updateGameState({ readyToPlay: true }); });
+        this.board.renderBoard(function () { return _this.updateGameState({ readyToPlay: true }); });
         this.loop = new loop_1.default(this.frameFunction);
     };
     Game.prototype.handleKeydown = function () {

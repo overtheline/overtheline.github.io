@@ -1,1 +1,0 @@
-{"version":3,"file":"food.js","sourceRoot":"","sources":["../../../src/game/components/food.ts"],"names":[],"mappings":";;;;;;;;;;;;AAAA,+BAA0B;AAE1B,0CAA4C;AAE5C;IAAkC,wBAAI;IACpC,cAAY,CAAS,EAAE,CAAS;eAC9B,kBAAM,CAAC,EAAE,CAAC,EAAE,IAAI,CAAC,SAAS,EAAE,IAAI,CAAC,UAAU,EAAE,IAAI,CAAC,QAAQ,CAAC;IAC7D,CAAC;IACH,WAAC;AAAD,CAAC,AAJD,CAAkC,cAAI,GAIrC"}

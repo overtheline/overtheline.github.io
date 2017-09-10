@@ -4,7 +4,6 @@ import Board from './components/board';
 
 import { UP, DOWN, LEFT, RIGHT } from './constants/directions';
 
-import collision from './utils/collision';
 import getDirection from './utils/direction';
 import Loop from './utils/loop';
 
@@ -63,12 +62,13 @@ export default class Game {
   }
 
   frameFunction(elapsed: number) {
-    if (elapsed - this.lastTime >= this.targetMS && this.gameState.readyToUpdate) {
-      this.updateGameState({ readyToUpdate: false });
-      this.player.updatePosition(this.gameState.direction);
-      this.board.drawGamePieces(this.player.getTiles(), () => { this.updateGameState({ readyToUpdate: true }) });
-      this.lastTime = elapsed;
-    }
+    console.log(this.gameState.direction);
+    // if (elapsed - this.lastTime >= this.targetMS && this.gameState.readyToUpdate) {
+    //   this.updateGameState({ readyToUpdate: false });
+    //   this.player.updatePosition(this.gameState.direction);
+    //   this.board.drawGamePieces(this.player.getTiles(), () => { this.updateGameState({ readyToUpdate: true }) });
+    //   this.lastTime = elapsed;
+    // }
   }
 
   init() {
@@ -80,13 +80,13 @@ export default class Game {
       this.pxHeight
     );
 
-    this.player = new Player(this.tileWidth / 2, this.tileHeight / 2);
-    this.food = new Food();
+    // this.player = new Player(this.tileWidth / 2, this.tileHeight / 2);
+    // this.food = new Food();
 
     d3.select('body').on('keydown', this.handleKeydown);
 
     this.board.createBoardTiles();
-    this.board.drawBoard(() => this.updateGameState({ readyToPlay: true }));
+    this.board.renderBoard(() => this.updateGameState({ readyToPlay: true }));
 
     this.loop = new Loop(this.frameFunction);
   }

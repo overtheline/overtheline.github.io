@@ -23450,7 +23450,12 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 
 /***/ }),
-/* 51 */,
+/* 51 */
+/***/ (function(module, exports) {
+
+throw new Error("Module build failed: Error: ENOENT: no such file or directory, open '/Users/tdat/Sites/overtheline.github.io/src/game/tiles/Tile.ts'\n    at Error (native)");
+
+/***/ }),
 /* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -39361,10 +39366,10 @@ exports.default = App;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var d3 = __webpack_require__(50);
-var board_1 = __webpack_require__(192);
+var board_1 = __webpack_require__(190);
 var directions_1 = __webpack_require__(52);
-var direction_1 = __webpack_require__(194);
-var loop_1 = __webpack_require__(195);
+var direction_1 = __webpack_require__(196);
+var loop_1 = __webpack_require__(197);
 var Game = (function () {
     function Game(config) {
         this.pxWidth = config.pxWidth;
@@ -39390,23 +39395,23 @@ var Game = (function () {
         this.gameState = Object.assign({}, this.gameState, partialState);
     };
     Game.prototype.frameFunction = function (elapsed) {
-        var _this = this;
-        if (elapsed - this.lastTime >= this.targetMS && this.gameState.readyToUpdate) {
-            this.updateGameState({ readyToUpdate: false });
-            this.player.updatePosition(this.gameState.direction);
-            this.board.drawGamePieces(this.player.getTiles(), function () { _this.updateGameState({ readyToUpdate: true }); });
-            this.lastTime = elapsed;
-        }
+        console.log(this.gameState.direction);
+        // if (elapsed - this.lastTime >= this.targetMS && this.gameState.readyToUpdate) {
+        //   this.updateGameState({ readyToUpdate: false });
+        //   this.player.updatePosition(this.gameState.direction);
+        //   this.board.drawGamePieces(this.player.getTiles(), () => { this.updateGameState({ readyToUpdate: true }) });
+        //   this.lastTime = elapsed;
+        // }
     };
     Game.prototype.init = function () {
         var _this = this;
         console.log('game init');
         this.board = new board_1.default(this.tileWidth, this.tileHeight, this.pxWidth, this.pxHeight);
-        this.player = new Player(this.tileWidth / 2, this.tileHeight / 2);
-        this.food = new Food();
+        // this.player = new Player(this.tileWidth / 2, this.tileHeight / 2);
+        // this.food = new Food();
         d3.select('body').on('keydown', this.handleKeydown);
         this.board.createBoardTiles();
-        this.board.drawBoard(function () { return _this.updateGameState({ readyToPlay: true }); });
+        this.board.renderBoard(function () { return _this.updateGameState({ readyToPlay: true }); });
         this.loop = new loop_1.default(this.frameFunction);
     };
     Game.prototype.handleKeydown = function () {
@@ -39462,20 +39467,19 @@ exports.default = Game;
 
 
 /***/ }),
-/* 190 */,
-/* 191 */,
-/* 192 */
+/* 190 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var d3 = __webpack_require__(50);
-var tile_1 = __webpack_require__(196);
-var player_1 = __webpack_require__(197);
-var food_1 = __webpack_require__(199);
-var block_1 = __webpack_require__(200);
-var checker_fill_1 = __webpack_require__(193);
+var base_tile_1 = __webpack_require__(198);
+var player_1 = __webpack_require__(192);
+var food_1 = __webpack_require__(193);
+var block_1 = __webpack_require__(194);
+var checker_fill_1 = __webpack_require__(195);
+var directions_1 = __webpack_require__(52);
 var fill = __webpack_require__(32);
 var Board = (function () {
     function Board(tileWidth, tileHeight, pxWidth, pxHeight) {
@@ -39492,11 +39496,12 @@ var Board = (function () {
             .domain([0, this.tileHeight])
             .range([0, this.pxHeight]);
     }
+    // BOARD METHODS
     Board.prototype.createBoardTiles = function () {
         var boardTiles = [];
         for (var i = 0; i < this.tileWidth; i++) {
             for (var j = 0; j < this.tileHeight; j++) {
-                boardTiles.push(new tile_1.default(i, j, checker_fill_1.default(i, j, fill.clear, fill.clear), checker_fill_1.default(i, j, fill.red, fill.black), checker_fill_1.default(i, j, fill.clear, fill.clear)));
+                boardTiles.push(new base_tile_1.default(i, j, checker_fill_1.default(i, j, fill.clear, fill.clear), checker_fill_1.default(i, j, fill.red, fill.black), checker_fill_1.default(i, j, fill.clear, fill.clear)));
             }
         }
         this.boardTiles = boardTiles;
@@ -39504,6 +39509,7 @@ var Board = (function () {
     Board.prototype.destroyBoardTiles = function () {
         this.boardTiles = [];
     };
+    // PLAYER METHODS
     Board.prototype.addPlayerTile = function (x, y) {
         if (this.playerTiles.length) {
             var lastTile = this.playerTiles[this.playerTiles.length - 1];
@@ -39513,9 +39519,31 @@ var Board = (function () {
             this.playerTiles.push(player_1.default(x, y));
         }
     };
+    Board.prototype.movePlayer = function (nextPlayerDirection, currentPlayerDirection) {
+        var head = this.playerTiles[0];
+        for (var i = this.playerTiles.length - 1; i > 0; i--) {
+            this.playerTiles[i].x = this.playerTiles[i - 1].x;
+            this.playerTiles[i].y = this.playerTiles[i - 1].y;
+        }
+        switch (currentPlayerDirection) {
+            case directions_1.UP:
+                head.y -= 1;
+                break;
+            case directions_1.DOWN:
+                head.y += 1;
+                break;
+            case directions_1.LEFT:
+                head.x -= 1;
+                break;
+            case directions_1.RIGHT:
+                head.x += 1;
+                break;
+        }
+    };
     Board.prototype.destroyPlayer = function () {
         this.playerTiles = [];
     };
+    // FOOD METHODS
     Board.prototype.addFoodTile = function (x, y) {
         this.foodTiles.push(food_1.default(x, y));
     };
@@ -39525,6 +39553,7 @@ var Board = (function () {
     Board.prototype.destroyFood = function () {
         this.foodTiles = [];
     };
+    // BLOCK METHODS
     Board.prototype.addBlockTile = function (x, y) {
         this.blockTiles.push(block_1.default(x, y));
     };
@@ -39534,6 +39563,7 @@ var Board = (function () {
     Board.prototype.destroyBlocks = function () {
         this.blockTiles = [];
     };
+    // RENDER METHODS
     Board.prototype.renderBoard = function (cb) {
         var _this = this;
         var tiles = this.boardSVG.selectAll('rect')
@@ -39612,7 +39642,53 @@ exports.default = Board;
 
 
 /***/ }),
+/* 191 */,
+/* 192 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Tile_1 = __webpack_require__(51);
+var fill = __webpack_require__(32);
+function getPlayerTile(x, y) {
+    return new Tile_1.default(x, y, fill.playerEnter, fill.playerUpdate, fill.playerExit);
+}
+exports.default = getPlayerTile;
+
+
+/***/ }),
 /* 193 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Tile_1 = __webpack_require__(51);
+var fill = __webpack_require__(32);
+function getFoodTile(x, y) {
+    return new Tile_1.default(x, y, fill.foodEnter, fill.foodUpdate, fill.foodExit);
+}
+exports.default = getFoodTile;
+
+
+/***/ }),
+/* 194 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Tile_1 = __webpack_require__(51);
+var fill = __webpack_require__(32);
+function getBlockTile(x, y) {
+    return new Tile_1.default(x, y, fill.blockEnter, fill.blockUpdate, fill.blockExit);
+}
+exports.default = getBlockTile;
+
+
+/***/ }),
+/* 195 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39625,7 +39701,7 @@ exports.default = checkerFill;
 
 
 /***/ }),
-/* 194 */
+/* 196 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39645,7 +39721,7 @@ exports.default = getDirection;
 
 
 /***/ }),
-/* 195 */
+/* 197 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39672,41 +39748,6 @@ exports.default = Loop;
 
 
 /***/ }),
-/* 196 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var Tile = (function () {
-    function Tile(x, y, enterColor, updateColor, exitColor) {
-        this.x = x;
-        this.y = y;
-        this.enterColor = enterColor;
-        this.updateColor = updateColor;
-        this.exitColor = exitColor;
-    }
-    return Tile;
-}());
-exports.default = Tile;
-
-
-/***/ }),
-/* 197 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var Tile_1 = __webpack_require__(198);
-var fill = __webpack_require__(32);
-function getPlayerTile(x, y) {
-    return new Tile_1.default(x, y, fill.playerEnter, fill.playerUpdate, fill.playerExit);
-}
-exports.default = getPlayerTile;
-
-
-/***/ }),
 /* 198 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -39724,36 +39765,6 @@ var Tile = (function () {
     return Tile;
 }());
 exports.default = Tile;
-
-
-/***/ }),
-/* 199 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var Tile_1 = __webpack_require__(198);
-var fill = __webpack_require__(32);
-function getFoodTile(x, y) {
-    return new Tile_1.default(x, y, fill.foodEnter, fill.foodUpdate, fill.foodExit);
-}
-exports.default = getFoodTile;
-
-
-/***/ }),
-/* 200 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var Tile_1 = __webpack_require__(198);
-var fill = __webpack_require__(32);
-function getBlockTile(x, y) {
-    return new Tile_1.default(x, y, fill.blockEnter, fill.blockUpdate, fill.blockExit);
-}
-exports.default = getBlockTile;
 
 
 /***/ })

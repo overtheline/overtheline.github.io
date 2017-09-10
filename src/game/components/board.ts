@@ -1,10 +1,11 @@
 import * as d3 from 'd3';
 
-import Tile from '../tiles/tile';
+import Tile from '../tiles/base-tile';
 import getPlayerTile from '../tiles/player';
 import getFoodTile from '../tiles/food';
 import getBlockTile from '../tiles/block';
 import checkerFill from '../utils/checker-fill';
+import { UP, DOWN, LEFT, RIGHT } from '../constants/directions';
 import * as fill from '../constants/colors';
 
 export default class Board {
@@ -75,8 +76,28 @@ export default class Board {
     }
   }
 
-  movePlayer(direction: string) {
+  movePlayer(nextPlayerDirection: string, currentPlayerDirection: string) {
+    const [head] = this.playerTiles;
 
+    for (let i = this.playerTiles.length - 1; i > 0; i--) {
+      this.playerTiles[i].x = this.playerTiles[i - 1].x;
+      this.playerTiles[i].y = this.playerTiles[i - 1].y;
+    }
+
+    switch(currentPlayerDirection) {
+      case UP:
+        head.y -= 1;
+        break;
+      case DOWN:
+        head.y += 1;
+        break;
+      case LEFT:
+        head.x -= 1;
+        break;
+      case RIGHT:
+        head.x += 1;
+        break;
+    }
   }
 
   destroyPlayer(): void {

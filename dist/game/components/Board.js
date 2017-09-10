@@ -1,11 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var d3 = require("d3");
-var tile_1 = require("../tiles/tile");
+var ________e_tse_tileeesssaaabbbtile_1 = require("........e.tse-tileeesssaaabbbtile");
 var player_1 = require("../tiles/player");
 var food_1 = require("../tiles/food");
 var block_1 = require("../tiles/block");
 var checker_fill_1 = require("../utils/checker-fill");
+var directions_1 = require("../constants/directions");
 var fill = require("../constants/colors");
 var Board = (function () {
     function Board(tileWidth, tileHeight, pxWidth, pxHeight) {
@@ -27,7 +28,7 @@ var Board = (function () {
         var boardTiles = [];
         for (var i = 0; i < this.tileWidth; i++) {
             for (var j = 0; j < this.tileHeight; j++) {
-                boardTiles.push(new tile_1.default(i, j, checker_fill_1.default(i, j, fill.clear, fill.clear), checker_fill_1.default(i, j, fill.red, fill.black), checker_fill_1.default(i, j, fill.clear, fill.clear)));
+                boardTiles.push(new ________e_tse_tileeesssaaabbbtile_1.default(i, j, checker_fill_1.default(i, j, fill.clear, fill.clear), checker_fill_1.default(i, j, fill.red, fill.black), checker_fill_1.default(i, j, fill.clear, fill.clear)));
             }
         }
         this.boardTiles = boardTiles;
@@ -45,7 +46,26 @@ var Board = (function () {
             this.playerTiles.push(player_1.default(x, y));
         }
     };
-    Board.prototype.movePlayer = function (direction) {
+    Board.prototype.movePlayer = function (nextPlayerDirection, currentPlayerDirection) {
+        var head = this.playerTiles[0];
+        for (var i = this.playerTiles.length - 1; i > 0; i--) {
+            this.playerTiles[i].x = this.playerTiles[i - 1].x;
+            this.playerTiles[i].y = this.playerTiles[i - 1].y;
+        }
+        switch (currentPlayerDirection) {
+            case directions_1.UP:
+                head.y -= 1;
+                break;
+            case directions_1.DOWN:
+                head.y += 1;
+                break;
+            case directions_1.LEFT:
+                head.x -= 1;
+                break;
+            case directions_1.RIGHT:
+                head.x += 1;
+                break;
+        }
     };
     Board.prototype.destroyPlayer = function () {
         this.playerTiles = [];

@@ -1,12 +1,8 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-function collision(subject, objects) {
-    return objects.reduce(function (hit, object) {
-        if (hit) {
-            return hit;
-        }
-        return object.x === subject.x && object.y === subject.y;
-    }, false);
-}
-exports.default = collision;
+// 
+// export default function collision(subject: Tile, objects: Tile[]): boolean {
+//   return objects.reduce((hit, object) => {
+//     if (hit) { return hit; }
+//     return object.x === subject.x && object.y === subject.y;
+//   }, false);
+// }
 //# sourceMappingURL=collision.js.map
