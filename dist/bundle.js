@@ -2507,7 +2507,7 @@ var createFactory = ReactElement.createFactory;
 var cloneElement = ReactElement.cloneElement;
 
 if (process.env.NODE_ENV !== 'production') {
-  var lowPriorityWarning = __webpack_require__(33);
+  var lowPriorityWarning = __webpack_require__(34);
   var canDefineProperty = __webpack_require__(24);
   var ReactElementValidator = __webpack_require__(58);
   var didWarnPropTypesDeprecated = false;
@@ -2844,10 +2844,10 @@ module.exports = ReactReconciler;
 
 
 
-var DOMNamespaces = __webpack_require__(40);
+var DOMNamespaces = __webpack_require__(41);
 var setInnerHTML = __webpack_require__(29);
 
-var createMicrosoftUnsafeLocalFunction = __webpack_require__(41);
+var createMicrosoftUnsafeLocalFunction = __webpack_require__(42);
 var setTextContent = __webpack_require__(70);
 
 var ELEMENT_NODE_TYPE = 1;
@@ -2968,7 +2968,7 @@ module.exports = DOMLazyTree;
 
 
 var EventPluginHub = __webpack_require__(21);
-var EventPluginUtils = __webpack_require__(34);
+var EventPluginUtils = __webpack_require__(35);
 
 var accumulateInto = __webpack_require__(62);
 var forEachAccumulated = __webpack_require__(63);
@@ -3110,8 +3110,8 @@ module.exports = EventPropagators;
 var _prodInvariant = __webpack_require__(3);
 
 var EventPluginRegistry = __webpack_require__(26);
-var EventPluginUtils = __webpack_require__(34);
-var ReactErrorUtils = __webpack_require__(35);
+var EventPluginUtils = __webpack_require__(35);
+var ReactErrorUtils = __webpack_require__(36);
 
 var accumulateInto = __webpack_require__(62);
 var forEachAccumulated = __webpack_require__(63);
@@ -3389,7 +3389,7 @@ module.exports = EventPluginHub;
 
 var SyntheticEvent = __webpack_require__(12);
 
-var getEventTarget = __webpack_require__(36);
+var getEventTarget = __webpack_require__(37);
 
 /**
  * @interface UIEvent
@@ -4056,7 +4056,7 @@ module.exports = TransactionImpl;
 var SyntheticUIEvent = __webpack_require__(22);
 var ViewportMetrics = __webpack_require__(69);
 
-var getEventModifierState = __webpack_require__(38);
+var getEventModifierState = __webpack_require__(39);
 
 /**
  * @interface MouseEvent
@@ -4131,12 +4131,12 @@ module.exports = SyntheticMouseEvent;
 
 
 var ExecutionEnvironment = __webpack_require__(6);
-var DOMNamespaces = __webpack_require__(40);
+var DOMNamespaces = __webpack_require__(41);
 
 var WHITESPACE_TEST = /^[ \r\n\t\f]/;
 var NONVISIBLE_TEST = /<(!--|link|noscript|meta|script|style)[ \r\n\t\f\/>]/;
 
-var createMicrosoftUnsafeLocalFunction = __webpack_require__(41);
+var createMicrosoftUnsafeLocalFunction = __webpack_require__(42);
 
 // SVG temp container for IE lacking innerHTML
 var reusableSVGContainer;
@@ -4367,7 +4367,7 @@ var ReactEventEmitterMixin = __webpack_require__(137);
 var ViewportMetrics = __webpack_require__(69);
 
 var getVendorPrefixedEventName = __webpack_require__(138);
-var isEventSupported = __webpack_require__(37);
+var isEventSupported = __webpack_require__(38);
 
 /**
  * Summary of `ReactBrowserEventEmitter` event handling:
@@ -4679,21 +4679,44 @@ module.exports = ReactBrowserEventEmitter;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+var Tile = (function () {
+    function Tile(x, y, enterColor, updateColor, exitColor) {
+        this.x = x;
+        this.y = y;
+        this.enterColor = enterColor;
+        this.updateColor = updateColor;
+        this.exitColor = exitColor;
+    }
+    return Tile;
+}());
+exports.default = Tile;
+
+
+/***/ }),
+/* 33 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.foodColor = 'rgba(229, 242, 84, 0.8)';
 exports.wallColor = 'rgba(100, 100, 100, 1)';
 exports.clear = 'rgba(255, 255, 255, 0)';
 exports.red = 'rgba(255, 0, 0, 0.1)';
 exports.black = 'rgba(0, 0, 0, 0.1)';
-exports.playerEnter = 'rgba(0, 200, 0, 0.7)';
-exports.playerUpdate = exports.playerEnter;
+exports.playerEnter = 'rgba(0, 0, 200, 0.1)';
+exports.playerUpdate = 'rgba(0, 200, 0, 0.7)';
 exports.playerExit = 'rgba(255, 20, 100, 0.1)';
-exports.foodEnter = 'rgba(255, 128, 0, 0.7)';
-exports.foodUpdate = exports.foodEnter;
+exports.foodEnter = 'rgba(255, 128, 0, 0.1)';
+exports.foodUpdate = 'rgba(255, 128, 0, 0.7)';
 exports.foodExit = 'rgba(255, 128, 0, 0.1)';
+exports.blockEnter = 'rgba(150, 150, 150, 0.1)';
+exports.blockUpdate = 'rgba(150, 150, 150, 0.7)';
+exports.blockExit = 'rgba(150, 150, 150, 0.1)';
 
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4764,7 +4787,7 @@ module.exports = lowPriorityWarning;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4782,7 +4805,7 @@ module.exports = lowPriorityWarning;
 
 var _prodInvariant = __webpack_require__(3);
 
-var ReactErrorUtils = __webpack_require__(35);
+var ReactErrorUtils = __webpack_require__(36);
 
 var invariant = __webpack_require__(1);
 var warning = __webpack_require__(2);
@@ -4996,7 +5019,7 @@ module.exports = EventPluginUtils;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5078,7 +5101,7 @@ module.exports = ReactErrorUtils;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5118,7 +5141,7 @@ function getEventTarget(nativeEvent) {
 module.exports = getEventTarget;
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5183,7 +5206,7 @@ function isEventSupported(eventNameSuffix, capture) {
 module.exports = isEventSupported;
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5231,7 +5254,7 @@ function getEventModifierState(nativeEvent) {
 module.exports = getEventModifierState;
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5252,7 +5275,7 @@ var Danger = __webpack_require__(122);
 var ReactDOMComponentTree = __webpack_require__(5);
 var ReactInstrumentation = __webpack_require__(8);
 
-var createMicrosoftUnsafeLocalFunction = __webpack_require__(41);
+var createMicrosoftUnsafeLocalFunction = __webpack_require__(42);
 var setInnerHTML = __webpack_require__(29);
 var setTextContent = __webpack_require__(70);
 
@@ -5463,7 +5486,7 @@ module.exports = DOMChildrenOperations;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5488,7 +5511,7 @@ var DOMNamespaces = {
 module.exports = DOMNamespaces;
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5525,7 +5548,7 @@ var createMicrosoftUnsafeLocalFunction = function (func) {
 module.exports = createMicrosoftUnsafeLocalFunction;
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5669,7 +5692,7 @@ module.exports = LinkedValueUtils;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5719,7 +5742,7 @@ module.exports = ReactComponentEnvironment;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5792,7 +5815,7 @@ function shallowEqual(objA, objB) {
 module.exports = shallowEqual;
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5839,7 +5862,7 @@ function shouldUpdateReactComponent(prevElement, nextElement) {
 module.exports = shouldUpdateReactComponent;
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5903,7 +5926,7 @@ var KeyEscapeUtils = {
 module.exports = KeyEscapeUtils;
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6143,7 +6166,7 @@ module.exports = ReactUpdateQueue;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6520,7 +6543,7 @@ module.exports = validateDOMNesting;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6575,7 +6598,7 @@ function getEventCharCode(nativeEvent) {
 module.exports = getEventCharCode;
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://d3js.org Version 4.9.1. Copyright 2017 Mike Bostock.
@@ -23447,27 +23470,6 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 
 /***/ }),
-/* 51 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-;
-var Tile = (function () {
-    function Tile(config) {
-        this.x = config.x;
-        this.y = config.y;
-        this.enterColor = config.enterColor;
-        this.updateColor = config.updateColor;
-        this.exitColor = config.exitColor;
-    }
-    return Tile;
-}());
-exports.default = Tile;
-
-
-/***/ }),
 /* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -23515,7 +23517,7 @@ var ReactNoopUpdateQueue = __webpack_require__(55);
 var canDefineProperty = __webpack_require__(24);
 var emptyObject = __webpack_require__(25);
 var invariant = __webpack_require__(1);
-var lowPriorityWarning = __webpack_require__(33);
+var lowPriorityWarning = __webpack_require__(34);
 
 /**
  * Base class helpers for the updating state of a component.
@@ -23844,7 +23846,7 @@ var checkReactTypeSpec = __webpack_require__(92);
 var canDefineProperty = __webpack_require__(24);
 var getIteratorFn = __webpack_require__(57);
 var warning = __webpack_require__(2);
-var lowPriorityWarning = __webpack_require__(33);
+var lowPriorityWarning = __webpack_require__(34);
 
 function getDeclarationErrorAddendum() {
   if (ReactCurrentOwner.current) {
@@ -25178,7 +25180,7 @@ module.exports = ReactPropTypesSecret;
 
 var _assign = __webpack_require__(4);
 
-var LinkedValueUtils = __webpack_require__(42);
+var LinkedValueUtils = __webpack_require__(43);
 var ReactDOMComponentTree = __webpack_require__(5);
 var ReactUpdates = __webpack_require__(11);
 
@@ -25679,7 +25681,7 @@ var REACT_ELEMENT_TYPE = __webpack_require__(148);
 
 var getIteratorFn = __webpack_require__(149);
 var invariant = __webpack_require__(1);
-var KeyEscapeUtils = __webpack_require__(46);
+var KeyEscapeUtils = __webpack_require__(47);
 var warning = __webpack_require__(2);
 
 var SEPARATOR = '.';
@@ -26131,14 +26133,14 @@ var ReactInstanceMap = __webpack_require__(23);
 var ReactInstrumentation = __webpack_require__(8);
 var ReactMarkupChecksum = __webpack_require__(180);
 var ReactReconciler = __webpack_require__(18);
-var ReactUpdateQueue = __webpack_require__(47);
+var ReactUpdateQueue = __webpack_require__(48);
 var ReactUpdates = __webpack_require__(11);
 
 var emptyObject = __webpack_require__(25);
 var instantiateReactComponent = __webpack_require__(76);
 var invariant = __webpack_require__(1);
 var setInnerHTML = __webpack_require__(29);
-var shouldUpdateReactComponent = __webpack_require__(45);
+var shouldUpdateReactComponent = __webpack_require__(46);
 var warning = __webpack_require__(2);
 
 var ATTR_NAME = DOMProperty.ID_ATTRIBUTE_NAME;
@@ -30050,8 +30052,8 @@ var ReactUpdates = __webpack_require__(11);
 var SyntheticEvent = __webpack_require__(12);
 
 var inputValueTracking = __webpack_require__(67);
-var getEventTarget = __webpack_require__(36);
-var isEventSupported = __webpack_require__(37);
+var getEventTarget = __webpack_require__(37);
+var isEventSupported = __webpack_require__(38);
 var isTextInputElement = __webpack_require__(68);
 
 var eventTypes = {
@@ -31443,7 +31445,7 @@ module.exports = HTMLDOMPropertyConfig;
 
 
 
-var DOMChildrenOperations = __webpack_require__(39);
+var DOMChildrenOperations = __webpack_require__(40);
 var ReactDOMIDOperations = __webpack_require__(126);
 
 /**
@@ -31852,7 +31854,7 @@ module.exports = getMarkupWrap;
 
 
 
-var DOMChildrenOperations = __webpack_require__(39);
+var DOMChildrenOperations = __webpack_require__(40);
 var ReactDOMComponentTree = __webpack_require__(5);
 
 /**
@@ -31898,7 +31900,7 @@ var _prodInvariant = __webpack_require__(3),
 var AutoFocusUtils = __webpack_require__(128);
 var CSSPropertyOperations = __webpack_require__(129);
 var DOMLazyTree = __webpack_require__(19);
-var DOMNamespaces = __webpack_require__(40);
+var DOMNamespaces = __webpack_require__(41);
 var DOMProperty = __webpack_require__(13);
 var DOMPropertyOperations = __webpack_require__(73);
 var EventPluginHub = __webpack_require__(21);
@@ -31917,10 +31919,10 @@ var ReactServerRenderingTransaction = __webpack_require__(151);
 var emptyFunction = __webpack_require__(9);
 var escapeTextContentForBrowser = __webpack_require__(30);
 var invariant = __webpack_require__(1);
-var isEventSupported = __webpack_require__(37);
-var shallowEqual = __webpack_require__(44);
+var isEventSupported = __webpack_require__(38);
+var shallowEqual = __webpack_require__(45);
 var inputValueTracking = __webpack_require__(67);
-var validateDOMNesting = __webpack_require__(48);
+var validateDOMNesting = __webpack_require__(49);
 var warning = __webpack_require__(2);
 
 var Flags = ReactDOMComponentFlags;
@@ -33618,7 +33620,7 @@ var _prodInvariant = __webpack_require__(3),
     _assign = __webpack_require__(4);
 
 var DOMPropertyOperations = __webpack_require__(73);
-var LinkedValueUtils = __webpack_require__(42);
+var LinkedValueUtils = __webpack_require__(43);
 var ReactDOMComponentTree = __webpack_require__(5);
 var ReactUpdates = __webpack_require__(11);
 
@@ -34038,7 +34040,7 @@ module.exports = ReactDOMOption;
 var _prodInvariant = __webpack_require__(3),
     _assign = __webpack_require__(4);
 
-var LinkedValueUtils = __webpack_require__(42);
+var LinkedValueUtils = __webpack_require__(43);
 var ReactDOMComponentTree = __webpack_require__(5);
 var ReactUpdates = __webpack_require__(11);
 
@@ -34203,7 +34205,7 @@ module.exports = ReactDOMTextarea;
 
 var _prodInvariant = __webpack_require__(3);
 
-var ReactComponentEnvironment = __webpack_require__(43);
+var ReactComponentEnvironment = __webpack_require__(44);
 var ReactInstanceMap = __webpack_require__(23);
 var ReactInstrumentation = __webpack_require__(8);
 
@@ -34656,8 +34658,8 @@ module.exports = ReactMultiChild;
 var ReactReconciler = __webpack_require__(18);
 
 var instantiateReactComponent = __webpack_require__(76);
-var KeyEscapeUtils = __webpack_require__(46);
-var shouldUpdateReactComponent = __webpack_require__(45);
+var KeyEscapeUtils = __webpack_require__(47);
+var shouldUpdateReactComponent = __webpack_require__(46);
 var traverseAllChildren = __webpack_require__(80);
 var warning = __webpack_require__(2);
 
@@ -34816,9 +34818,9 @@ var _prodInvariant = __webpack_require__(3),
     _assign = __webpack_require__(4);
 
 var React = __webpack_require__(16);
-var ReactComponentEnvironment = __webpack_require__(43);
+var ReactComponentEnvironment = __webpack_require__(44);
 var ReactCurrentOwner = __webpack_require__(10);
-var ReactErrorUtils = __webpack_require__(35);
+var ReactErrorUtils = __webpack_require__(36);
 var ReactInstanceMap = __webpack_require__(23);
 var ReactInstrumentation = __webpack_require__(8);
 var ReactNodeTypes = __webpack_require__(77);
@@ -34830,8 +34832,8 @@ if (process.env.NODE_ENV !== 'production') {
 
 var emptyObject = __webpack_require__(25);
 var invariant = __webpack_require__(1);
-var shallowEqual = __webpack_require__(44);
-var shouldUpdateReactComponent = __webpack_require__(45);
+var shallowEqual = __webpack_require__(45);
+var shouldUpdateReactComponent = __webpack_require__(46);
 var warning = __webpack_require__(2);
 
 var CompositeTypes = {
@@ -35940,7 +35942,7 @@ module.exports = getIteratorFn;
 
 
 
-var KeyEscapeUtils = __webpack_require__(46);
+var KeyEscapeUtils = __webpack_require__(47);
 var traverseAllChildren = __webpack_require__(80);
 var warning = __webpack_require__(2);
 
@@ -36120,7 +36122,7 @@ module.exports = ReactServerRenderingTransaction;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var ReactUpdateQueue = __webpack_require__(47);
+var ReactUpdateQueue = __webpack_require__(48);
 
 var warning = __webpack_require__(2);
 
@@ -36472,13 +36474,13 @@ module.exports = {
 var _prodInvariant = __webpack_require__(3),
     _assign = __webpack_require__(4);
 
-var DOMChildrenOperations = __webpack_require__(39);
+var DOMChildrenOperations = __webpack_require__(40);
 var DOMLazyTree = __webpack_require__(19);
 var ReactDOMComponentTree = __webpack_require__(5);
 
 var escapeTextContentForBrowser = __webpack_require__(30);
 var invariant = __webpack_require__(1);
-var validateDOMNesting = __webpack_require__(48);
+var validateDOMNesting = __webpack_require__(49);
 
 /**
  * Text nodes violate a couple assumptions that React makes about components:
@@ -36718,7 +36720,7 @@ var PooledClass = __webpack_require__(15);
 var ReactDOMComponentTree = __webpack_require__(5);
 var ReactUpdates = __webpack_require__(11);
 
-var getEventTarget = __webpack_require__(36);
+var getEventTarget = __webpack_require__(37);
 var getUnboundedScrollPosition = __webpack_require__(158);
 
 /**
@@ -36916,8 +36918,8 @@ module.exports = getUnboundedScrollPosition;
 
 var DOMProperty = __webpack_require__(13);
 var EventPluginHub = __webpack_require__(21);
-var EventPluginUtils = __webpack_require__(34);
-var ReactComponentEnvironment = __webpack_require__(43);
+var EventPluginUtils = __webpack_require__(35);
+var ReactComponentEnvironment = __webpack_require__(44);
 var ReactEmptyComponent = __webpack_require__(78);
 var ReactBrowserEventEmitter = __webpack_require__(31);
 var ReactHostComponent = __webpack_require__(79);
@@ -36961,7 +36963,7 @@ var ReactBrowserEventEmitter = __webpack_require__(31);
 var ReactInputSelection = __webpack_require__(82);
 var ReactInstrumentation = __webpack_require__(8);
 var Transaction = __webpack_require__(27);
-var ReactUpdateQueue = __webpack_require__(47);
+var ReactUpdateQueue = __webpack_require__(48);
 
 /**
  * Ensures that, when possible, the selection range (currently selected text
@@ -37853,7 +37855,7 @@ var SyntheticEvent = __webpack_require__(12);
 
 var getActiveElement = __webpack_require__(83);
 var isTextInputElement = __webpack_require__(68);
-var shallowEqual = __webpack_require__(44);
+var shallowEqual = __webpack_require__(45);
 
 var skipSelectionChangeEvent = ExecutionEnvironment.canUseDOM && 'documentMode' in document && document.documentMode <= 11;
 
@@ -38057,7 +38059,7 @@ var SyntheticUIEvent = __webpack_require__(22);
 var SyntheticWheelEvent = __webpack_require__(177);
 
 var emptyFunction = __webpack_require__(9);
-var getEventCharCode = __webpack_require__(49);
+var getEventCharCode = __webpack_require__(50);
 var invariant = __webpack_require__(1);
 
 /**
@@ -38400,9 +38402,9 @@ module.exports = SyntheticFocusEvent;
 
 var SyntheticUIEvent = __webpack_require__(22);
 
-var getEventCharCode = __webpack_require__(49);
+var getEventCharCode = __webpack_require__(50);
 var getEventKey = __webpack_require__(173);
-var getEventModifierState = __webpack_require__(38);
+var getEventModifierState = __webpack_require__(39);
 
 /**
  * @interface KeyboardEvent
@@ -38487,7 +38489,7 @@ module.exports = SyntheticKeyboardEvent;
 
 
 
-var getEventCharCode = __webpack_require__(49);
+var getEventCharCode = __webpack_require__(50);
 
 /**
  * Normalization of deprecated HTML5 `key` values
@@ -38647,7 +38649,7 @@ module.exports = SyntheticDragEvent;
 
 var SyntheticUIEvent = __webpack_require__(22);
 
-var getEventModifierState = __webpack_require__(38);
+var getEventModifierState = __webpack_require__(39);
 
 /**
  * @interface TouchEvent
@@ -38795,7 +38797,7 @@ module.exports = SyntheticWheelEvent;
 
 
 
-var validateDOMNesting = __webpack_require__(48);
+var validateDOMNesting = __webpack_require__(49);
 
 var DOC_NODE_TYPE = 9;
 
@@ -39377,13 +39379,11 @@ exports.default = App;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var d3 = __webpack_require__(50);
-var player_1 = __webpack_require__(190);
-var food_1 = __webpack_require__(191);
-var board_1 = __webpack_require__(192);
+var d3 = __webpack_require__(51);
+var board_1 = __webpack_require__(190);
 var directions_1 = __webpack_require__(52);
-var direction_1 = __webpack_require__(194);
-var loop_1 = __webpack_require__(195);
+var direction_1 = __webpack_require__(195);
+var loop_1 = __webpack_require__(196);
 var Game = (function () {
     function Game(config) {
         this.pxWidth = config.pxWidth;
@@ -39412,8 +39412,8 @@ var Game = (function () {
         var _this = this;
         if (elapsed - this.lastTime >= this.targetMS && this.gameState.readyToUpdate) {
             this.updateGameState({ readyToUpdate: false });
-            this.player.updatePosition(this.gameState.direction);
-            this.board.drawGamePieces(this.player.getTiles(), function () { _this.updateGameState({ readyToUpdate: true }); });
+            this.board.movePlayer(this.gameState.direction);
+            this.board.renderPlayerTiles(function () { _this.updateGameState({ readyToUpdate: true }); });
             this.lastTime = elapsed;
         }
     };
@@ -39421,11 +39421,13 @@ var Game = (function () {
         var _this = this;
         console.log('game init');
         this.board = new board_1.default(this.tileWidth, this.tileHeight, this.pxWidth, this.pxHeight);
-        this.player = new player_1.default(this.tileWidth / 2, this.tileHeight / 2);
-        this.food = new food_1.default();
         d3.select('body').on('keydown', this.handleKeydown);
-        this.board.createBoardTiles();
-        this.board.drawBoard(function () { return _this.updateGameState({ readyToPlay: true }); });
+        // build board
+        this.board.createBoard();
+        this.board.renderBoard(function () { return _this.updateGameState({ readyToPlay: true }); });
+        for (var i = 0; i < 5; i++) {
+            this.board.addPlayerTile(2, 3);
+        }
         this.loop = new loop_1.default(this.frameFunction);
     };
     Game.prototype.handleKeydown = function () {
@@ -39458,14 +39460,14 @@ var Game = (function () {
                 break;
             // a
             case 65:
-                if (!playerAlive) {
+                if (readyToPlay && !playerAlive) {
                     updateGameState({ playerAlive: true });
                     this.loop.start();
                 }
                 break;
             // s
             case 83:
-                if (playerAlive) {
+                if (readyToPlay && playerAlive) {
                     updateGameState({ playerAlive: false });
                     this.lastTime = 0;
                     this.loop.stop();
@@ -39487,101 +39489,14 @@ exports.default = Game;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var Tile_1 = __webpack_require__(51);
+var d3 = __webpack_require__(51);
+var base_tile_1 = __webpack_require__(32);
+var player_1 = __webpack_require__(191);
+var food_1 = __webpack_require__(192);
+var block_1 = __webpack_require__(193);
+var checker_fill_1 = __webpack_require__(194);
 var directions_1 = __webpack_require__(52);
-var fill = __webpack_require__(32);
-var Player = (function () {
-    function Player(x, y) {
-        this.currentDirection = directions_1.RIGHT;
-        this.tiles = [];
-        for (var i = 0; i < 15; i++) {
-            this.tiles.push(new Tile_1.default({
-                x: x,
-                y: y,
-                enterColor: fill.playerEnter,
-                updateColor: fill.playerUpdate,
-                exitColor: fill.playerExit,
-            }));
-        }
-    }
-    Player.prototype.getTiles = function () {
-        return this.tiles;
-    };
-    Player.prototype.updatePosition = function (nextDirection) {
-        var head = this.tiles[0];
-        // Do not back up on yourself
-        if ((nextDirection === directions_1.UP && this.currentDirection !== directions_1.DOWN)
-            || (nextDirection === directions_1.DOWN && this.currentDirection !== directions_1.UP)
-            || (nextDirection === directions_1.RIGHT && this.currentDirection !== directions_1.LEFT)
-            || (nextDirection === directions_1.LEFT && this.currentDirection !== directions_1.RIGHT)) {
-            this.currentDirection = nextDirection;
-        }
-        for (var i = this.tiles.length - 1; i > 0; i--) {
-            this.tiles[i].x = this.tiles[i - 1].x;
-            this.tiles[i].y = this.tiles[i - 1].y;
-        }
-        switch (this.currentDirection) {
-            case directions_1.UP:
-                head.y -= 1;
-                break;
-            case directions_1.DOWN:
-                head.y += 1;
-                break;
-            case directions_1.LEFT:
-                head.x -= 1;
-                break;
-            case directions_1.RIGHT:
-                head.x += 1;
-                break;
-        }
-    };
-    return Player;
-}());
-exports.default = Player;
-
-
-/***/ }),
-/* 191 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var Tile_1 = __webpack_require__(51);
-var fill = __webpack_require__(32);
-var Food = (function () {
-    function Food() {
-    }
-    Food.prototype.getTiles = function () {
-        return this.tiles;
-    };
-    Food.prototype.addFood = function (x, y) {
-        this.tiles = [
-            new Tile_1.default({
-                x: x,
-                y: y,
-                enterColor: fill.foodEnter,
-                updateColor: fill.foodUpdate,
-                exitColor: fill.foodExit,
-            }),
-        ];
-    };
-    return Food;
-}());
-exports.default = Food;
-
-
-/***/ }),
-/* 192 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var d3 = __webpack_require__(50);
-var Tile_1 = __webpack_require__(51);
-var checker_fill_1 = __webpack_require__(193);
-var fill = __webpack_require__(32);
+var fill = __webpack_require__(33);
 var Board = (function () {
     function Board(tileWidth, tileHeight, pxWidth, pxHeight) {
         this.tileWidth = tileWidth;
@@ -39597,43 +39512,116 @@ var Board = (function () {
             .domain([0, this.tileHeight])
             .range([0, this.pxHeight]);
     }
-    Board.prototype.createBoardTiles = function () {
-        var tiles = [];
+    // BOARD METHODS
+    Board.prototype.createBoard = function () {
+        var boardTiles = [];
         for (var i = 0; i < this.tileWidth; i++) {
             for (var j = 0; j < this.tileHeight; j++) {
-                tiles.push(new Tile_1.default({
-                    x: i,
-                    y: j,
-                    enterColor: checker_fill_1.default(i, j),
-                    updateColor: checker_fill_1.default(i, j),
-                    exitColor: checker_fill_1.default(i, j),
-                }));
+                boardTiles.push(new base_tile_1.default(i, j, checker_fill_1.default(i, j, fill.clear, fill.clear), checker_fill_1.default(i, j, fill.red, fill.black), checker_fill_1.default(i, j, fill.clear, fill.clear)));
             }
         }
-        this.tiles = tiles;
+        this.boardTiles = boardTiles;
+        this.playerTiles = [];
+        this.foodTiles = [];
+        this.blockTiles = [];
     };
-    Board.prototype.drawBoard = function (cb) {
+    Board.prototype.destroyBoardTiles = function () {
+        this.boardTiles = [];
+    };
+    // PLAYER METHODS
+    Board.prototype.addPlayerTile = function (x, y) {
+        if (this.playerTiles.length) {
+            var lastTile = this.playerTiles[this.playerTiles.length - 1];
+            this.playerTiles.push(player_1.default(lastTile.x, lastTile.y));
+        }
+        else {
+            this.playerTiles.push(player_1.default(x, y));
+        }
+    };
+    Board.prototype.movePlayer = function (nextPlayerDirection) {
+        var head = this.playerTiles[0];
+        for (var i = this.playerTiles.length - 1; i > 0; i--) {
+            this.playerTiles[i].x = this.playerTiles[i - 1].x;
+            this.playerTiles[i].y = this.playerTiles[i - 1].y;
+        }
+        switch (nextPlayerDirection) {
+            case directions_1.UP:
+                head.y -= 1;
+                break;
+            case directions_1.DOWN:
+                head.y += 1;
+                break;
+            case directions_1.LEFT:
+                head.x -= 1;
+                break;
+            case directions_1.RIGHT:
+                head.x += 1;
+                break;
+        }
+    };
+    Board.prototype.destroyPlayer = function () {
+        this.playerTiles = [];
+    };
+    // FOOD METHODS
+    Board.prototype.addFoodTile = function (x, y) {
+        this.foodTiles.push(food_1.default(x, y));
+    };
+    Board.prototype.removeFoodTile = function (removeObj) {
+        this.foodTiles = this.foodTiles.filter(function (foodObj) { return foodObj !== removeObj; });
+    };
+    Board.prototype.destroyFood = function () {
+        this.foodTiles = [];
+    };
+    // BLOCK METHODS
+    Board.prototype.addBlockTile = function (x, y) {
+        this.blockTiles.push(block_1.default(x, y));
+    };
+    Board.prototype.removeBlockTile = function (removeObj) {
+        this.blockTiles = this.blockTiles.filter(function (blockObj) { return blockObj !== removeObj; });
+    };
+    Board.prototype.destroyBlocks = function () {
+        this.blockTiles = [];
+    };
+    // RENDER METHODS
+    Board.prototype.renderBoard = function (cb) {
         var _this = this;
-        var boardTiles = this.boardSVG.selectAll('rect')
-            .data(this.tiles);
-        boardTiles
+        var tiles = this.boardSVG.selectAll('rect')
+            .data(this.boardTiles);
+        tiles
             .enter().append('rect')
             .attr('width', this.xScale(1))
             .attr('height', this.yScale(1))
-            .attr('x', function (d) { return _this.xScale(_this.tileWidth / 2); })
-            .attr('y', function (d) { return _this.yScale(_this.tileHeight / 2); })
-            .attr('fill', fill.clear)
+            .attr('x', this.xScale(this.tileWidth / 2))
+            .attr('y', this.yScale(this.tileHeight / 2))
+            .attr('fill', function (d) { return d.enterColor; })
             .transition().duration(1000).ease(d3.easeBounceOut)
             .attr('y', function (d) { return _this.yScale(d.y); })
             .attr('x', function (d) { return _this.xScale(d.x); })
             .attr('fill', function (d) { return d.updateColor; })
             .on('end', cb);
+        tiles
+            .exit()
+            .attr('fill', function (d) { return d.exitColor; })
+            .transition().duration(500)
+            .attr('x', function (d) { return _this.xScale(d.x - 0.5); })
+            .attr('y', function (d) { return _this.yScale(d.y - 0.5); })
+            .attr('width', this.xScale(0))
+            .attr('height', this.yScale(0))
+            .attr('fill', fill.clear);
     };
-    Board.prototype.drawGamePieces = function (tiles, cb) {
+    Board.prototype.renderPlayerTiles = function (cb) {
+        this.renderGameTiles(this.playerTiles, 'player-tile', cb);
+    };
+    Board.prototype.renderFoodTiles = function (cb) {
+        this.renderGameTiles(this.foodTiles, 'food-tile', cb);
+    };
+    Board.prototype.renderBlockTile = function (cb) {
+        this.renderGameTiles(this.blockTiles, 'block-tile', cb);
+    };
+    Board.prototype.renderGameTiles = function (tiles, targetClass, cb) {
         var _this = this;
         // JOIN
-        var gamePieces = this.gameSVG.selectAll('rect')
-            .data(tiles);
+        var gamePieces = this.gameSVG.selectAll("." + targetClass).data(tiles);
         // EXIT
         gamePieces.exit()
             .attr('fill', function (d) { return d.exitColor; })
@@ -39648,28 +39636,58 @@ var Board = (function () {
         // ENTER
         gamePieces
             .enter().append('rect')
+            .classed(targetClass, true)
             .attr('x', function (d) { return _this.xScale(d.x - 1); })
             .attr('y', function (d) { return _this.yScale(d.y - 1); })
             .attr('width', this.xScale(3))
             .attr('height', this.yScale(3))
-            .attr('fill', function (d) { return fill.clear; })
+            .attr('fill', function (d) { return d.enterColor; })
             .transition().duration(100)
             .attr('width', this.xScale(1))
             .attr('height', this.yScale(1))
             .attr('x', function (d) { return _this.xScale(d.x); })
             .attr('y', function (d) { return _this.yScale(d.y); })
-            .attr('fill', function (d) { return d.enterColor; })
+            .attr('fill', function (d) { return d.updateColor; })
             .on('end', cb);
         // UPDATE
         gamePieces
             .attr('x', function (d) { return _this.xScale((d.x % _this.tileWidth) < 0 ? (d.x % _this.tileWidth) + _this.tileWidth : d.x % _this.tileWidth); })
             .attr('y', function (d) { return _this.yScale((d.y % _this.tileHeight) < 0 ? (d.y % _this.tileHeight) + _this.tileHeight : d.y % _this.tileHeight); })
-            .attr('fill', function (d) { return d.updateColor; })
             .call(cb);
     };
     return Board;
 }());
 exports.default = Board;
+
+
+/***/ }),
+/* 191 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var base_tile_1 = __webpack_require__(32);
+var fill = __webpack_require__(33);
+function getPlayerTile(x, y) {
+    return new base_tile_1.default(x, y, fill.playerEnter, fill.playerUpdate, fill.playerExit);
+}
+exports.default = getPlayerTile;
+
+
+/***/ }),
+/* 192 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var base_tile_1 = __webpack_require__(32);
+var fill = __webpack_require__(33);
+function getFoodTile(x, y) {
+    return new base_tile_1.default(x, y, fill.foodEnter, fill.foodUpdate, fill.foodExit);
+}
+exports.default = getFoodTile;
 
 
 /***/ }),
@@ -39679,15 +39697,29 @@ exports.default = Board;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var colors_1 = __webpack_require__(32);
-function checkerFill(i, j) {
-    return (i + j) % 2 === 0 ? colors_1.black : colors_1.red;
+var base_tile_1 = __webpack_require__(32);
+var fill = __webpack_require__(33);
+function getBlockTile(x, y) {
+    return new base_tile_1.default(x, y, fill.blockEnter, fill.blockUpdate, fill.blockExit);
+}
+exports.default = getBlockTile;
+
+
+/***/ }),
+/* 194 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function checkerFill(i, j, fillA, fillB) {
+    return (i + j) % 2 === 0 ? fillA : fillB;
 }
 exports.default = checkerFill;
 
 
 /***/ }),
-/* 194 */
+/* 195 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39707,13 +39739,13 @@ exports.default = getDirection;
 
 
 /***/ }),
-/* 195 */
+/* 196 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var d3 = __webpack_require__(50);
+var d3 = __webpack_require__(51);
 var Loop = (function () {
     function Loop(cb) {
         this.cb = cb;

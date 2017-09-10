@@ -1,8 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var d3 = require("d3");
-var player_1 = require("./components/player");
-var food_1 = require("./components/food");
 var board_1 = require("./components/board");
 var directions_1 = require("./constants/directions");
 var direction_1 = require("./utils/direction");
@@ -35,8 +33,8 @@ var Game = (function () {
         var _this = this;
         if (elapsed - this.lastTime >= this.targetMS && this.gameState.readyToUpdate) {
             this.updateGameState({ readyToUpdate: false });
-            this.player.updatePosition(this.gameState.direction);
-            this.board.drawGamePieces(this.player.getTiles(), function () { _this.updateGameState({ readyToUpdate: true }); });
+            this.board.movePlayer(this.gameState.direction);
+            this.board.renderPlayerTiles(function () { _this.updateGameState({ readyToUpdate: true }); });
             this.lastTime = elapsed;
         }
     };
@@ -44,11 +42,13 @@ var Game = (function () {
         var _this = this;
         console.log('game init');
         this.board = new board_1.default(this.tileWidth, this.tileHeight, this.pxWidth, this.pxHeight);
-        this.player = new player_1.default(this.tileWidth / 2, this.tileHeight / 2);
-        this.food = new food_1.default();
         d3.select('body').on('keydown', this.handleKeydown);
-        this.board.createBoardTiles();
-        this.board.drawBoard(function () { return _this.updateGameState({ readyToPlay: true }); });
+        // build board
+        this.board.createBoard();
+        this.board.renderBoard(function () { return _this.updateGameState({ readyToPlay: true }); });
+        for (var i = 0; i < 5; i++) {
+            this.board.addPlayerTile(2, 3);
+        }
         this.loop = new loop_1.default(this.frameFunction);
     };
     Game.prototype.handleKeydown = function () {
@@ -81,14 +81,14 @@ var Game = (function () {
                 break;
             // a
             case 65:
-                if (!playerAlive) {
+                if (readyToPlay && !playerAlive) {
                     updateGameState({ playerAlive: true });
                     this.loop.start();
                 }
                 break;
             // s
             case 83:
-                if (playerAlive) {
+                if (readyToPlay && playerAlive) {
                     updateGameState({ playerAlive: false });
                     this.lastTime = 0;
                     this.loop.stop();

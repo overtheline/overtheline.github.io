@@ -1,12 +1,9 @@
 import * as d3 from 'd3';
 
-import Player from './components/player';
-import Food from './components/food';
 import Board from './components/board';
 
 import { UP, DOWN, LEFT, RIGHT } from './constants/directions';
 
-import collision from './utils/collision';
 import getDirection from './utils/direction';
 import Loop from './utils/loop';
 
@@ -27,11 +24,9 @@ export interface IGameState {
 
 export default class Game {
   board: Board;
-  food: Food;
   gameState: IGameState;
   lastTime: number;
   loop?: Loop;
-  player: Player;
   pxHeight: number;
   pxWidth: number;
   targetMS: number;
@@ -69,8 +64,8 @@ export default class Game {
   frameFunction(elapsed: number) {
     if (elapsed - this.lastTime >= this.targetMS && this.gameState.readyToUpdate) {
       this.updateGameState({ readyToUpdate: false });
-      this.player.updatePosition(this.gameState.direction);
-      this.board.drawGamePieces(this.player.getTiles(), () => { this.updateGameState({ readyToUpdate: true }) });
+      this.board.movePlayer(this.gameState.direction);
+      this.board.renderPlayerTiles(() => { this.updateGameState({ readyToUpdate: true }) });
       this.lastTime = elapsed;
     }
   }
@@ -84,13 +79,15 @@ export default class Game {
       this.pxHeight
     );
 
-    this.player = new Player(this.tileWidth / 2, this.tileHeight / 2);
-    this.food = new Food();
-
     d3.select('body').on('keydown', this.handleKeydown);
 
-    this.board.createBoardTiles();
-    this.board.drawBoard(() => this.updateGameState({ readyToPlay: true }));
+    // build board
+    this.board.createBoard();
+    this.board.renderBoard(() => this.updateGameState({ readyToPlay: true }));
+
+    for (let i = 0; i < 5; i++) {
+      this.board.addPlayerTile(2, 3);
+    }
 
     this.loop = new Loop(this.frameFunction);
   }
@@ -138,7 +135,7 @@ export default class Game {
 
       // a
       case 65:
-        if (!playerAlive) {
+        if (readyToPlay && !playerAlive) {
           updateGameState({ playerAlive: true });
           this.loop.start();
         }
@@ -146,7 +143,7 @@ export default class Game {
 
       // s
       case 83:
-        if (playerAlive) {
+        if (readyToPlay && playerAlive) {
           updateGameState({ playerAlive: false });
           this.lastTime = 0;
           this.loop.stop();
