@@ -4,7 +4,8 @@
   "description": "personal homepage",
   "main": "index.js",
   "scripts": {
-    "build:dev": "node ./node_modules/webpack/bin/webpack.js --watch",
+    "build:dev:w": "node ./node_modules/webpack/bin/webpack.js --watch",
+    "build:dev": "node ./node_modules/webpack/bin/webpack.js",
     "test": "mocha -r ts-node/register src/**/*.test.ts"
   },
   "repository": {

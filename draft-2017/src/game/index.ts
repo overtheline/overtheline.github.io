@@ -78,7 +78,6 @@ export default class Game {
         this.board.destroyPlayer();
         this.board.destroyFood();
         this.updateGameState({ playerAlive: false });
-        console.log('self');
       }
 
       // collide food

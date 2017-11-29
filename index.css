@@ -1,0 +1,22 @@
+body {
+  background-color: rgb(10, 10, 10);
+  margin: 0px;
+}
+
+#content {
+  font-family: helvetica, arial, sans-serif;
+}
+
+.title-container {
+  padding: 1em;
+}
+
+.title {
+  font-size: 2em;
+  font-weight: 100;
+  color: rgb(255, 0, 0);
+}
+
+.name {
+  font-weight: 400;
+}
