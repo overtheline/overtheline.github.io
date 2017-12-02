@@ -12,5 +12,11 @@
         "noUnusedParameters": true,
         "noImplicitReturns": true,
         "noFallthroughCasesInSwitch": true,
-    }
+
+        "sourceMap": true
+    },
+    "exclude": [
+        "node_modules",
+        "draft-2017"
+    ]
 }
