@@ -1,19 +1,25 @@
 body {
   background-color: rgb(10, 10, 10);
   margin: 0px;
+  padding: 1em;
   color: rgb(255, 0, 0);		
   font-family: helvetica, arial, sans-serif;
   font-weight: 100;
 }
 
 .title-container {
-  padding: 1em;
+  padding: 1em 0
 }
 
 .title {
+  font-weight: 100;
   font-size: 2em;
 }
 
 .name {
   font-weight: 400;
+}
+
+.dot-graph {
+  border: solid rgb(20, 20, 20) 1px;
 }
