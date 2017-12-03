@@ -1,5 +1,4 @@
-dist
-draft-2017
+draft-2017/
 node_modules/
 .DS_Store
 npm-debug.log

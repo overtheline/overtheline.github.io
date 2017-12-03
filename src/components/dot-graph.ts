@@ -3,18 +3,24 @@ import { D3Selection } from '../types';
 import BaseComponent from './base-component';
 import Dot from './dot';
 
+const width = 400;
+const height = width;
+
 export default class DotGraph extends BaseComponent {
 	width: number;
 	height: number;
 	xScale: ScaleLinear<number, number>;
 	yScale: ScaleLinear<number, number>;
+	rScale: ScaleLinear<number, number>;
 
 	constructor(target: D3Selection) {
 		super(target);
-		this.width = 400;
-		this.height = 500;
-		this.xScale = scaleLinear().domain([0, 40]).range([0, 400]);
-		this.yScale = scaleLinear().domain([0, 50]).range([500, 0]);
+		
+		this.width = width;
+		this.height = height;
+		this.xScale = scaleLinear().domain([-10, 10]).range([0, width]);
+		this.yScale = scaleLinear().domain([-10, 10]).range([height, 0]);
+		this.rScale = scaleLinear().domain([0, 20]).range([0, width]);
 	}
 
 	render() {
@@ -25,9 +31,9 @@ export default class DotGraph extends BaseComponent {
 
 		const dot = new Dot({
 			target: svg,
-			cx: this.xScale(20),
-			cy: this.yScale(25),
-			r: this.xScale(3)
+			cx: this.xScale(0),
+			cy: this.yScale(0),
+			r: this.rScale(3)
 		});
 
 		dot.render();
