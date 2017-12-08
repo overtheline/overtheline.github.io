@@ -1,4 +1,4 @@
-import { D3Selection } from '../types';
+import { D3Selection } from '../../types';
 
 export default class BaseComponent {
 	target: D3Selection;
