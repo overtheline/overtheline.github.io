@@ -24,15 +24,12 @@ for (let i = 0; i < domain[1]; i++) {
 	}
 }
 
-console.log(rects.length);
-
 const tap = parseInt('B2', 16);
 let count = 0;
 const first = lfsr(1, tap);
 let last = first;
 
 const interval = setInterval(() => {
-	console.log(last, last > rects.length);
 	if (last - 1 < rects.length) {
 		rects[last - 1].render();
 	}
